@@ -49,7 +49,7 @@ public class BasePluginModule extends AbstractModule {
         install(new HandlersModule());
         install(new CommandHandlerModule());
 
-/*        bindListener(Matchers.any(), new TypeListener() {
+        bindListener(Matchers.any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
                 Class<?> clazz = typeLiteral.getRawType();
@@ -63,6 +63,6 @@ public class BasePluginModule extends AbstractModule {
                     clazz = clazz.getSuperclass();
                 }
             }
-        });*/
+        });
     }
 }
