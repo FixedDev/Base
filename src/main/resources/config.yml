@@ -1,0 +1,8 @@
+server-display-name: ""
+
+hook-protocollib: false
+language: en
+chat:
+  muted: 0
+  slowed: 0
+  slowed-delay: 3

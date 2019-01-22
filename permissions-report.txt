@@ -1,0 +1,131 @@
+Targets
+    Occurrences of '"base.[A-Za-z0-9.]+"' in Project with mask '*.java'
+Found Occurrences  (59 usages found)
+    Usage in string constants  (58 usages found)
+        Base  (58 usages found)
+            us.sparknetwork.base  (4 usages found)
+                StaffPriority.java  (4 usages found)
+                    10 NONE(0, "base.staffpriority.none"), LOWEST(1, "base.staffpriority.lowest"), LOW(2,
+                    11 "base.staffpriority.low"), MEDIUM(3, "base.staffpriority.medium"), NORMAL(4,
+                    12 "base.staffpriority.normal"), HiGH(5,
+                    13 "base.staffpriority.high"), HIGHEST(6, "base.staffpriority.highest");
+            us.sparknetwork.base.command.chat  (8 usages found)
+                BroadcastCommand.java  (2 usages found)
+                    broadcastCommand(CommandSender, CommandContext)  (2 usages found)
+                        32 permission = "base.command.broadcast",
+                        39 if (context.hasFlag('g') && sender.hasPermission("base.command.broadcast.global")) {
+                ModerationCommands.java  (3 usages found)
+                    clearChat(CommandSender, CommandContext)  (1 usage found)
+                        24 @Command(names = {"clearchat", "cc"}, usage = "Usage: /<command> [reason]", flags = {'s'}, permission = "base.command.clearchat")
+                    muteChat(CommandSender, CommandContext)  (1 usage found)
+                        45 @Command(names = {"mutechat", "mc"}, usage = "Usage: /<command>", max = 1, permission = "base.command.mutechat")
+                    slowChat(CommandSender, CommandContext)  (1 usage found)
+                        77 @Command(names = {"slowchat"}, usage = "Usage: /<command>", max = 1, permission = "base.command.slowchat")
+                StaffChatCommands.java  (2 usages found)
+                    staffChatCommand(Player, CommandContext)  (1 usage found)
+                        25 @Command(names = {"staffchat", "sc"}, usage = "Usage: /<command>", max = 0, onlyPlayer = true, permission = "base.command.staffchat")
+                    toggleStaffChat(Player, CommandContext)  (1 usage found)
+                        45 @Command(names = {"togglestaffchat", "tsc", "togglesc"}, usage = "Usage: /<command>", max = 0, onlyPlayer = true, permission = "base.command.togglestaffchat")
+                ToggleChatCommand.java  (1 usage found)
+                    toggleGlobalChat(Player, CommandContext)  (1 usage found)
+                        24 @Command(names = {"toggleglobalchat", "tgc", "togglechat"}, usage = "Usage: /<command>", max = 0, onlyPlayer = true, permission = "base.command.toggleglobalchat")
+            us.sparknetwork.base.command.essentials  (23 usages found)
+                HelpopCommands.java  (2 usages found)
+                    helpopCommand(CommandSender, CommandContext)  (2 usages found)
+                        28 @Command(names = {"helpop", "ac", "request"}, min = 1, permission = "base.command.helpop", usage = "Usage: /<command> <text...>")
+                        34 Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("base.command.helpop.receive")).forEach(player -> {
+                PlayerCommands.java  (6 usages found)
+                    flyCommand(CommandSender, CommandContext)  (2 usages found)
+                        18 @Command(names = {"fly", "flight"}, max = 1, permission = "base.command.fly", usage = "Usage: /<command> [player]")
+                        29 if (!sender.hasPermission("base.command.fly.others")) {
+                    feedCommand(CommandSender, CommandContext)  (2 usages found)
+                        47 @Command(names = "feed", max = 1, permission = "base.command.feed", usage = "Usage: /<comand> [player]")
+                        65 if (!sender.hasPermission("base.command.feed.others")) {
+                    healCommand(CommandSender, CommandContext)  (2 usages found)
+                        77 @Command(names = "heal", max = 1, permission = "base.command.heal", usage = "Usage: /<comand> [player]")
+                        95 if (!sender.hasPermission("base.command.heal.others")) {
+                ServerCommands.java  (5 usages found)
+                    findUser(CommandSender, CommandContext)  (1 usage found)
+                        35 @Command(names = {"findUser"}, usage = "Usage: /<command> <player>", permission = "base.command.finduser", min = 1, max = 1)
+                    isOnlineCommand(CommandSender, CommandContext)  (1 usage found)
+                        48 @Command(names = {"isOnline"}, usage = "Usage: /<command> <player>", permission = "base.command.isonline", min = 1, max = 1)
+                    listPlayersCommand(CommandSender, CommandContext)  (3 usages found)
+                        70 @Command(names = {"listplayers", "serverplayers"}, usage = "Usage: /<command> [serverId]", max = 1, permission = "base.command.listplayers")
+                        72 if (context.getArguments().size() == 0 && sender.hasPermission("base.command.listplayers.global")) {
+                        100 } else if (!sender.hasPermission("base.command.listplayers.global")) {
+                StaffCommands.java  (6 usages found)
+                    godCommand(CommandSender, CommandContext)  (2 usages found)
+                        29 @Command(names = {"god", "godmode"}, max = 1, permission = "base.command.god", usage = "Usage: /<command> [player]")
+                        40 if (!sender.hasPermission("base.command.god.others")) {
+                    freezeCommand(CommandSender, CommandContext)  (1 usage found)
+                        68 @Command(names = {"freeze"}, min = 1, max = 1, permission = "base.command.freeze", usage = "Usage: /<command> [player]")
+                    unfreezeCommand(CommandSender, CommandContext)  (1 usage found)
+                        94 @Command(names = {"unfreeze"}, min = 1, max = 1, permission = "base.command.freeze", usage = "Usage: /<command> [player]")
+                    vanishCommand(CommandSender, CommandContext)  (2 usages found)
+                        120 @Command(names = {"vanish", "v"}, max = 1, permission = "base.command.vanish", usage = "Usage: /<command> [player]")
+                        131 if (!sender.hasPermission("base.command.vanish.others")) {
+                TeleportCommands.java  (4 usages found)
+                    teleportCommand(CommandSender, CommandContext)  (1 usage found)
+                        23 "base.command.teleport",
+                    teleportHereCommand(Player, CommandContext)  (1 usage found)
+                        113 "base.command.teleporthere",
+                    topCommand(Player, CommandContext)  (1 usage found)
+                        128 "base.command.top",
+                    teleportAllCommand(CommandSender, CommandContext)  (1 usage found)
+                        139 "base.command.teleportall",
+            us.sparknetwork.base.command.inventory  (7 usages found)
+                InventoryCommands.java  (4 usages found)
+                    invseeCommand(CommandSender, CommandContext)  (1 usage found)
+                        21 "base.command.invsee",
+                    copyInventoryCommand(Player, CommandContext)  (1 usage found)
+                        35 "base.command.copyinventory",
+                    clearInventoryCommand(CommandSender, CommandContext)  (2 usages found)
+                        50 "base.command.clearinventory",
+                        63 if (!commandSender.hasPermission("base.command.clearinventory.others")) {
+                ItemCommands.java  (3 usages found)
+                    giveCommand(CommandSender, CommandContext)  (1 usage found)
+                        28 "base.command.give",
+                    itemCommand(Player, CommandContext)  (1 usage found)
+                        55 "base.command.inventory",
+                    renameCommand(Player, CommandContext)  (1 usage found)
+                        70 "base.command.rename",
+            us.sparknetwork.base.command.tell  (5 usages found)
+                IgnoreCommand.java  (2 usages found)
+                    ignorePlayer(Player, CommandContext)  (2 usages found)
+                        31 @Command(names = {"ignore", "ignoreplayer", "playerignore"}, max = 1, onlyPlayer = true, permission = "base.command.ignore", usage = "Usage: /<command> <player>")
+                        68 if (target.hasPermission("base.command.ignore.bypass")) {
+                SendCommands.java  (2 usages found)
+                    tellCommand(Player, CommandContext)  (1 usage found)
+                        43 "base.command.tell",
+                    replyCommand(Player, CommandContext)  (1 usage found)
+                        84 @Command(names = {"reply", "r", "tellreply", "whisperreply"}, min = 1, onlyPlayer = true, permission = "base.command.tell", usage = "Usage: /<command> <message...>")
+                ToggleCommand.java  (1 usage found)
+                    toggleMessages(Player, CommandContext)  (1 usage found)
+                        24 @Command(names = {"togglemessages", "togglemsg", "togglepm", "tpm", "toggleprivatemessages"}, max = 0, onlyPlayer = true, permission = "base.command.togglemessages", usage = "Usage: /<command>")
+            us.sparknetwork.base.handlers.user.state  (3 usages found)
+                UserStateHandler.java  (3 usages found)
+                    onJoin(PlayerJoinEvent)  (2 usages found)
+                        66 if (e.getPlayer().hasPermission("base.command.vanish")) {
+                        77 if (!e.getPlayer().hasPermission("base.command.god")) {
+                    onAttack(EntityDamageByEntityEvent)  (1 usage found)
+                        116 if (!entity.hasPermission("base.command.god.attack") && state.isGodModeEnabled()) {
+            us.sparknetwork.base.hooks  (1 usage found)
+                ProtocolLibHook.java  (1 usage found)
+                    addListeners(BasePlugin)  (1 usage found)
+                        19 if(event.getPlayer() != null && !event.getPlayer().hasPermission("base.tabcomplete")){
+            us.sparknetwork.base.listeners  (5 usages found)
+                ChatListener.java  (5 usages found)
+                    handleNormalChat(AsyncPlayerChatEvent, UserData)  (3 usages found)
+                        95 if (timeBeforeUnmute > 0 && !e.getPlayer().hasPermission("base.chat.muted.bypass")) {
+                        103 if (ServerConfigurations.SLOW_CHAT >= System.currentTimeMillis() && timeBeforeTalk > 0 && !e.getPlayer().hasPermission("base.chat.slow.bypass")) {
+                        114 if (e.getPlayer().hasPermission("base.chat.color")) {
+                    handleStaffChat(AsyncPlayerChatEvent, UserSettings)  (2 usages found)
+                        135 if (e.getPlayer().hasPermission("base.staffchat.color")) {
+                        143 ("base.command.staffchat.see")
+            us.sparknetwork.base.listeners.message  (2 usages found)
+                HelpopListener.java  (1 usage found)
+                    onMessageReceived(String, String, HelpopMessage)  (1 usage found)
+                        37 Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("base.command.helpop.receive")).forEach(player -> {
+                StaffChatListener.java  (1 usage found)
+                    onMessageReceived(String, String, StaffChatMessage)  (1 usage found)
+                        50 ("base.command.staffchat.see")

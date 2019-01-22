@@ -1,0 +1,128 @@
+name: Base
+main: us.sparknetwork.base.BasePlugin
+author: Ggamer55
+version: ${pom.version}
+softdepend: [ProtocolLib, PlaceholderAPI]
+depend: [Vault]
+
+permissions:
+
+  base.command.module.chat:
+    children:
+      base.command.clearchat: true
+
+  base.command.module.teleport:
+    children:
+      base.command.teleport: true
+      base.command.teleporthere: true
+      base.command.top: true
+
+  base.command.module.inventory:
+    children:
+      base.command.copyinv: true
+      base.command.clearinv: true
+      base.command.invsee: true
+
+  base.command.module.item:
+    children:
+      base.command.give: true
+      base.command.item: true
+
+  base.command.module.player:
+    children:
+      base.command.gamemode: true
+      base.command.gamemode.others: true
+      base.command.fly: true
+      base.command.fly.others: true
+      base.command.god: true
+      base.command.god.others: true
+      base.command.god.attack: true
+      base.command.feed: true
+      base.command.feed.others: true
+      base.command.heal: true
+      base.command.heal.others: true
+      base.command.freeze: true
+      base.command.vanish: true
+      base.command.vanish.others: true
+
+  base.command.module.whisper:
+    children:
+      base.command.tell: true
+      base.command.tell.bypass: true
+      base.command.togglemessages: true
+
+  base.command.teleport:
+    default: op
+  base.command.teleporthere:
+    default: op
+  base.command.top:
+    default: op
+
+  base.command.broadcast:
+    default: op
+
+  base.command.copyinv:
+    default: op
+  base.command.clearinv:
+    default: op
+  base.command.invsee:
+    default: op
+
+  base.command.give:
+    default: op
+  base.command.item:
+    default: op
+
+  base.command.gamemode:
+    default: op
+  base.command.gamemode.others:
+    default: op
+
+  base.command.fly:
+    default: op
+  base.command.fly.others:
+    default: op
+
+  base.command.freeze:
+    default: op
+
+  base.command.god:
+    default: op
+  base.command.god.others:
+    default: op
+  base.command.god.attack:
+    default: false
+
+  base.command.vanish:
+    default: op
+  base.command.vanish.others:
+    default: op
+
+  base.command.tell:
+    default: true
+  base.command.tell.bypass:
+    default: op
+  base.command.togglemessages:
+    default: true
+
+  base.command.clearchat:
+    default: op
+  base.command.toggleglobalchat:
+    default: true
+  base.command.mutechat:
+    default: op
+  base.command.slowchat:
+    default: op
+  base.command.setchatdelay:
+    default: op
+
+  base.tabcomplete:
+    default: false
+
+  base.chat.muted.bypass:
+    default: op
+  base.chat.slow.bypass:
+    default: op
+
+  base.socialspy.see:
+    default: op
