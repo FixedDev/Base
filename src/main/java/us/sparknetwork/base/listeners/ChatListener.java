@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.json.simple.JSONObject;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.ServerConfigurations;
 import us.sparknetwork.base.chat.ChatFormat;
@@ -21,7 +22,6 @@ import us.sparknetwork.base.listeners.message.StaffChatListener;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.StaffChatMessage;
-import us.sparknetwork.base.scoreboard.placeholders.PlaceholderAPIResolver;
 import us.sparknetwork.utils.DateUtil;
 import us.sparknetwork.utils.JsonMessage;
 
@@ -123,6 +123,8 @@ public class ChatListener implements Listener {
         }
 
         e.setCancelled(true);
+
+        e.setMessage(JSONObject.escape(e.getMessage()));
 
         ChatFormat playerChatFormat = chatFormatManager.getChatFormatForPlayer(e.getPlayer());
 
