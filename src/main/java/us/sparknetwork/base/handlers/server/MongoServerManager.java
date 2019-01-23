@@ -53,7 +53,6 @@ public class MongoServerManager extends MongoStorageProvider<Server> implements 
             throw new IllegalStateException("The service is already started");
         }
 
-
         executorService.submit(() -> ListenableFutureUtils.addCallback(find(Integer.MAX_VALUE), servers -> {
             long serversWithSameName = servers.stream()
                     .filter(server -> serverData.getId().equals(server.getId()))
@@ -93,6 +92,7 @@ public class MongoServerManager extends MongoStorageProvider<Server> implements 
         }
 
         serverData.setOnline(false);
+        serverData.setStartedAt(null);
 
         this.save(serverData);
     }

@@ -18,6 +18,8 @@ public interface Server extends Model {
 
     Instant startedAt();
 
+    void setStartedAt(Instant startedAt);
+
     boolean isOnline();
 
     boolean isWhitelisted();

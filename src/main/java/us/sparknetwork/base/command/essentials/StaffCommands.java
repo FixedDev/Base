@@ -152,11 +152,10 @@ public class StaffCommands implements CommandClass {
             Bukkit.getScheduler().runTask(plugin, () ->{
                 state.setVanished(!state.isVanished());
                 stateHandler.save(state);
+
+                String bool = LangConfigurations.convertBoolean(i18n, state.isVanished());
+                sender.sendMessage(MessageFormat.format(i18n.translate("vanished.player"), target.getDisplayName(), bool));
             });
-
-
-            String bool = LangConfigurations.convertBoolean(i18n, state.isVanished());
-            sender.sendMessage(MessageFormat.format(i18n.translate("vanished.player"), target.getDisplayName(), bool));
         });
 
 

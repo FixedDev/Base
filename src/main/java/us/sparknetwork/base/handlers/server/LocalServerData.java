@@ -53,6 +53,11 @@ public class LocalServerData implements Server {
     }
 
     @Override
+    public void setStartedAt(Instant startedAt) {
+        this.startedAt = startedAt;
+    }
+
+    @Override
     public boolean isWhitelisted() {
         return Bukkit.hasWhitelist();
     }
