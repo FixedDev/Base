@@ -2,7 +2,6 @@ package us.sparknetwork.base.chat;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
@@ -39,8 +38,6 @@ public class BaseChatFormatManager implements ChatFormatManager {
         ConfigurationSerialization.registerClass(BaseChatFormat.class);
 
         started = new AtomicBoolean();
-
-        start();
     }
 
     @Override
@@ -122,6 +119,11 @@ public class BaseChatFormatManager implements ChatFormatManager {
             defaultFormat = format;
 
             chatFormats.add(format);
+
+            chatConfig.set("formats", chatFormats);
+            chatConfig.save();
+
+            return;
         }
 
         defaultFormat = optionalDefaultFormat.get();
