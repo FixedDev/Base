@@ -84,6 +84,30 @@ public class JsonMessage {
         }
     }
 
+    public static String escapeColors(String text) {
+        String string = ",{\"text\":\"\",\"extra\":[";
+
+        String[] colors = text.split(String.valueOf(ChatColor.COLOR_CHAR));
+        for (int i = 0; i < colors.length; i++) {
+            if (i == 0 && !text.startsWith(String.valueOf(ChatColor.COLOR_CHAR))) {
+                colors[i] = "{\"text\":\"" + colors[i] + "\"}";
+            } else if (colors[i].length() < 1) {
+                colors[i] = "{\"text\":\"\"}";
+            } else {
+                ChatColor color = ChatColor.getByChar(colors[i].substring(0, 1));
+                colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"color\":\"" + color.name().toLowerCase(Locale.US) + "\"}";
+            }
+            if (i + 1 != colors.length) colors[i] = colors[i] + ",";
+        }
+
+        StringBuilder builder = new StringBuilder(string);
+        for (String str : colors) {
+            builder.append(str);
+        }
+
+        return builder.toString();
+    }
+
     /**
      * Append text to the json message.
      *

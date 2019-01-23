@@ -1,0 +1,8 @@
+formats:
+  - ==: us.sparknetwork.base.chat.ChatFormat
+    name: default
+    priority: 999999
+    chatFormat: '["",{"text":"{prefix}{displayName}{suffix}"},{"text":": ","color":"dark_gray"},{"text":"{chat}","color":"gray"}]'
+    permission: default
+    use-placeholderapi: false
+    allow-relational-placeholders: false
