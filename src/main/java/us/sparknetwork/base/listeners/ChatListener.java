@@ -132,6 +132,8 @@ public class ChatListener implements Listener {
             playerChatFormat.setUsePlaceholderApi(false);
         }
 
+        Bukkit.getConsoleSender().sendMessage(String.format(e.getFormat(), e.getPlayer().getName(), e.getMessage()));
+
         String chatFormat = playerChatFormat.getChatFormat();
 
         chatFormat = chatFormat
@@ -145,7 +147,7 @@ public class ChatListener implements Listener {
         Player[] messageRecipientsArray = e.getRecipients().toArray(new Player[0]);
 
         if (playerChatFormat.isUsePlaceholderApi()) {
-             chatFormat = PlaceholderApiReplacer.parsePlaceholders(e.getPlayer(), chatFormat);
+            chatFormat = PlaceholderApiReplacer.parsePlaceholders(e.getPlayer(), chatFormat);
 
             if (playerChatFormat.isAllowRelationalPlaceholders()) {
                 for (Player viewer : Bukkit.getOnlinePlayers()) {
