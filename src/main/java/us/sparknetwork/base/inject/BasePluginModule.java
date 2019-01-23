@@ -45,22 +45,6 @@ public class BasePluginModule extends AbstractModule {
 
         bind(Chat.class).toInstance(chat);
 
-        bindListener(Matchers.any(), new TypeListener() {
-            @Override
-            public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
-                Class<?> clazz = typeLiteral.getRawType();
-                while (clazz != null) {
-                    for (Field field : clazz.getDeclaredFields()) {
-                        if (field.getType() == Config.class &&
-                                field.isAnnotationPresent(Named.class)) {
-                            typeEncounter.register(new ConfigInjector<>(clazz, field, plugin));
-                        }
-                    }
-                    clazz = clazz.getSuperclass();
-                }
-            }
-        });
-
         bind(ChatFormatManager.class).to(BaseChatFormatManager.class);
 
         install(new ServerModule(serverData));
