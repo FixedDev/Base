@@ -25,15 +25,16 @@ public class BaseChatFormatManager implements ChatFormatManager {
 
     private ChatFormat defaultFormat;
 
-    @Inject
-    @Named("chat")
+    private JavaPlugin plugin;
+
     private Config chatConfig;
 
     @Inject
-    private JavaPlugin plugin;
+    BaseChatFormatManager(JavaPlugin plugin) {
+        this.plugin = plugin;
+        this.chatConfig = new Config(plugin, "chat");
 
-    BaseChatFormatManager() {
-        this.chatFormats = ConcurrentHashMap.newKeySet();
+        chatFormats = ConcurrentHashMap.newKeySet();
         ConfigurationSerialization.registerClass(ChatFormat.class);
         ConfigurationSerialization.registerClass(BaseChatFormat.class);
 
