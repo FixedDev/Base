@@ -13,6 +13,8 @@ import lombok.AllArgsConstructor;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.api.RedissonClient;
+import us.sparknetwork.base.chat.BaseChatFormatManager;
+import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.handlers.server.LocalServerData;
 import us.sparknetwork.utils.Config;
 
@@ -43,12 +45,6 @@ public class BasePluginModule extends AbstractModule {
 
         bind(Chat.class).toInstance(chat);
 
-        install(new ServerModule(serverData));
-
-        install(new DatabaseModule(redisson, mongoClient, database));
-        install(new HandlersModule());
-        install(new CommandHandlerModule());
-
         bindListener(Matchers.any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> typeLiteral, TypeEncounter<I> typeEncounter) {
@@ -64,5 +60,14 @@ public class BasePluginModule extends AbstractModule {
                 }
             }
         });
+
+        bind(ChatFormatManager.class).to(BaseChatFormatManager.class);
+
+        install(new ServerModule(serverData));
+
+        install(new DatabaseModule(redisson, mongoClient, database));
+        install(new HandlersModule());
+        install(new CommandHandlerModule());
+
     }
 }
