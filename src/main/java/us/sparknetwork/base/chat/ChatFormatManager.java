@@ -3,7 +3,7 @@ package us.sparknetwork.base.chat;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.Service;
 
-import java.util.Set;
+import java.util.List;
 
 public interface ChatFormatManager extends Service {
 
@@ -13,7 +13,7 @@ public interface ChatFormatManager extends Service {
 
     ChatFormat getChatFormatForPlayer(Player player, PriorityChecking priorityChecking);
 
-    Set<ChatFormat> getRegisteredChatFormats();
+    List<ChatFormat> getRegisteredChatFormats();
 
     void registerChatFormat(ChatFormat chatFormat);
 
