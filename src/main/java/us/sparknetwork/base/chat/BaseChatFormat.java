@@ -9,7 +9,6 @@ import java.util.Map;
 
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class BaseChatFormat implements ChatFormat {
 
     private final String name;
@@ -38,6 +37,13 @@ public class BaseChatFormat implements ChatFormat {
         this.permission = format.getPermission();
         this.usePlaceholderApi = format.isUsePlaceholderApi();
         this.allowRelationalPlaceholders = format.isAllowRelationalPlaceholders();
+    }
+
+    public BaseChatFormat(String name, int priority) {
+        this.name = name;
+        this.priority = priority;
+        chatFormat = "[\"\",{\"text\":\"{prefix}{displayName}{suffix}\"},{\"text\":\": \",\"color\":\"dark_gray\"},{\"text\":\"{chat}\",\"color\":\"gray\"}]";
+        permission = "default";
     }
 
     @Override
