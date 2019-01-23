@@ -3,10 +3,6 @@ package us.sparknetwork.base.inject;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.gson.Gson;
 import com.google.inject.*;
-import com.google.inject.matcher.Matchers;
-import com.google.inject.name.Named;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import lombok.AllArgsConstructor;
@@ -16,9 +12,6 @@ import org.redisson.api.RedissonClient;
 import us.sparknetwork.base.chat.BaseChatFormatManager;
 import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.handlers.server.LocalServerData;
-import us.sparknetwork.utils.Config;
-
-import java.lang.reflect.Field;
 
 @AllArgsConstructor
 public class BasePluginModule extends AbstractModule {
