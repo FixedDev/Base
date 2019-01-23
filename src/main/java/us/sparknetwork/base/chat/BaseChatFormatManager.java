@@ -9,10 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.utils.Config;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -20,7 +19,11 @@ import java.util.stream.Stream;
 @Singleton
 public class BaseChatFormatManager implements ChatFormatManager {
 
+    private AtomicBoolean started;
+
     private Set<ChatFormat> chatFormats;
+
+    private ChatFormat defaultFormat;
 
     @Inject
     @Named("chat")
@@ -33,6 +36,10 @@ public class BaseChatFormatManager implements ChatFormatManager {
         this.chatFormats = ConcurrentHashMap.newKeySet();
         ConfigurationSerialization.registerClass(ChatFormat.class);
         ConfigurationSerialization.registerClass(BaseChatFormat.class);
+
+        started = new AtomicBoolean();
+
+        start();
     }
 
     @Override
@@ -54,14 +61,14 @@ public class BaseChatFormatManager implements ChatFormatManager {
         }
 
         for (ChatFormat chatFormat : sortedChatFormats) {
-            if(chatFormat == null){
+            if (chatFormat == null) {
                 continue;
             }
 
             return chatFormat;
         }
 
-        return null;
+        return defaultFormat;
     }
 
     @Override
@@ -75,34 +82,62 @@ public class BaseChatFormatManager implements ChatFormatManager {
     }
 
     @Override
-    public void loadFormats() {
+    public void start() {
+        if (!started.compareAndSet(false, true)) {
+            throw new IllegalStateException("The service is already started");
+        }
+
         List<?> formatsRawList = chatConfig.getList("formats");
 
-        List<ChatFormat> formats = new ArrayList<>();
+        Set<ChatFormat> formats = new HashSet<>();
 
         formatsRawList.forEach(o -> {
-            if(!(o instanceof ChatFormat)){
+            if (!(o instanceof ChatFormat)) {
                 return;
             }
 
             ChatFormat format = (ChatFormat) o;
 
-            if(format.isUsePlaceholderApi() && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null){
+            if (format.isUsePlaceholderApi() && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
                 plugin.getLogger().log(Level.WARNING, "The format with name {0} has PlaceholderAPI enabled but PlaceholderAPI isn't installed, not loading it.", format.getName());
                 return;
             }
 
-            if(format.isAllowRelationalPlaceholders() && !format.isUsePlaceholderApi()){
+            if (format.isAllowRelationalPlaceholders() && !format.isUsePlaceholderApi()) {
                 plugin.getLogger().log(Level.WARNING, "The format with name {0} has Relational Placeholders enabled but it doesn't has enabled the PlaceholderAPI support, ignoring Relational Placeholders.");
             }
 
             formats.add(format);
         });
+
+        this.chatFormats = formats;
+
+        Optional<ChatFormat> optionalDefaultFormat = formats.stream().filter(chatFormat -> chatFormat.getName().equalsIgnoreCase("default")).findFirst();
+
+        if(!optionalDefaultFormat.isPresent()){
+            plugin.getLogger().log(Level.INFO, "Default chat format not exists, creating it.");
+
+            ChatFormat format = new BaseChatFormat("default", 999999);
+            defaultFormat = format;
+
+            chatFormats.add(format);
+        }
+
+        defaultFormat = optionalDefaultFormat.get();
     }
 
     @Override
-    public void saveFormats() {
+    public void stop() {
+        if (!started.compareAndSet(true, false)) {
+            throw new IllegalStateException("The service isn't already started");
+        }
+
         chatConfig.set("formats", chatFormats);
         chatConfig.save();
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started.get();
     }
 }
