@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.utils.Config;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -20,7 +20,7 @@ public class BaseChatFormatManager implements ChatFormatManager {
 
     private AtomicBoolean started;
 
-    private Set<ChatFormat> chatFormats;
+    private List<ChatFormat> chatFormats;
 
     private ChatFormat defaultFormat;
 
@@ -33,7 +33,7 @@ public class BaseChatFormatManager implements ChatFormatManager {
         this.plugin = plugin;
         this.chatConfig = new Config(plugin, "chat");
 
-        chatFormats = ConcurrentHashMap.newKeySet();
+        chatFormats = new CopyOnWriteArrayList<>();
         ConfigurationSerialization.registerClass(ChatFormat.class);
         ConfigurationSerialization.registerClass(BaseChatFormat.class);
 
@@ -70,7 +70,7 @@ public class BaseChatFormatManager implements ChatFormatManager {
     }
 
     @Override
-    public Set<ChatFormat> getRegisteredChatFormats() {
+    public List<ChatFormat> getRegisteredChatFormats() {
         return chatFormats;
     }
 
@@ -87,7 +87,7 @@ public class BaseChatFormatManager implements ChatFormatManager {
 
         List<?> formatsRawList = chatConfig.getList("formats");
 
-        Set<ChatFormat> formats = new HashSet<>();
+        List<ChatFormat> formats = new ArrayList<>();
 
         formatsRawList.forEach(o -> {
             if (!(o instanceof ChatFormat)) {
@@ -112,7 +112,7 @@ public class BaseChatFormatManager implements ChatFormatManager {
 
         Optional<ChatFormat> optionalDefaultFormat = formats.stream().filter(chatFormat -> chatFormat.getName().equalsIgnoreCase("default")).findFirst();
 
-        if(!optionalDefaultFormat.isPresent()){
+        if (!optionalDefaultFormat.isPresent()) {
             plugin.getLogger().log(Level.INFO, "Default chat format not exists, creating it.");
 
             ChatFormat format = new BaseChatFormat("default", 999999);
