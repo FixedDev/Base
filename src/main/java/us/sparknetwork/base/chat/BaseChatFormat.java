@@ -24,7 +24,7 @@ public class BaseChatFormat implements ChatFormat {
     public BaseChatFormat(Map<String, Object> map) {
         name = (String) map.get("name");
         priority = (int) map.get("priority");
-        chatFormat = (String) map.get("chatFormat");
+        chatFormat = (String) map.get("chat-format");
         permission = (String) map.getOrDefault("permission", "base.chatformat." + name);
         usePlaceholderApi = (boolean) map.getOrDefault("use-placeholderapi", false);
         allowRelationalPlaceholders = (boolean) map.getOrDefault("allow-relational-placeholders", false);
