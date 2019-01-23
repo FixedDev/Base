@@ -1,7 +1,6 @@
 package us.sparknetwork.base.command.tell;
 
 import com.google.inject.Inject;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
@@ -10,7 +9,6 @@ import us.sparknetwork.base.exception.UserMessagesDisabledException;
 import us.sparknetwork.base.exception.UserOfflineException;
 import us.sparknetwork.base.handlers.user.data.UserData;
 import us.sparknetwork.base.handlers.user.data.UserDataHandler;
-import us.sparknetwork.base.exception.UserNotFoundException;
 import us.sparknetwork.base.handlers.user.finder.UserFinder;
 import us.sparknetwork.base.handlers.user.settings.UserSettings;
 import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
@@ -18,7 +16,6 @@ import us.sparknetwork.base.handlers.whisper.WhisperManager;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
-import us.sparknetwork.utils.BiSupplier;
 import us.sparknetwork.utils.Callback;
 
 import java.text.MessageFormat;
