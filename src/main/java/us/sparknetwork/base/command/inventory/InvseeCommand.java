@@ -61,15 +61,8 @@ public class InvseeCommand implements CommandClass, Listener {
             return;
         }
 
-        Iterator<HumanEntity> viewersIterator = playerInventory.getViewers().iterator();
-
-        while (viewersIterator.hasNext()){
-            HumanEntity viewer = viewersIterator.next();
-
-            viewer.closeInventory();
-
-            viewersIterator.remove();
-        }
+        // Workaround for ConcurrentModificationException
+        new ArrayList<>(playerInventory.getViewers()).forEach(viewer -> viewer.closeInventory());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
