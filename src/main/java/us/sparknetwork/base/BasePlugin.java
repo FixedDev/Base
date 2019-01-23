@@ -29,6 +29,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.SingleServerConfig;
+import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.command.chat.*;
 import us.sparknetwork.base.command.essentials.*;
 import us.sparknetwork.base.command.inventory.InventoryCommands;
@@ -289,6 +290,8 @@ public class BasePlugin extends JavaPlugin {
         ServerManager serverManager = injector.getInstance(ServerManager.class);
         serverManager.start();
 
+        ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
+        chatFormatManager.start();
     }
 
     private void stopServices() {
@@ -297,6 +300,9 @@ public class BasePlugin extends JavaPlugin {
         }
         Service serverManager = injector.getInstance(ServerManager.class);
         serverManager.stop();
+
+        ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
+        chatFormatManager.stop();
     }
 
     private void registerCommands() {
