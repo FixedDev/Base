@@ -31,11 +31,13 @@ public class BaseChatFormatManager implements ChatFormatManager {
     @Inject
     BaseChatFormatManager(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.chatConfig = new Config(plugin, "chat");
 
-        chatFormats = new CopyOnWriteArrayList<>();
         ConfigurationSerialization.registerClass(ChatFormat.class);
         ConfigurationSerialization.registerClass(BaseChatFormat.class);
+
+        chatConfig = new Config(plugin, "chat");
+
+        chatFormats = new CopyOnWriteArrayList<>();
 
         started = new AtomicBoolean();
     }
