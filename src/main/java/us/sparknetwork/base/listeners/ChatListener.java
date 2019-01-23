@@ -11,23 +11,26 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.ServerConfigurations;
+import us.sparknetwork.base.chat.ChatFormat;
+import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.handlers.user.data.UserData;
 import us.sparknetwork.base.handlers.user.data.UserDataHandler;
 import us.sparknetwork.base.handlers.user.settings.UserSettings;
 import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
-import us.sparknetwork.base.handlers.user.state.UserState;
 import us.sparknetwork.base.listeners.message.StaffChatListener;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.StaffChatMessage;
+import us.sparknetwork.base.scoreboard.placeholders.PlaceholderAPIResolver;
 import us.sparknetwork.utils.DateUtil;
+import us.sparknetwork.utils.JsonMessage;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static us.sparknetwork.utils.ListenableFutureUtils.addCallback;
-import static us.sparknetwork.utils.ListenableFutureUtils.addOptionalToReturnValue;
 
 public class ChatListener implements Listener {
 
@@ -37,6 +40,9 @@ public class ChatListener implements Listener {
     private UserSettingsHandler settingsHandler;
     @Inject
     private UserDataHandler dataHandler;
+
+    @Inject
+    private ChatFormatManager chatFormatManager;
 
     @Inject
     private I18n i18n;
@@ -116,14 +122,43 @@ public class ChatListener implements Listener {
             e.setMessage(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
         }
 
-        String format = i18n.translate("chat.format")
-                .replace("{displayName}", "%1$s")
+        e.setCancelled(true);
+
+        ChatFormat playerChatFormat = chatFormatManager.getChatFormatForPlayer(e.getPlayer());
+
+        if (playerChatFormat.isUsePlaceholderApi() && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
+            Bukkit.getLogger().log(Level.WARNING, "There's a chat format with PlaceholderAPI usage enabled, but PlaceholderAPI is not installed, disabling PlaceholderAPI use.");
+
+            playerChatFormat.setUsePlaceholderApi(false);
+        }
+
+        String chatFormat = playerChatFormat.getChatFormat();
+
+        chatFormat = chatFormat
+                .replace("{displayName}", e.getPlayer().getDisplayName())
                 .replace("{name}", e.getPlayer().getName())
                 .replace("{world}", e.getPlayer().getWorld().getName())
-                .replace("{chat}", "%2$s")
+                .replace("{chat}", e.getMessage())
                 .replace("{prefix}", this.getPrefix(e.getPlayer()))
                 .replace("{suffix}", this.getSuffix(e.getPlayer()));
-        e.setFormat(format);
+
+        Player[] messageRecipientsArray = e.getRecipients().toArray(new Player[0]);
+
+        if (playerChatFormat.isUsePlaceholderApi()) {
+             chatFormat = PlaceholderApiReplacer.parsePlaceholders(e.getPlayer(), chatFormat);
+
+            if (playerChatFormat.isAllowRelationalPlaceholders()) {
+                for (Player viewer : Bukkit.getOnlinePlayers()) {
+                    chatFormat = PlaceholderApiReplacer.parseRelationalPlaceholders(e.getPlayer(), viewer, chatFormat);
+
+                    JsonMessage.sendRawJson(chatFormat, viewer);
+                }
+
+                return;
+            }
+        }
+
+        JsonMessage.sendRawJson(chatFormat, messageRecipientsArray);
     }
 
     private void handleStaffChat(AsyncPlayerChatEvent e, UserSettings userSettings) {
