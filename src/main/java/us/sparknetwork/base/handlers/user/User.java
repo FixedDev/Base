@@ -1,90 +1,24 @@
 package us.sparknetwork.base.handlers.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import us.sparknetwork.base.datamanager.Model;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface User extends Model {
+@JsonDeserialize(as = BaseUser.class)
+public interface User extends Model, Identity {
 
     @Override
     default String getId() {
-        return getIdentity().getUUID().toString();
+        return getUUID().toString();
     }
 
-    Identity getIdentity();
-
-    ConnectionData getConnectionData();
-
-    AddressHistoryData getAddressHistoryData();
-
-    ChatData getChatData();
-
-    ChatSettings getChatSettings();
-
-    WhisperData getWhisperData();
-
-    WhisperSettings getWhisperSettings();
-
-    State getState();
-
-
-    interface Complete extends User, Identity, ConnectionData, AddressHistoryData, ChatData, ChatSettings, WhisperData, WhisperSettings, State {
-        @Override
-        default Identity getIdentity() {
-            return this;
-        }
-
-        @Override
-        default ConnectionData getConnectionData() {
-            return this;
-        }
-
-        @Override
-        default AddressHistoryData getAddressHistoryData() {
-            return this;
-        }
-
-        @Override
-        default ChatData getChatData() {
-            return this;
-        }
-
-        @Override
-        default ChatSettings getChatSettings() {
-            return this;
-        }
-
-        @Override
-        default WhisperData getWhisperData() {
-            return this;
-        }
-
-        @Override
-        default WhisperSettings getWhisperSettings() {
-            return this;
-        }
-
-        @Override
-        default State getState() {
-            return this;
-        }
+    interface Complete extends User, ConnectionData, AddressHistoryData, ChatData, ChatSettings, WhisperData, WhisperSettings, State {
     }
 
-    interface Identity {
-        UUID getUUID();
-
-        @JsonIgnore
-        String getLastName();
-
-        List<String> getNameHistory();
-
-        void tryAddName(String name);
-
-        String getNick();
-    }
-
+    @JsonDeserialize(as = BaseUser.BaseConnectionData.class)
     interface ConnectionData {
         long getLastJoin();
 
@@ -99,6 +33,7 @@ public interface User extends Model {
         boolean isOnline();
     }
 
+    @JsonDeserialize(as = BaseUser.BaseAddressHistoryData.class)
     interface AddressHistoryData {
         List<String> getAddressHistory();
 
@@ -108,12 +43,14 @@ public interface User extends Model {
         void tryAddAdress(String address);
     }
 
+    @JsonDeserialize(as = BaseUser.BaseChatData.class)
     interface ChatData {
         long getLastSpeakTime();
 
         void setLastSpeakTime(long lastSpeakTime);
     }
 
+    @JsonDeserialize(as = BaseUser.BaseChatSettings.class)
     interface ChatSettings {
         boolean isGlobalChatVisible();
 
@@ -128,12 +65,14 @@ public interface User extends Model {
         void setInStaffChat(boolean inStaffChat);
     }
 
+    @JsonDeserialize(as = BaseUser.BaseWhisperData.class)
     interface WhisperData {
         UUID getLastPrivateMessageReplier();
 
         void setLastPrivateMessageReplier(UUID lastPrivateMessageReplier);
     }
 
+    @JsonDeserialize(as = BaseUser.BaseWhisperSettings.class)
     interface WhisperSettings {
         List<UUID> getIgnoredPlayers();
 
@@ -152,6 +91,7 @@ public interface User extends Model {
         void setSocialSpyVisible(boolean socialSpyVisible);
     }
 
+    @JsonDeserialize(as = BaseUser.BaseState.class)
     interface State {
         boolean isVanished();
 
