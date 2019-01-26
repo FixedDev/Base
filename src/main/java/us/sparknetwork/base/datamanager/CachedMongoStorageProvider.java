@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.redisson.api.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class CachedMongoStorageProvider<O extends Model> implements CachedStorageProvider<O> {
 
@@ -159,7 +160,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
             mongoCollection.find().limit(limit).into(objects);
 
-            if(objects.isEmpty()){
+            if (objects.isEmpty()) {
                 objects.addAll(findAllCachedSync(limit));
             }
 
@@ -181,7 +182,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
         mongoCollection.find().limit(limit).into(objects);
 
-        if(objects.isEmpty()){
+        if (objects.isEmpty()) {
             objects.addAll(findAllCachedSync(limit));
         }
 
@@ -193,14 +194,10 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         return executorService.submit(() -> {
             RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + o.getId());
             rBucket.set(o);
+            rBucket.expire(2, TimeUnit.MINUTES);
 
-            RMap<String, Integer> cacheWriteCount = redissonClient.getMap("count:" + dataPrefix);
 
-            int writeCount = cacheWriteCount.addAndGet(o.getId(), 1);
-
-            if ((writeCount % 3) == 0 || force) {
-                this.mongoCollection.replaceOne(createIdQuery(o.getId()), o, new ReplaceOptions().upsert(true));
-            }
+            this.mongoCollection.replaceOne(createIdQuery(o.getId()), o, new ReplaceOptions().upsert(true));
 
             return null;
         });
@@ -209,33 +206,21 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
     @Override
     public ListenableFuture<Void> save(Set<O> o, boolean force) {
         return executorService.submit(() -> {
-            Set<O> toSaveInMongoDB = new HashSet<>();
             RBatch rBatch = redissonClient.createBatch(BatchOptions.defaults());
 
             o.forEach(object -> {
                 RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + object.getId());
                 rBucket.setAsync(object);
-
-                RMapAsync<String, Integer> cacheWriteCount = rBatch.getMap("count:" + dataPrefix);
-
-                RFuture<Integer> writeCount = cacheWriteCount.addAndGetAsync(object.getId(), 1);
-
-                writeCount.whenComplete((integer, throwable) -> {
-                    if ((integer % 3) == 0 || force) {
-                        toSaveInMongoDB.add(object);
-                    }
-                });
+                rBucket.expireAsync(2, TimeUnit.MINUTES);
             });
 
             rBatch.execute();
 
-            toSaveInMongoDB.forEach(o1 -> {
+            o.forEach(object -> {
                 ReplaceOptions options = new ReplaceOptions();
                 options.upsert(true);
 
-
-                this.mongoCollection.replaceOne(createIdQuery(o1.getId()), o1, options);
-
+                this.mongoCollection.replaceOne(createIdQuery(object.getId()), object, options);
             });
 
             return null;
@@ -249,12 +234,8 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
     public ListenableFuture<Void> delete(String id) {
         return executorService.submit(() -> {
-
             RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + id);
             rBucket.delete();
-
-            RMap<String, Integer> cacheWriteCount = redissonClient.getMap("count:" + dataPrefix);
-            cacheWriteCount.remove(id);
 
             mongoCollection.findOneAndDelete(createIdQuery(id));
 
@@ -271,9 +252,6 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
             for (O object : objects) {
                 RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + object.getId());
                 rBucket.deleteAsync();
-
-                RMapAsync<String, Integer> rMap = rBatch.getMap("count:" + dataPrefix);
-                rMap.removeAsync(object.getId());
 
                 mongoCollection.findOneAndDelete(createIdQuery(object.getId()));
             }
@@ -372,9 +350,6 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         executorService.submit(() -> {
             RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + key);
             rBucket.delete();
-
-            RMap<String, Integer> rMap = redissonClient.getMap("count:" + dataPrefix);
-            rMap.fastRemove(key);
         });
     }
 
@@ -386,9 +361,6 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
                 RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + s);
                 rBucket.deleteAsync();
-
-                RMapAsync<String, Integer> rMap = rBatch.getMap("count:" + dataPrefix);
-                rMap.fastRemoveAsync(s);
             });
 
             rBatch.execute();
@@ -404,9 +376,6 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
                 redissonClient.getKeys().getKeysByPattern(dataPrefix + ":*", (int) Math.min(count, Integer.MAX_VALUE)).forEach(s -> {
                     RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + s);
                     rBucket.deleteAsync();
-
-                    RMapAsync<String, Integer> rMap = rBatch.getMap("count:" + dataPrefix);
-                    rMap.fastRemoveAsync(s);
                 });
             });
 
