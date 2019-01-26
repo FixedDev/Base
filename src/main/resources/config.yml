@@ -1,4 +1,6 @@
-server-display-name: ""
+server:
+  role: OTHER
+  visibility: PUBLIC
 
 hook-protocollib: false
 language: en
