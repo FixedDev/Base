@@ -15,8 +15,6 @@ import us.sparknetwork.base.itemdb.impl.ItemDb;
 import us.sparknetwork.base.itemdb.SimpleItemDb;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.impl.RedisMessenger;
-import us.sparknetwork.base.task.TaskManager;
-import us.sparknetwork.base.task.impl.TaskManagerImpl;
 
 public class HandlersModule extends AbstractModule {
 
@@ -25,7 +23,6 @@ public class HandlersModule extends AbstractModule {
         bind(Messenger.class).to(RedisMessenger.class);
         bind(ServerManager.class).to(MongoServerManager.class);
         bind(UserFinder.class).to(UserFinderImpl.class);
-        bind(TaskManager.class).to(TaskManagerImpl.class);
         bind(ItemDb.class).to(SimpleItemDb.class);
         bind(UserStateHandler.class);
         bind(UserSettingsHandler.class).to(UserSettingsHandlerImpl.class);
