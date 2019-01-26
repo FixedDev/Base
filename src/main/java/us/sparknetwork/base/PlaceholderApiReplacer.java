@@ -1,4 +1,4 @@
-package us.sparknetwork.base.listeners;
+package us.sparknetwork.base;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.entity.Player;
