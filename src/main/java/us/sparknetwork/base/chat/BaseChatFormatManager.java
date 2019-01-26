@@ -82,11 +82,37 @@ public class BaseChatFormatManager implements ChatFormatManager {
     }
 
     @Override
+    public void reload() {
+        chatConfig = new Config(plugin,"config");
+
+        loadConfig();
+    }
+
+    @Override
     public void start() {
         if (!started.compareAndSet(false, true)) {
             throw new IllegalStateException("The service is already started");
         }
 
+        loadConfig();
+    }
+
+    @Override
+    public void stop() {
+        if (!started.compareAndSet(true, false)) {
+            throw new IllegalStateException("The service isn't already started");
+        }
+
+        chatConfig.set("formats", chatFormats);
+        chatConfig.save();
+    }
+
+    @Override
+    public boolean isStarted() {
+        return started.get();
+    }
+
+    private void loadConfig(){
         List<?> formatsRawList = chatConfig.getList("formats");
 
         List<ChatFormat> formats = new ArrayList<>();
@@ -99,7 +125,7 @@ public class BaseChatFormatManager implements ChatFormatManager {
             ChatFormat format = (ChatFormat) o;
 
             if (format.isUsePlaceholderApi() && Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null) {
-                plugin.getLogger().log(Level.WARNING, "The format with name {0} has PlaceholderAPI enabled but PlaceholderAPI isn't installed, not loading it.", format.getName());
+                plugin.getLogger().log(Level.WARNING, "The format with name {0} has PlaceholderAPI enabled but PlaceholderAPI isn't installed, not loading it.", format.getFormatName());
                 return;
             }
 
@@ -112,7 +138,7 @@ public class BaseChatFormatManager implements ChatFormatManager {
 
         this.chatFormats = formats;
 
-        Optional<ChatFormat> optionalDefaultFormat = formats.stream().filter(chatFormat -> chatFormat.getName().equalsIgnoreCase("default")).findFirst();
+        Optional<ChatFormat> optionalDefaultFormat = formats.stream().filter(chatFormat -> chatFormat.getFormatName().equalsIgnoreCase("default")).findFirst();
 
         if (!optionalDefaultFormat.isPresent()) {
             plugin.getLogger().log(Level.INFO, "Default chat format not exists, creating it.");
@@ -129,20 +155,5 @@ public class BaseChatFormatManager implements ChatFormatManager {
         }
 
         defaultFormat = optionalDefaultFormat.get();
-    }
-
-    @Override
-    public void stop() {
-        if (!started.compareAndSet(true, false)) {
-            throw new IllegalStateException("The service isn't already started");
-        }
-
-        chatConfig.set("formats", chatFormats);
-        chatConfig.save();
-    }
-
-    @Override
-    public boolean isStarted() {
-        return started.get();
     }
 }

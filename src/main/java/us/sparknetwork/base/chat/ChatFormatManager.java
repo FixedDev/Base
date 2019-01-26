@@ -17,7 +17,5 @@ public interface ChatFormatManager extends Service {
 
     void registerChatFormat(ChatFormat chatFormat);
 
-    void start();
-
-    void stop();
+    void reload();
 }
