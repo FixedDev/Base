@@ -1,8 +1,19 @@
 formats:
-  - ==: us.sparknetwork.base.chat.ChatFormat
+  - ==: us.sparknetwork.base.chat.BaseChatFormat
     name: default
     priority: 999999
-    chatFormat: '["",{"text":"{prefix}{displayName}{suffix}"},{"text":": ","color":"dark_gray"},{"text":"{chat}","color":"gray"}]'
+    prefix: ''
+    prefix-click-action: NONE
+    prefix-click-action-content: ''
+    prefix-tooltip: []
+    player-name: '{displayName}'
+    player-name-click-action: NONE
+    player-name-click-action-content: ''
+    player-name-tooltip: []
+    suffix: ''
+    suffix-click-action: NONE
+    suffix-click-action-content: ''
+    suffix-tooltip: []
     permission: default
     use-placeholderapi: false
     allow-relational-placeholders: false
