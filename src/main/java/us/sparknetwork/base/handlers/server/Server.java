@@ -10,8 +10,6 @@ import java.util.UUID;
 @JsonDeserialize(as = ServerData.class)
 public interface Server extends Model {
 
-    String getDisplayName();
-
     String getIp();
 
     int getPort();
@@ -24,6 +22,10 @@ public interface Server extends Model {
 
     boolean isWhitelisted();
 
+    ServerRole getRole();
+
+    ServerVisibility getVisibility();
+
     Set<String> getOnlinePlayerNicks();
 
     Set<UUID> getOnlinePlayerIds();
@@ -34,3 +36,5 @@ public interface Server extends Model {
         return this.getId().equals(o.getId());
     }
 }
+
+
