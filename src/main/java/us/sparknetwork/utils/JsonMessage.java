@@ -37,6 +37,11 @@ public class JsonMessage {
         msg = "[{\"text\":\"\",\"extra\":[{\"text\": \"\"}";
     }
 
+    @Override
+    public String toString() {
+        return msg + "]}]";
+    }
+
     private static Class<?> getNmsClass(String nmsClassName) throws ClassNotFoundException {
         return Class.forName("net.minecraft.server." + getServerVersion() + "." + nmsClassName);
     }
