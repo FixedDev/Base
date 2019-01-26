@@ -120,11 +120,11 @@ public class ChatListener implements Listener {
 
         if (e.getPlayer().hasPermission("base.chat.color")) {
             e.setMessage(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
+        } else {
+            e.setMessage(e.getMessage().replaceAll("&[A-Fa-f0-9[lkmno]]", ""));
         }
 
         e.setCancelled(true);
-
-        e.setMessage(JSONObject.escape(e.getMessage()));
 
         ChatFormat playerChatFormat = chatFormatManager.getChatFormatForPlayer(e.getPlayer());
 
@@ -134,15 +134,16 @@ public class ChatListener implements Listener {
             playerChatFormat.setUsePlaceholderApi(false);
         }
 
+        e.setMessage(ChatColor.translateAlternateColorCodes('&', playerChatFormat.getChatColor()) + e.getMessage());
+
         Bukkit.getConsoleSender().sendMessage(String.format(e.getFormat(), e.getPlayer().getName(), e.getMessage()));
 
-        String chatFormat = playerChatFormat.getChatFormat();
+        String chatFormat = playerChatFormat.constructJsonMessage().append(e.getMessage()).save().toString();
 
         chatFormat = chatFormat
                 .replace("{displayName}", e.getPlayer().getDisplayName())
                 .replace("{name}", e.getPlayer().getName())
                 .replace("{world}", e.getPlayer().getWorld().getName())
-                .replace("{chat}", e.getMessage())
                 .replace("{prefix}", this.getPrefix(e.getPlayer()))
                 .replace("{suffix}", this.getSuffix(e.getPlayer()));
 
