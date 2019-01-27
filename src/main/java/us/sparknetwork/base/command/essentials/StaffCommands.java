@@ -11,9 +11,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
-import us.sparknetwork.base.handlers.user.state.BaseUserState;
-import us.sparknetwork.base.handlers.user.state.UserState;
-import us.sparknetwork.base.handlers.user.state.UserStateHandler;
+
+import us.sparknetwork.base.handlers.user.BaseUser;
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
@@ -28,7 +29,7 @@ public class StaffCommands implements CommandClass {
     @Inject
     private I18n i18n;
     @Inject
-    private UserStateHandler stateHandler;
+    private UserHandler stateHandler;
     @Inject
     private JavaPlugin plugin;
 
@@ -57,7 +58,7 @@ public class StaffCommands implements CommandClass {
         }
 
         addCallback(addOptionalToReturnValue(stateHandler.findOne(target.getUniqueId().toString())), optionalState -> {
-            UserState state = optionalState.orElse(new BaseUserState(target.getUniqueId()));
+            User.Complete state = optionalState.orElse(new BaseUser(target.getUniqueId()));
 
             String bool = LangConfigurations.convertBoolean(i18n, !state.isGodModeEnabled());
 
@@ -75,13 +76,13 @@ public class StaffCommands implements CommandClass {
     public boolean freezeCommand(CommandSender sender, CommandContext args) {
         Player target = args.getObject(0, Player.class);
 
-        addCallback(addOptionalToReturnValue(stateHandler.findOne(target.getUniqueId().toString())), optionalState -> {
-            UserState state = optionalState.orElse(new BaseUserState(target.getUniqueId()));
+        if (target == null) {
+            sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), args.getArgument(0)));
+            return true;
+        }
 
-            if (target == null) {
-                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), args.getArgument(0)));
-                return;
-            }
+        addCallback(addOptionalToReturnValue(stateHandler.findOne(target.getUniqueId().toString())), optionalState -> {
+            User.Complete state = optionalState.orElse(new BaseUser(target.getUniqueId()));
 
             if (state.isFreezed()) {
                 sender.sendMessage(MessageFormat.format(i18n.translate("player.already.freezed"), target.getDisplayName()));
@@ -102,7 +103,7 @@ public class StaffCommands implements CommandClass {
         OfflinePlayer target = args.getObject(0, OfflinePlayer.class);
 
         addCallback(addOptionalToReturnValue(stateHandler.findOne(target.getUniqueId().toString())), optionalState -> {
-            UserState state = optionalState.orElse(new BaseUserState( target.getUniqueId()));
+            User.Complete state = optionalState.orElse(new BaseUser( target.getUniqueId()));
 
             if (!target.isOnline() && !state.isFreezed()) {
                 sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), args.getArgument(0)));
@@ -147,7 +148,7 @@ public class StaffCommands implements CommandClass {
             }
         }
         addCallback(addOptionalToReturnValue(stateHandler.findOne(target.getUniqueId().toString())), optionalState -> {
-            UserState state = optionalState.orElse(new BaseUserState(target.getUniqueId()));
+            User.Complete state = optionalState.orElse(new BaseUser(target.getUniqueId()));
 
             Bukkit.getScheduler().runTask(plugin, () ->{
                 state.setVanished(!state.isVanished());

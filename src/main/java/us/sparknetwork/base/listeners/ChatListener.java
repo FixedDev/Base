@@ -1,6 +1,7 @@
 package us.sparknetwork.base.listeners;
 
 import com.google.inject.Inject;
+import com.sun.scenario.Settings;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -14,10 +15,8 @@ import us.sparknetwork.base.PlaceholderApiReplacer;
 import us.sparknetwork.base.ServerConfigurations;
 import us.sparknetwork.base.chat.ChatFormat;
 import us.sparknetwork.base.chat.ChatFormatManager;
-import us.sparknetwork.base.handlers.user.data.UserData;
-import us.sparknetwork.base.handlers.user.data.UserDataHandler;
-import us.sparknetwork.base.handlers.user.settings.UserSettings;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.base.listeners.message.StaffChatListener;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
@@ -37,9 +36,7 @@ public class ChatListener implements Listener {
     private Channel<StaffChatMessage> staffChatChannel;
 
     @Inject
-    private UserSettingsHandler settingsHandler;
-    @Inject
-    private UserDataHandler dataHandler;
+    private UserHandler settingsHandler;
 
     @Inject
     private ChatFormatManager chatFormatManager;
@@ -59,7 +56,7 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW)
     public void chatListener(AsyncPlayerChatEvent e) {
-        Optional<UserSettings> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(e.getPlayer().getUniqueId().toString()));
+        Optional<User.Complete> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(e.getPlayer().getUniqueId().toString()));
 
         if (!optionalSettings.isPresent()) {
             e.getPlayer().sendMessage(i18n.translate("load.fail.settings"));
@@ -67,32 +64,22 @@ public class ChatListener implements Listener {
             e.setCancelled(true);
             return;
         }
-        UserSettings userSettings = optionalSettings.get();
 
-        Optional<UserData> optionalUserData = Optional.ofNullable(dataHandler.findOneSync(e.getPlayer().getUniqueId().toString()));
-
-        if (!optionalUserData.isPresent()) {
-            e.getPlayer().sendMessage(i18n.translate("load.fail.data"));
-
-            e.setCancelled(true);
-            return;
-        }
-
-        UserData userData = optionalUserData.get();
+        User.Complete userSettings = optionalSettings.get();
 
         if (userSettings.isInStaffChat()) {
             handleStaffChat(e, userSettings);
         } else {
-            handleNormalChat(e, userData);
+            handleNormalChat(e, userSettings);
         }
     }
 
-    private void handleNormalChat(AsyncPlayerChatEvent e, UserData userData) {
+    private void handleNormalChat(AsyncPlayerChatEvent e, User.Complete userData) {
         Set<String> userIds = Bukkit.getOnlinePlayers().stream().map(Player::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
 
-        Set<UserSettings> userSettingsSet = settingsHandler.findSync(userIds, userIds.size());
+        Set<User.Complete> userSettingsSet = settingsHandler.findSync(userIds, userIds.size());
 
-        Set<Player> chatRecipients = userSettingsSet.stream().filter(UserSettings::isGlobalChatVisible).map(settings -> Bukkit.getPlayer(settings.getUniqueId())).collect(Collectors.toSet());
+        Set<Player> chatRecipients = userSettingsSet.stream().filter(User.ChatSettings::isGlobalChatVisible).map(settings -> Bukkit.getPlayer(settings.getUUID())).collect(Collectors.toSet());
 
         e.getRecipients().clear();
         e.getRecipients().addAll(chatRecipients);
@@ -166,7 +153,7 @@ public class ChatListener implements Listener {
         JsonMessage.sendRawJson(chatFormat, messageRecipientsArray);
     }
 
-    private void handleStaffChat(AsyncPlayerChatEvent e, UserSettings userSettings) {
+    private void handleStaffChat(AsyncPlayerChatEvent e, User.Complete userSettings) {
         e.setCancelled(true);
 
         if (!userSettings.isStaffChatVisible()) {
@@ -184,7 +171,7 @@ public class ChatListener implements Listener {
         Set<String> userIds = Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("base.command.staffchat.see")).map(Player::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
 
         addCallback(settingsHandler.find(userIds, userIds.size()), userSettingsSet -> {
-            userSettingsSet.stream().filter(Objects::nonNull).filter(UserSettings::isStaffChatVisible).map(playerSettings -> Bukkit.getPlayer(playerSettings.getUniqueId())).forEach(player -> player.sendMessage(staffFormattedMessage));
+            userSettingsSet.stream().filter(Objects::nonNull).filter(User.ChatSettings::isStaffChatVisible).map(playerSettings -> Bukkit.getPlayer(playerSettings.getUUID())).forEach(player -> player.sendMessage(staffFormattedMessage));
         });
 
         StaffChatMessage message = new StaffChatMessage(e.getPlayer().getName(), e.getMessage());

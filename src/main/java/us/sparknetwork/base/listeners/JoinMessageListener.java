@@ -10,8 +10,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.handlers.user.state.UserState;
-import us.sparknetwork.base.handlers.user.state.UserStateHandler;
+
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.utils.JsonMessage;
 
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class JoinMessageListener implements Listener {
     private I18n i18n;
 
     @Inject
-    private UserStateHandler userStateHandler;
+    private UserHandler userStateHandler;
 
     @Inject
     private Chat chat;
@@ -34,13 +35,13 @@ public class JoinMessageListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
         String oldJoinMessage = event.getJoinMessage();
 
-        Optional<UserState> optionalState = Optional.ofNullable(userStateHandler.findOneSync(event.getPlayer().getUniqueId().toString()));
+        Optional<User.Complete> optionalState = Optional.ofNullable(userStateHandler.findOneSync(event.getPlayer().getUniqueId().toString()));
 
         if(!optionalState.isPresent()){
             return;
         }
 
-        UserState state = optionalState.get();
+        User.Complete state = optionalState.get();
 
         boolean isUserVanished = state.isVanished();
 
@@ -77,13 +78,13 @@ public class JoinMessageListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         String oldLeaveMessage = event.getQuitMessage();
 
-        Optional<UserState> optionalState = Optional.ofNullable(userStateHandler.findOneSync(event.getPlayer().getUniqueId().toString()));
+        Optional<User.Complete> optionalState = Optional.ofNullable(userStateHandler.findOneSync(event.getPlayer().getUniqueId().toString()));
 
         if (!optionalState.isPresent()) {
             return;
         }
 
-        UserState state = optionalState.get();
+        User.Complete state = optionalState.get();
 
         boolean isUserVanished = state.isVanished();
 

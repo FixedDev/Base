@@ -18,8 +18,7 @@ public interface User extends Model, Identity {
     interface Complete extends User, ConnectionData, AddressHistoryData, ChatData, ChatSettings, WhisperData, WhisperSettings, State {
     }
 
-    @JsonDeserialize(as = BaseUser.BaseConnectionData.class)
-    interface ConnectionData {
+    interface ConnectionData extends Identity {
         long getLastJoin();
 
         void setLastJoin(long lastJoin);
@@ -33,8 +32,7 @@ public interface User extends Model, Identity {
         boolean isOnline();
     }
 
-    @JsonDeserialize(as = BaseUser.BaseAddressHistoryData.class)
-    interface AddressHistoryData {
+    interface AddressHistoryData extends Identity {
         List<String> getAddressHistory();
 
         @JsonIgnore
@@ -43,15 +41,13 @@ public interface User extends Model, Identity {
         void tryAddAdress(String address);
     }
 
-    @JsonDeserialize(as = BaseUser.BaseChatData.class)
-    interface ChatData {
+    interface ChatData extends Identity {
         long getLastSpeakTime();
 
         void setLastSpeakTime(long lastSpeakTime);
     }
 
-    @JsonDeserialize(as = BaseUser.BaseChatSettings.class)
-    interface ChatSettings {
+    interface ChatSettings extends Identity {
         boolean isGlobalChatVisible();
 
         void setGlobalChatVisible(boolean globalChatVisible);
@@ -65,15 +61,13 @@ public interface User extends Model, Identity {
         void setInStaffChat(boolean inStaffChat);
     }
 
-    @JsonDeserialize(as = BaseUser.BaseWhisperData.class)
-    interface WhisperData {
+    interface WhisperData extends Identity {
         UUID getLastPrivateMessageReplier();
 
         void setLastPrivateMessageReplier(UUID lastPrivateMessageReplier);
     }
 
-    @JsonDeserialize(as = BaseUser.BaseWhisperSettings.class)
-    interface WhisperSettings {
+    interface WhisperSettings extends Identity {
         List<UUID> getIgnoredPlayers();
 
         boolean isPlayerIgnored(UUID playerUUID);
@@ -82,7 +76,7 @@ public interface User extends Model, Identity {
 
         void removeIgnoredPlayer(UUID playerUUID);
 
-        boolean arePrivateMessagesVisible();
+        boolean getPrivateMessagesVisible();
 
         void setPrivateMessagesVisible(boolean privateMessagesVisible);
 
@@ -91,8 +85,7 @@ public interface User extends Model, Identity {
         void setSocialSpyVisible(boolean socialSpyVisible);
     }
 
-    @JsonDeserialize(as = BaseUser.BaseState.class)
-    interface State {
+    interface State extends Identity {
         boolean isVanished();
 
         void setVanished(boolean vanished);

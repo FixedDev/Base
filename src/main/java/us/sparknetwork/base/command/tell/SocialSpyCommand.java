@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
@@ -19,7 +19,7 @@ public class SocialSpyCommand implements CommandClass {
     @Inject
     private I18n i18n;
     @Inject
-    private UserSettingsHandler settingsHandler;
+    private UserHandler settingsHandler;
 
     @Command(names = "socialspy", max = 1, permission = "base.command.socialspy", usage = "Usage: /<command> [player]")
     public boolean socialSpy(CommandSender sender, CommandContext context) {

@@ -59,8 +59,6 @@ public class UserFinderImpl implements UserFinder {
         Preconditions.checkArgument(StringUtils.isNotBlank(playerNick));
 
         if (scope == Scope.LOCAL && Bukkit.getOfflinePlayer(playerNick).isOnline()) {
-
-
             return Futures.immediateFuture(localServerData);
         }
 

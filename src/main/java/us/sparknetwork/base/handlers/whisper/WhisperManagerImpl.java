@@ -5,27 +5,19 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import lombok.NonNull;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.exception.UserIgnoringYouException;
-import us.sparknetwork.base.exception.UserMessagesDisabledException;
-import us.sparknetwork.base.exception.UserNotFoundException;
-import us.sparknetwork.base.exception.UserOfflineException;
-import us.sparknetwork.base.handlers.server.Server;
-import us.sparknetwork.base.handlers.user.data.UserDataHandler;
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.base.handlers.user.finder.UserFinder;
-import us.sparknetwork.base.handlers.user.settings.UserSettings;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.WhisperMessage;
+import us.sparknetwork.utils.ListenableFutureUtils;
 
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -33,161 +25,121 @@ import static us.sparknetwork.utils.ListenableFutureUtils.*;
 
 @Singleton
 public class WhisperManagerImpl implements WhisperManager {
-
     private I18n i18n;
 
-    private PluginManager pluginManager;
-
-    private JavaPlugin plugin;
-
     private UserFinder userFinder;
-
-    private UserDataHandler userDataHandler;
-
-    private UserSettingsHandler userSettingsHandler;
-
-    private Server serverData;
+    private UserHandler userDataHandler;
 
     private ListeningExecutorService executorService;
-
     private Channel<WhisperMessage> whisperChannel;
 
-    private Queue<WhisperMessage> messageQueue;
-
     @Inject
-    WhisperManagerImpl(I18n i18n, PluginManager pluginManager, JavaPlugin plugin, UserFinder userFinder, UserDataHandler userDataHandler, UserSettingsHandler userSettingsHandler, Server serverData, ListeningExecutorService executorService, Messenger messager) {
+    WhisperManagerImpl(I18n i18n, UserFinder userFinder, UserHandler userDataHandler, ListeningExecutorService executorService, Messenger messager) {
         this.i18n = i18n;
-        this.pluginManager = pluginManager;
-        this.plugin = plugin;
-        this.userFinder = userFinder;
         this.userDataHandler = userDataHandler;
-        this.userSettingsHandler = userSettingsHandler;
-        this.serverData = serverData;
+        this.userFinder = userFinder;
         this.executorService = executorService;
-
-        messageQueue = new LinkedList<>();
-
         whisperChannel = messager.getChannel("whisper", WhisperMessage.class);
 
-        whisperChannel.registerListener((channel, serverSenderId, data) -> messageQueue.add(data));
-
-        plugin.getServer().getScheduler().runTaskTimer(plugin, () -> {
-
-            while (!messageQueue.isEmpty()) {
-                WhisperMessage message = messageQueue.poll();
-
-                OfflinePlayer offlineReceiver = Bukkit.getOfflinePlayer(message.getReceiver());
-
-                String senderNick = message.getSenderNick();
-
-                if (senderNick == null) {
-                    senderNick = message.getSenderName();
-                }
-
-                String receiverNick = offlineReceiver.getName();
-
-                if (offlineReceiver.isOnline()) {
-                    receiverNick = offlineReceiver.getPlayer().getDisplayName();
-                }
-
-                Set<String> userIds = Bukkit.getOnlinePlayers().stream()
-                        .filter(player -> player.hasPermission("base.socialspy.see"))
-                        .map(player -> player.getUniqueId().toString())
-                        .collect(Collectors.toSet());
-
-                Bukkit.getConsoleSender().sendMessage(MessageFormat.format(i18n.translate("socialspy.format"), senderNick, receiverNick, message.getMessage()));
-
-                Set<UserSettings> userSettingsSet = userSettingsHandler.findSync(userIds, userIds.size());
-
-                for(UserSettings settings : userSettingsSet){
-                    if(!settings.isSocialSpyVisible()){
-                        continue;
-                    }
-
-                    Player player = Bukkit.getPlayer(settings.getUniqueId());
-
-                    player.sendMessage(MessageFormat.format(i18n.translate("socialspy.format"), senderNick, receiverNick, message.getMessage()));
-                }
-
-
-                if (offlineReceiver.isOnline()) {
-                    Player receiver = offlineReceiver.getPlayer();
-
-                    String displayName = message.getSenderNick();
-
-                    if (displayName == null) {
-                        displayName = message.getSenderName();
-                    }
-
-                    receiver.sendMessage(MessageFormat.format(i18n.translate("tell.format.from"), receiver.getDisplayName(), displayName, message.getMessage()));
-                    addCallback(userDataHandler.findOne(message.getReceiver().toString()), userData -> {
-                        userData.setLastPrivateMessageReplier(message.getSender());
-
-                        userDataHandler.save(userData);
-                    });
-                }
-
-            }
-        }, 10, 10);
+        whisperChannel.registerListener((channel, serverSenderId, message) -> {
+            sendSocialSpyMessage(message);
+            sendMessage(message);
+        });
     }
 
-    @Override
-    public ListenableFuture<Void> sendMessageAsync(@NonNull Player sender, @NonNull UserSettings from, UUID target, UserSettings to, String content) {
-        if (to == null) {
-            return Futures.immediateFailedFuture(new UserNotFoundException(target));
-        }
-        OfflinePlayer offlineTarget = Bukkit.getOfflinePlayer(to.getUniqueId());
+    public ListenableFuture sendMessageAsync(@NotNull Player sender, @NotNull User.Complete from, @NotNull User.Complete to, String content) {
+        Objects.requireNonNull(sender);
+        Objects.requireNonNull(from);
 
-        WhisperMessage message = new WhisperMessage(sender.getUniqueId(), sender.getName(), from.getNickname(), Bukkit.getServerName(), to.getUniqueId(), content);
+        OfflinePlayer offlineTarget = Bukkit.getOfflinePlayer(to.getUUID());
+
+        WhisperMessage message = new WhisperMessage(from, to, content);
+
+        String senderNick = from.hasNick() ? from.getNick() : from.getLastName();
+        String targetNick = to.hasNick() ? to.getNick() : to.getLastName();
 
         if (offlineTarget.isOnline()) {
-            if (!to.isPrivateMessagesVisible()) {
-                return Futures.immediateFailedFuture(new UserMessagesDisabledException(to.getUniqueId(), offlineTarget.getName()));
+            if (!to.getPrivateMessagesVisible()) {
+                sender.sendMessage(i18n.format("pm.not.visible", targetNick));
+                return Futures.immediateFuture(null);
             }
 
             if (to.isPlayerIgnored(sender.getUniqueId())) {
-                return Futures.immediateFailedFuture(new UserIgnoringYouException(to.getUniqueId(), offlineTarget.getName()));
+                sender.sendMessage(i18n.format("tell.format.to", senderNick, targetNick, content));
+                return Futures.immediateFuture(null);
             }
 
-            messageQueue.add(message);
+            sender.sendMessage(i18n.format("tell.format.to", senderNick, targetNick, content));
 
-            String nick = to.getNickname();
-
-            if (nick == null) {
-                nick = offlineTarget.getName();
-            }
-
-            sender.sendMessage(MessageFormat.format(i18n.translate("tell.format.to"), sender.getDisplayName(), nick, message.getMessage()));
-
-            return Futures.immediateFuture(null);
-        }
-
-        return transformFutureAsync(userFinder.isOnline(to.getUniqueId(), UserFinder.Scope.GLOBAL), online -> {
-            if (!online) {
-                return Futures.immediateFailedFuture(new UserOfflineException(to.getUniqueId(), offlineTarget.getName()));
-            }
-
-            if (!to.isPrivateMessagesVisible()) {
-                return Futures.immediateFailedFuture(new UserMessagesDisabledException(to.getUniqueId(), offlineTarget.getName()));
-            }
-
-            if (to.isPlayerIgnored(sender.getUniqueId())) {
-                return Futures.immediateFailedFuture(new UserIgnoringYouException(to.getUniqueId(), offlineTarget.getName()));
-            }
+            sendSocialSpyMessage(message);
+            sendMessage(message);
 
             whisperChannel.sendMessage(message);
 
-            String nick = to.getNickname();
+            return Futures.immediateFuture(null);
+        }
 
-            if (nick == null) {
-                nick = offlineTarget.getName();
+        return ListenableFutureUtils.transformFutureAsync(userFinder.isOnline(to.getUUID(), UserFinder.Scope.GLOBAL), (online) -> {
+            if (!online) {
+                sender.sendMessage(i18n.format("offline.player", content));
+                return Futures.immediateFuture(null);
             }
 
-            sender.sendMessage(MessageFormat.format(i18n.translate("tell.format.to"), sender.getDisplayName(), nick, message.getMessage()));
+            if (!to.getPrivateMessagesVisible()) {
+                sender.sendMessage(i18n.format("pm.not.visible", targetNick));
+                return Futures.immediateFuture(null);
+            }
 
+            if (to.isPlayerIgnored(sender.getUniqueId())) {
+                sender.sendMessage(i18n.format("tell.format.to", senderNick, targetNick, content));
+                return Futures.immediateFuture(null);
+            }
+
+            sendSocialSpyMessage(message);
+            whisperChannel.sendMessage(message);
+
+            sender.sendMessage(i18n.format("tell.format.to", senderNick, targetNick, message.getMessage()));
             return Futures.immediateFuture(null);
+
         }, executorService);
     }
 
+    private void sendMessage(WhisperMessage message) {
+        OfflinePlayer offlineReceiver = Bukkit.getOfflinePlayer(message.getTo().getUUID());
 
+        String senderNick = message.getFrom().hasNick() ? message.getFrom().getNick() : message.getFrom().getLastName();
+        String receiverNick = message.getTo().hasNick() ? message.getTo().getNick() : message.getTo().getLastName();
+
+        if (!offlineReceiver.isOnline()) {
+            return;
+        }
+
+        Player receiver = offlineReceiver.getPlayer();
+        receiver.sendMessage(i18n.format("tell.format.from", receiverNick, senderNick, message.getMessage()));
+
+        addCallback(userDataHandler.findOne(message.getTo().getUUID().toString()), (userData) -> {
+            userData.setLastPrivateMessageReplier(message.getFrom().getUUID());
+            userDataHandler.save(userData);
+        });
+
+    }
+
+    private void sendSocialSpyMessage(WhisperMessage message) {
+        String senderNick = message.getFrom().hasNick() ? message.getFrom().getNick() : message.getFrom().getLastName();
+        String receiverNick = message.getTo().hasNick() ? message.getTo().getNick() : message.getTo().getLastName();
+
+        Set<String> userIds = Bukkit.getOnlinePlayers().stream()
+                .filter(player -> player.hasPermission("base.socialspy.see"))
+                .map((player) -> player.getUniqueId().toString())
+                .collect(Collectors.toSet());
+
+        Bukkit.getConsoleSender().sendMessage(i18n.format("socialspy.format", senderNick, receiverNick, message.getMessage()));
+
+        userDataHandler.findSync(userIds, userIds.size()).stream()
+                .filter(User.WhisperSettings::isSocialSpyVisible)
+                .map((complete) -> Bukkit.getPlayer(complete.getUUID()))
+                .forEach((player) -> {
+                    player.sendMessage(i18n.format("socialspy.format", senderNick, receiverNick, message.getMessage()));
+                });
+    }
 }

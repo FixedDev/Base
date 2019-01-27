@@ -43,9 +43,7 @@ import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
 import us.sparknetwork.base.handlers.server.LocalServerData;
 import us.sparknetwork.base.handlers.server.MongoServerManager;
 import us.sparknetwork.base.handlers.server.ServerManager;
-import us.sparknetwork.base.handlers.user.data.UserDataHandler;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandlerImpl;
-import us.sparknetwork.base.handlers.user.state.UserStateHandler;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.base.hooks.PlaceholderAPIHook;
 import us.sparknetwork.base.hooks.ProtocolLibHook;
 import us.sparknetwork.base.inject.BasePluginModule;
@@ -83,12 +81,7 @@ public class BasePlugin extends JavaPlugin {
     private CommandHandler commandHandler;
 
     @Inject
-    private UserStateHandler userStateHandler;
-
-    @Inject
-    private UserDataHandler userDataHandler;
-    @Inject
-    private UserSettingsHandlerImpl userSettingsHandler;
+    private UserHandler userHandler;
 
     @Inject
     private MongoServerManager serverManager;
@@ -338,10 +331,7 @@ public class BasePlugin extends JavaPlugin {
 
 
     private void registerEvents() {
-        this.getServer().getPluginManager().registerEvents(userStateHandler, this);
-
-        this.getServer().getPluginManager().registerEvents(userDataHandler, this);
-        this.getServer().getPluginManager().registerEvents(userSettingsHandler, this);
+        this.getServer().getPluginManager().registerEvents(userHandler, this);
 
         this.getServer().getPluginManager().registerEvents(serverManager, this);
 

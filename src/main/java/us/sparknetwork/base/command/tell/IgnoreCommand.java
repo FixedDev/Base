@@ -6,9 +6,8 @@ import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.LangConfigurations;
-import us.sparknetwork.base.handlers.user.settings.UserSettings;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
@@ -27,7 +26,7 @@ public class IgnoreCommand implements CommandClass {
     private I18n i18n;
 
     @Inject
-    private UserSettingsHandler settingsHandler;
+    private UserHandler settingsHandler;
 
     @Command(names = {"ignore", "ignoreplayer", "playerignore"}, max = 1, onlyPlayer = true, permission = "base.command.ignore", usage = "Usage: /<command> <player>")
     public boolean ignorePlayer(Player sender, CommandContext args) {
@@ -35,7 +34,8 @@ public class IgnoreCommand implements CommandClass {
             if (!optionalSettings.isPresent()) {
                 return;
             }
-            UserSettings settings = optionalSettings.get();
+
+            User.Complete settings = optionalSettings.get();
 
             if (args.getArguments().size() == 0) {
                 List<UUID> ignoredPlayers = settings.getIgnoredPlayers();

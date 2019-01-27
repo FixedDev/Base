@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.StaffPriority;
+import us.sparknetwork.base.event.UserNickChangeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,7 +75,7 @@ public class BaseUser implements User.Complete {
 
     @NotNull
     private List<UUID> ignoredPlayers;
-    private boolean privateMessagesVisible = true;
+    private boolean privateMessagesVisible;
     private boolean socialSpyVisible;
 
     /*
@@ -85,25 +86,26 @@ public class BaseUser implements User.Complete {
     private boolean freezed;
     private boolean godModeEnabled;
 
-    public BaseUser(@NotNull UUID uuid,
-                    @NotNull List<String> nameHistory,
-                    @Nullable String nick,
-                    long lastJoin,
-                    @Nullable String lastServerId,
-                    boolean online,
-                    @NotNull List<String> addressHistory,
-                    long lastSpeakTime,
-                    boolean globalChatVisible,
-                    boolean staffChatVisible,
-                    boolean inStaffChat,
-                    @Nullable UUID lastPrivateMessageReplier,
-                    @NotNull List<UUID> ignoredPlayers,
-                    boolean privateMessagesVisible,
-                    boolean socialSpyVisible,
-                    boolean vanished,
-                    boolean freezed,
-                    boolean godModeEnabled) {
-        this.uuid = uuid;
+    @JsonCreator
+    public BaseUser(@NotNull @JsonProperty("_id") String id,
+                    @NotNull @JsonProperty("nameHistory") List<String> nameHistory,
+                    @Nullable @JsonProperty("nick") String nick,
+                    @JsonProperty("lastJoin") long lastJoin,
+                    @Nullable @JsonProperty("lastServerId") String lastServerId,
+                    @JsonProperty("online") boolean online,
+                    @NotNull @JsonProperty("addressHistory") List<String> addressHistory,
+                    @JsonProperty("lastSpeakTime") long lastSpeakTime,
+                    @JsonProperty("globalChatVisible") boolean globalChatVisible,
+                    @JsonProperty("staffChatVisible") boolean staffChatVisible,
+                    @JsonProperty("inStaffChat") boolean inStaffChat,
+                    @Nullable @JsonProperty("lastPrivateMessageReplier") UUID lastPrivateMessageReplier,
+                    @NotNull @JsonProperty("ignoredPlayers") List<UUID> ignoredPlayers,
+                    @JsonProperty("privateMessagesVisible") boolean privateMessagesVisible,
+                    @JsonProperty("socialSpyVisible") boolean socialSpyVisible,
+                    @JsonProperty("vanished") boolean vanished,
+                    @JsonProperty("freezed") boolean freezed,
+                    @JsonProperty("godModeEnabled") boolean godModeEnabled) {
+        this.uuid = UUID.fromString(id);
         this.nameHistory = nameHistory;
         this.nick = nick;
         this.lastJoin = lastJoin;
@@ -122,6 +124,16 @@ public class BaseUser implements User.Complete {
         this.freezed = freezed;
         this.godModeEnabled = godModeEnabled;
     }
+
+    public BaseUser(@NotNull UUID uuid) {
+        this.uuid = uuid;
+        this.nameHistory = new ArrayList<>();
+        this.addressHistory = new ArrayList<>();
+        this.ignoredPlayers = new ArrayList<>();
+        this.globalChatVisible = true;
+        this.privateMessagesVisible = true;
+    }
+
 
     /*
      * Identity implementation
@@ -150,6 +162,13 @@ public class BaseUser implements User.Complete {
     public String getNick() {
         return nick;
     }
+
+    public void setNick(@Nullable String nick) {
+        this.nick = nick;
+
+        Bukkit.getPluginManager().callEvent(new UserNickChangeEvent(this, this.nick, nick));
+    }
+
 
     @Override
     @NotNull
@@ -318,7 +337,7 @@ public class BaseUser implements User.Complete {
     }
 
     @Override
-    public boolean arePrivateMessagesVisible() {
+    public boolean getPrivateMessagesVisible() {
         return privateMessagesVisible;
     }
 

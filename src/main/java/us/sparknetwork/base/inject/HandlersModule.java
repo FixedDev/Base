@@ -3,12 +3,10 @@ package us.sparknetwork.base.inject;
 import com.google.inject.AbstractModule;
 import us.sparknetwork.base.handlers.server.MongoServerManager;
 import us.sparknetwork.base.handlers.server.ServerManager;
-import us.sparknetwork.base.handlers.user.data.UserDataHandler;
+import us.sparknetwork.base.handlers.user.BaseUserHandler;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.base.handlers.user.finder.UserFinder;
 import us.sparknetwork.base.handlers.user.finder.impl.UserFinderImpl;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandlerImpl;
-import us.sparknetwork.base.handlers.user.state.UserStateHandler;
 import us.sparknetwork.base.handlers.whisper.WhisperManager;
 import us.sparknetwork.base.handlers.whisper.WhisperManagerImpl;
 import us.sparknetwork.base.itemdb.impl.ItemDb;
@@ -24,9 +22,7 @@ public class HandlersModule extends AbstractModule {
         bind(ServerManager.class).to(MongoServerManager.class);
         bind(UserFinder.class).to(UserFinderImpl.class);
         bind(ItemDb.class).to(SimpleItemDb.class);
-        bind(UserStateHandler.class);
-        bind(UserSettingsHandler.class).to(UserSettingsHandlerImpl.class);
-        bind(UserDataHandler.class);
+        bind(UserHandler.class).to(BaseUserHandler.class);
         bind(WhisperManager.class).to(WhisperManagerImpl.class);
     }
 }

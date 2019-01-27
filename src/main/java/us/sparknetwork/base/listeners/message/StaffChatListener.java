@@ -5,8 +5,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.handlers.server.ServerManager;
-import us.sparknetwork.base.handlers.user.settings.UserSettings;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.base.messager.ChannelListener;
 import us.sparknetwork.base.messager.messages.StaffChatMessage;
 
@@ -23,7 +23,7 @@ public class StaffChatListener implements ChannelListener<StaffChatMessage> {
     private I18n i18n;
 
     @Inject
-    private UserSettingsHandler settingsHandler;
+    private UserHandler settingsHandler;
 
     @Inject
     private ServerManager serverManager;
@@ -39,7 +39,7 @@ public class StaffChatListener implements ChannelListener<StaffChatMessage> {
                 throw new IllegalStateException("Received helpop message with an invalid serverId");
             }
 
-            String serverName = serverData.get().getDisplayName();
+            String serverName = serverData.get().getId();
 
             String messageSender = data.getSenderNick();
             String chatMessage = data.getMessage();
@@ -51,8 +51,8 @@ public class StaffChatListener implements ChannelListener<StaffChatMessage> {
             Set<String> userIds = Bukkit.getOnlinePlayers().stream().filter(player -> (player.hasPermission("base.command.staffchat.see"))).map(Player::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
 
             addCallback(settingsHandler.find(userIds, userIds.size()), userSettingsSet -> {
-                userSettingsSet.stream().filter(UserSettings::isStaffChatVisible).forEach(settings -> {
-                    Player player = Bukkit.getPlayer(settings.getUniqueId());
+                userSettingsSet.stream().filter(User.ChatSettings::isStaffChatVisible).forEach(settings -> {
+                    Player player = Bukkit.getPlayer(settings.getUUID());
 
                     if(player == null){
                         return;

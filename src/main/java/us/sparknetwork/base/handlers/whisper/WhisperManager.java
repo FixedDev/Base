@@ -2,11 +2,9 @@ package us.sparknetwork.base.handlers.whisper;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.bukkit.entity.Player;
-import us.sparknetwork.base.handlers.user.settings.UserSettings;
+import us.sparknetwork.base.handlers.user.User;
 
-import java.util.UUID;
 
 public interface WhisperManager {
-
-    ListenableFuture<Void> sendMessageAsync(Player sender, UserSettings from, UUID target, UserSettings to, String content);
+    ListenableFuture sendMessageAsync(Player sender, User.Complete from, User.Complete to, String content);
 }

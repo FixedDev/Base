@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
-import us.sparknetwork.base.handlers.user.settings.UserSettings;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
@@ -13,7 +13,6 @@ import us.sparknetwork.cm.command.arguments.CommandContext;
 import java.text.MessageFormat;
 import java.util.Optional;
 
-import static us.sparknetwork.utils.ListenableFutureUtils.*;
 
 public class StaffChatCommands implements CommandClass {
 
@@ -21,17 +20,17 @@ public class StaffChatCommands implements CommandClass {
     private I18n i18n;
 
     @Inject
-    private UserSettingsHandler settingsHandler;
+    private UserHandler settingsHandler;
 
     @Command(names = {"staffchat", "sc"}, usage = "Usage: /<command>", max = 0, onlyPlayer = true, permission = "base.command.staffchat")
     public boolean staffChatCommand(Player sender, CommandContext context) {
-        Optional<UserSettings> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(sender.getUniqueId().toString()));
+        Optional<User.Complete> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(sender.getUniqueId().toString()));
 
         if(!optionalSettings.isPresent()){
             return true;
         }
 
-        UserSettings userSettings = optionalSettings.get();
+        User.Complete userSettings = optionalSettings.get();
         userSettings.setInStaffChat(!userSettings.isInStaffChat());
 
         settingsHandler.save(userSettings);
@@ -45,12 +44,13 @@ public class StaffChatCommands implements CommandClass {
 
     @Command(names = {"togglestaffchat", "tsc", "togglesc"}, usage = "Usage: /<command>", max = 0, onlyPlayer = true, permission = "base.command.togglestaffchat")
     public boolean toggleStaffChat(Player sender, CommandContext context) {
-        Optional<UserSettings> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(sender.getUniqueId().toString()));
+        Optional<User.Complete> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(sender.getUniqueId().toString()));
 
         if(!optionalSettings.isPresent()){
             return true;
         }
-        UserSettings userSettings = optionalSettings.get();
+
+        User.Complete userSettings = optionalSettings.get();
         userSettings.setStaffChatVisible(!userSettings.isStaffChatVisible());
 
         settingsHandler.save(userSettings);

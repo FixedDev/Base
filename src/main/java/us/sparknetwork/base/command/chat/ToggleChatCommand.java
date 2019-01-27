@@ -4,8 +4,8 @@ import com.google.inject.Inject;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
-import us.sparknetwork.base.handlers.user.settings.UserSettings;
-import us.sparknetwork.base.handlers.user.settings.UserSettingsHandler;
+import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.handlers.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
@@ -21,7 +21,7 @@ public class ToggleChatCommand implements CommandClass {
     private I18n i18n;
 
     @Inject
-    private UserSettingsHandler settingsHandler;
+    private UserHandler settingsHandler;
 
     @Command(names = {"toggleglobalchat", "tgc", "togglechat"}, usage = "Usage: /<command>", max = 0, onlyPlayer = true, permission = "base.command.toggleglobalchat")
     public boolean toggleGlobalChat(Player sender, CommandContext context) {
@@ -29,7 +29,7 @@ public class ToggleChatCommand implements CommandClass {
             if (!optionalSettings.isPresent()) {
                 return;
             }
-            UserSettings userSettings = optionalSettings.get();
+            User.Complete userSettings = optionalSettings.get();
 
             userSettings.setGlobalChatVisible(!userSettings.isGlobalChatVisible());
 
