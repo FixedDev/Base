@@ -6,25 +6,19 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import us.sparknetwork.base.ServerConfigurations;
 
 import java.time.Instant;
-import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.Temporal;
-import java.time.temporal.TemporalField;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Getter
 @JsonSerialize(as = Server.class)
 public class LocalServerData implements Server {
 
     private String id;
-    private String displayName;
 
     private String ip;
     private int port;
@@ -38,13 +32,20 @@ public class LocalServerData implements Server {
         startedAt = Instant.now();
     }
 
-    public LocalServerData(String id, String displayName, String ip, int port, boolean online) {
+    public LocalServerData(String id, String ip, int port, boolean online) {
         this.id = id;
-        this.displayName = displayName;
         this.ip = ip;
         this.port = port;
         this.online = online;
         this.startedAt = Instant.now();
+    }
+
+    public LocalServerData(String id, String ip, int port, boolean online, Instant startedAt){
+        this.id = id;
+        this.ip = ip;
+        this.port = port;
+        this.online = online;
+        this.startedAt = startedAt;
     }
 
     @Override
@@ -60,6 +61,16 @@ public class LocalServerData implements Server {
     @Override
     public boolean isWhitelisted() {
         return Bukkit.hasWhitelist();
+    }
+
+    @Override
+    public ServerRole getRole() {
+        return ServerConfigurations.SERVER_ROLE;
+    }
+
+    @Override
+    public ServerVisibility getVisibility() {
+        return ServerConfigurations.SERVER_VISIBILIY;
     }
 
     @Override
@@ -87,6 +98,6 @@ public class LocalServerData implements Server {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, displayName, ip, port);
+        return Objects.hash(id, ip, port);
     }
 }

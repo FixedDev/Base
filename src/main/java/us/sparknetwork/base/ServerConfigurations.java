@@ -3,11 +3,10 @@
 package us.sparknetwork.base;
 
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import us.sparknetwork.base.handlers.server.ServerRole;
+import us.sparknetwork.base.handlers.server.ServerVisibility;
 import us.sparknetwork.utils.Config;
-
-import java.util.UUID;
 
 public class ServerConfigurations {
 
@@ -28,7 +27,8 @@ public class ServerConfigurations {
     public static long SLOW_CHAT = 0;
     public static int SLOW_CHAT_DELAY = 3;
 
-    public static String SERVER_DISPLAY_NAME = Bukkit.getServerName();
+    public static ServerRole SERVER_ROLE = ServerRole.OTHER;
+    public static ServerVisibility SERVER_VISIBILIY = ServerVisibility.PUBLIC;
 
     public ServerConfigurations(JavaPlugin plugin) {
         if (instance != null) {
@@ -45,7 +45,9 @@ public class ServerConfigurations {
         SLOW_CHAT = serverConfig.getLong("chat.slowed", SLOW_CHAT);
         SLOW_CHAT_DELAY = serverConfig.getInt("chat.slow-delay", SLOW_CHAT_DELAY);
 
-        SERVER_DISPLAY_NAME= serverConfig.getString("server-display-name", SERVER_DISPLAY_NAME);
+        SERVER_ROLE = ServerRole.valueOf(serverConfig.getString("server.role", SERVER_ROLE.toString()));
+        SERVER_VISIBILIY = ServerVisibility.valueOf(serverConfig.getString("server.visibility", SERVER_VISIBILIY.toString()));
+
 
         this.saveConfig();
     }
@@ -56,7 +58,6 @@ public class ServerConfigurations {
         this.serverConfig.set("chat.muted", MUTED_CHAT);
         this.serverConfig.set("chat.slowed", SLOW_CHAT);
         this.serverConfig.set("chat.slow-delay", SLOW_CHAT_DELAY);
-        this.serverConfig.set("server-display-name", SERVER_DISPLAY_NAME);
         this.serverConfig.save();
     }
 }

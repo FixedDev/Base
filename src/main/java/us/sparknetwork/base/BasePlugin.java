@@ -154,9 +154,9 @@ public class BasePlugin extends JavaPlugin {
             return;
         }
 
-        serverData = new LocalServerData(Bukkit.getServerName(), ServerConfigurations.SERVER_DISPLAY_NAME, Bukkit.getIp(), Bukkit.getPort(), true);
-
         this.registerHandlers();
+
+        serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
 
         injector = Guice.createInjector(Stage.PRODUCTION, new BasePluginModule(this, serverData, chat, gson, redisson, mongoClient, database, executorService));
         injector.injectMembers(this);
