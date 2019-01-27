@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import us.sparknetwork.base.I18n;
+import us.sparknetwork.base.PlaceholderApiReplacer;
 import us.sparknetwork.base.ServerConfigurations;
 import us.sparknetwork.base.chat.ChatFormat;
 import us.sparknetwork.base.chat.ChatFormatManager;
@@ -21,7 +22,6 @@ import us.sparknetwork.base.listeners.message.StaffChatListener;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.StaffChatMessage;
-import us.sparknetwork.base.scoreboard.placeholders.PlaceholderAPIResolver;
 import us.sparknetwork.utils.DateUtil;
 import us.sparknetwork.utils.JsonMessage;
 
@@ -120,6 +120,8 @@ public class ChatListener implements Listener {
 
         if (e.getPlayer().hasPermission("base.chat.color")) {
             e.setMessage(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
+        } else {
+            e.setMessage(e.getMessage().replaceAll("&[A-Fa-f0-9[lkmno]]", ""));
         }
 
         e.setCancelled(true);
@@ -132,15 +134,16 @@ public class ChatListener implements Listener {
             playerChatFormat.setUsePlaceholderApi(false);
         }
 
+        e.setMessage(ChatColor.translateAlternateColorCodes('&', playerChatFormat.getChatColor()) + e.getMessage());
+
         Bukkit.getConsoleSender().sendMessage(String.format(e.getFormat(), e.getPlayer().getName(), e.getMessage()));
 
-        String chatFormat = playerChatFormat.getChatFormat();
+        String chatFormat = playerChatFormat.constructJsonMessage().append(e.getMessage()).save().toString();
 
         chatFormat = chatFormat
                 .replace("{displayName}", e.getPlayer().getDisplayName())
                 .replace("{name}", e.getPlayer().getName())
                 .replace("{world}", e.getPlayer().getWorld().getName())
-                .replace("{chat}", e.getMessage())
                 .replace("{prefix}", this.getPrefix(e.getPlayer()))
                 .replace("{suffix}", this.getSuffix(e.getPlayer()));
 
