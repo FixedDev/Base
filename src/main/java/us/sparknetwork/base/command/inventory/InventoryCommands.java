@@ -20,20 +20,6 @@ public class InventoryCommands implements CommandClass {
     @Inject
     private I18n i18n;
 
-    @Command(names = {"invsee", "seeinv", "inventorysee", "seeinventory"}, min = 1, max = 1, permission = "base.command.invsee", onlyPlayer = true, usage = "Usage: /<command> <player>", desc = "This command is used for seeing inventories of another players")
-    public boolean invseeCommand(CommandSender commandSender, CommandContext args) {
-        Player sender = (Player) commandSender;
-        Player target = Bukkit.getPlayer(args.getArgument(0));
-        if (target == null) {
-            sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), args.getArgument(0)));
-            return true;
-        }
-        commandSender.sendMessage(MessageFormat.format(i18n.translate("opened.inventory"), target.getDisplayName()));
-        
-        sender.openInventory(target.getInventory());
-        return true;
-    }
-
     @Command(names = {"copyinv", "invcopy", "inventorycopy", "copyinventory"}, min = 1, max = 1, permission = "base.command.copyinventory", onlyPlayer = true, usage = "Usage: /<command> <player>", desc = "This command is used for copy inventories of another players to your inventory")
     public boolean copyInventoryCommand(Player commandSender, CommandContext args) {
         Player sender = commandSender;

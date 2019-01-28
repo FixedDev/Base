@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.user;
+package us.sparknetwork.base.user;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
@@ -42,7 +42,7 @@ import us.sparknetwork.base.LangConfigurations;
 import us.sparknetwork.base.StaffPriority;
 import us.sparknetwork.base.datamanager.CachedMongoStorageProvider;
 import us.sparknetwork.base.event.UserNickChangeEvent;
-import us.sparknetwork.base.handlers.user.User.State;
+import us.sparknetwork.base.user.User.State;
 
 import us.sparknetwork.utils.ListenableFutureUtils;
 

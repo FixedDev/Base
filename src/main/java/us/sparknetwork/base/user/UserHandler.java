@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.user;
+package us.sparknetwork.base.user;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;

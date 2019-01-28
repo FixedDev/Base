@@ -1,7 +1,6 @@
 package us.sparknetwork.base.listeners;
 
 import com.google.inject.Inject;
-import com.sun.scenario.Settings;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,8 +14,8 @@ import us.sparknetwork.base.PlaceholderApiReplacer;
 import us.sparknetwork.base.ServerConfigurations;
 import us.sparknetwork.base.chat.ChatFormat;
 import us.sparknetwork.base.chat.ChatFormatManager;
-import us.sparknetwork.base.handlers.user.User;
-import us.sparknetwork.base.handlers.user.UserHandler;
+import us.sparknetwork.base.user.User;
+import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.listeners.message.StaffChatListener;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;

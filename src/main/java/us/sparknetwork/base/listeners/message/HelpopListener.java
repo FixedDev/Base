@@ -3,7 +3,7 @@ package us.sparknetwork.base.listeners.message;
 import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.handlers.server.ServerManager;
+import us.sparknetwork.base.server.ServerManager;
 import us.sparknetwork.base.messager.ChannelListener;
 import us.sparknetwork.base.messager.messages.HelpopMessage;
 
@@ -29,7 +29,7 @@ public class HelpopListener implements ChannelListener<HelpopMessage> {
                 throw new IllegalStateException("Received helpop message with an invalid serverId");
             }
 
-            String serverName = optionalServer.get().getDisplayName();
+            String serverName = optionalServer.get().getId();
 
             String helpMessage = data.getHelpMessage();
             String senderNick = data.getSenderNick();

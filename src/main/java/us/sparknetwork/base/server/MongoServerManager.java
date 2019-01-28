@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.server;
+package us.sparknetwork.base.server;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
@@ -9,17 +9,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.redisson.api.RedissonClient;
 
-import us.sparknetwork.base.datamanager.CachedMongoStorageProvider;
 import us.sparknetwork.base.datamanager.MongoStorageProvider;
 import us.sparknetwork.utils.ListenableFutureUtils;
 
 import java.time.Instant;
-import java.time.temporal.ChronoField;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Singleton
@@ -111,15 +107,10 @@ public class MongoServerManager extends MongoStorageProvider<Server> implements 
 
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
-        lastUpdate = Instant.now();
+        Bukkit.getScheduler().runTaskLater(plugin, () ->{
+            lastUpdate = Instant.now();
 
-        this.save(serverData);
-    }
-
-    @EventHandler
-    public void onPlayerKick(PlayerKickEvent e) {
-        lastUpdate = Instant.now();
-
-        save(serverData);
+            this.save(serverData);
+        },1);
     }
 }

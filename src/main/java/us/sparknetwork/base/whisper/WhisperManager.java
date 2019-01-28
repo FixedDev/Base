@@ -1,8 +1,8 @@
-package us.sparknetwork.base.handlers.whisper;
+package us.sparknetwork.base.whisper;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.bukkit.entity.Player;
-import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.user.User;
 
 
 public interface WhisperManager {

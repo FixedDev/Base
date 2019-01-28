@@ -5,7 +5,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
-import us.sparknetwork.base.handlers.user.UserHandler;
+import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;

@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.user;
+package us.sparknetwork.base.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@JsonSerialize(as = User.class)
+@JsonSerialize(as = User.Complete.class)
 public class BaseUser implements User.Complete {
 
     /*

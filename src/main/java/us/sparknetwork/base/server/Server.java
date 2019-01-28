@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.server;
+package us.sparknetwork.base.server;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import us.sparknetwork.base.datamanager.Model;

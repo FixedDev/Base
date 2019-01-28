@@ -1,26 +1,20 @@
 package us.sparknetwork.base.command.essentials;
 
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
 import com.google.inject.Inject;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.handlers.server.LocalServerData;
-import us.sparknetwork.base.handlers.server.Server;
-import us.sparknetwork.base.handlers.server.ServerManager;
-import us.sparknetwork.base.handlers.user.finder.UserFinder;
+import us.sparknetwork.base.server.LocalServerData;
+import us.sparknetwork.base.server.ServerManager;
+import us.sparknetwork.base.server.ServerVisibility;
+import us.sparknetwork.base.user.finder.UserFinder;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
 import us.sparknetwork.utils.ListenableFutureUtils;
 
-import javax.annotation.Nullable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Set;
-import java.util.logging.Level;
 
 public class ServerCommands implements CommandClass {
 
@@ -40,7 +34,13 @@ public class ServerCommands implements CommandClass {
                 sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), context.getArgument(0)));
                 return;
             }
-            sender.sendMessage(MessageFormat.format(i18n.translate("user.get.server"), context.getArgument(0), server.getId(), server.getDisplayName()));
+
+            if(server.getVisibility() == ServerVisibility.PRIVATE && !sender.hasPermission("base.server.private.see")){
+                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), context.getArgument(0)));
+                return;
+            }
+
+            sender.sendMessage(MessageFormat.format(i18n.translate("user.get.server"), context.getArgument(0), server.getId()));
 
         });
         return true;
@@ -64,7 +64,7 @@ public class ServerCommands implements CommandClass {
 
     @Command(names = {"currentserver", "cs"})
     public boolean currentServerCommand(CommandSender sender, CommandContext context) {
-        sender.sendMessage(MessageFormat.format(i18n.translate("server.current"), serverData.getDisplayName()));
+        sender.sendMessage(MessageFormat.format(i18n.translate("server.current"), serverData.getId()));
         return true;
     }
 
@@ -86,6 +86,11 @@ public class ServerCommands implements CommandClass {
                 }
 
                 servers.forEach(anotherServerData -> {
+                    if (anotherServerData.getVisibility() == ServerVisibility.PRIVATE ||
+                            anotherServerData.getVisibility() == ServerVisibility.UNLISTED && !sender.hasPermission("base.server.private.see")) {
+                        return;
+                    }
+
                     String serverPlayers = i18n.translate("none");
                     if (anotherServerData.isOnline() && !anotherServerData.getOnlinePlayerNicks().isEmpty()) {
                         serverPlayers = String.join(", ", anotherServerData.getOnlinePlayerNicks());
@@ -106,6 +111,11 @@ public class ServerCommands implements CommandClass {
 
         ListenableFutureUtils.addCallback(serverManager.findOne(context.getArgument(0)), server -> {
             if (server == null) {
+                sender.sendMessage(MessageFormat.format(i18n.translate("server.not.found"), context.getArgument(0)));
+                return;
+            }
+
+            if (server.getVisibility() == ServerVisibility.PRIVATE && !sender.hasPermission("base.server.private.see")) {
                 sender.sendMessage(MessageFormat.format(i18n.translate("server.not.found"), context.getArgument(0)));
                 return;
             }

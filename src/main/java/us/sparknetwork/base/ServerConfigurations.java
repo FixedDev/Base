@@ -4,8 +4,8 @@ package us.sparknetwork.base;
 
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
-import us.sparknetwork.base.handlers.server.ServerRole;
-import us.sparknetwork.base.handlers.server.ServerVisibility;
+import us.sparknetwork.base.server.ServerRole;
+import us.sparknetwork.base.server.ServerVisibility;
 import us.sparknetwork.utils.Config;
 
 public class ServerConfigurations {

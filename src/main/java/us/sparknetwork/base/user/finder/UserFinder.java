@@ -1,7 +1,7 @@
-package us.sparknetwork.base.handlers.user.finder;
+package us.sparknetwork.base.user.finder;
 
 import com.google.common.util.concurrent.ListenableFuture;
-import us.sparknetwork.base.handlers.server.Server;
+import us.sparknetwork.base.server.Server;
 
 import java.util.UUID;
 

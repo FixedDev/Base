@@ -1,7 +1,6 @@
-package us.sparknetwork.base.handlers.server;
+package us.sparknetwork.base.server;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;

@@ -7,7 +7,7 @@ import org.bukkit.Server;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import us.sparknetwork.base.handlers.server.LocalServerData;
+import us.sparknetwork.base.server.LocalServerData;
 
 @AllArgsConstructor
 public class ServerModule extends AbstractModule {
@@ -16,7 +16,7 @@ public class ServerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(us.sparknetwork.base.handlers.server.Server.class).to(LocalServerData.class);
+        bind(us.sparknetwork.base.server.Server.class).to(LocalServerData.class);
         bind(LocalServerData.class).toInstance(serverData);
     }
 

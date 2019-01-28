@@ -4,7 +4,7 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import org.redisson.api.RedissonClient;
-import us.sparknetwork.base.handlers.server.LocalServerData;
+import us.sparknetwork.base.server.LocalServerData;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 

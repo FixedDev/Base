@@ -1,6 +1,7 @@
-package us.sparknetwork.base.handlers.server;
+package us.sparknetwork.base.server;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
@@ -9,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 @JsonSerialize(as = Server.class)
+@JsonIgnoreProperties("displayName")
 public class ServerData extends LocalServerData implements Server {
 
     private boolean whitelisted;

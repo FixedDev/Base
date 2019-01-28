@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.whisper;
+package us.sparknetwork.base.whisper;
 
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -10,9 +10,9 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.handlers.user.User;
-import us.sparknetwork.base.handlers.user.UserHandler;
-import us.sparknetwork.base.handlers.user.finder.UserFinder;
+import us.sparknetwork.base.user.User;
+import us.sparknetwork.base.user.UserHandler;
+import us.sparknetwork.base.user.finder.UserFinder;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.WhisperMessage;

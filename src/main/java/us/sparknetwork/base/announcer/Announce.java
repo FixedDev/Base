@@ -1,12 +1,9 @@
-package us.sparknetwork.base.handlers.announcer;
+package us.sparknetwork.base.announcer;
 
 import lombok.Getter;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-import us.sparknetwork.base.datamanager.Model;
 
-import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Getter
 public class Announce implements ConfigurationSerializable {

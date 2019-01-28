@@ -3,7 +3,7 @@ package us.sparknetwork.base.event;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.Nullable;
-import us.sparknetwork.base.handlers.user.User;
+import us.sparknetwork.base.user.User;
 
 public class UserNickChangeEvent extends Event {
     private static HandlerList handlerList = new HandlerList();

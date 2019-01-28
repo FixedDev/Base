@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.user;
+package us.sparknetwork.base.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

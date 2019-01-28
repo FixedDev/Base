@@ -12,9 +12,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
 
-import us.sparknetwork.base.handlers.user.BaseUser;
-import us.sparknetwork.base.handlers.user.User;
-import us.sparknetwork.base.handlers.user.UserHandler;
+import us.sparknetwork.base.user.BaseUser;
+import us.sparknetwork.base.user.User;
+import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
@@ -92,7 +92,7 @@ public class StaffCommands implements CommandClass {
             state.setFreezed(true);
             stateHandler.save(state);
 
-            sender.sendMessage(MessageFormat.format(i18n.translate("unfreezed.player"), target.getName(), i18n.translate("true")));
+            sender.sendMessage(MessageFormat.format(i18n.translate("freezed.player"), target.getName(), i18n.translate("true")));
         });
 
         return true;

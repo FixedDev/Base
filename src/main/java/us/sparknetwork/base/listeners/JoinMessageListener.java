@@ -11,15 +11,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import us.sparknetwork.base.I18n;
 
-import us.sparknetwork.base.handlers.user.User;
-import us.sparknetwork.base.handlers.user.UserHandler;
+import us.sparknetwork.base.user.User;
+import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.utils.JsonMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-
-import static us.sparknetwork.utils.ListenableFutureUtils.*;
 
 public class JoinMessageListener implements Listener {
     @Inject

@@ -1,14 +1,14 @@
 package us.sparknetwork.base.inject;
 
 import com.google.inject.AbstractModule;
-import us.sparknetwork.base.handlers.server.MongoServerManager;
-import us.sparknetwork.base.handlers.server.ServerManager;
-import us.sparknetwork.base.handlers.user.BaseUserHandler;
-import us.sparknetwork.base.handlers.user.UserHandler;
-import us.sparknetwork.base.handlers.user.finder.UserFinder;
-import us.sparknetwork.base.handlers.user.finder.impl.UserFinderImpl;
-import us.sparknetwork.base.handlers.whisper.WhisperManager;
-import us.sparknetwork.base.handlers.whisper.WhisperManagerImpl;
+import us.sparknetwork.base.server.MongoServerManager;
+import us.sparknetwork.base.server.ServerManager;
+import us.sparknetwork.base.user.BaseUserHandler;
+import us.sparknetwork.base.user.UserHandler;
+import us.sparknetwork.base.user.finder.UserFinder;
+import us.sparknetwork.base.user.finder.impl.UserFinderImpl;
+import us.sparknetwork.base.whisper.WhisperManager;
+import us.sparknetwork.base.whisper.WhisperManagerImpl;
 import us.sparknetwork.base.itemdb.impl.ItemDb;
 import us.sparknetwork.base.itemdb.SimpleItemDb;
 import us.sparknetwork.base.messager.Messenger;

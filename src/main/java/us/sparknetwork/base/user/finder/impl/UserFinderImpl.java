@@ -1,4 +1,4 @@
-package us.sparknetwork.base.handlers.user.finder.impl;
+package us.sparknetwork.base.user.finder.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AsyncFunction;
@@ -8,10 +8,10 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import us.sparknetwork.base.handlers.server.Server;
-import us.sparknetwork.base.handlers.server.LocalServerData;
-import us.sparknetwork.base.handlers.server.ServerManager;
-import us.sparknetwork.base.handlers.user.finder.UserFinder;
+import us.sparknetwork.base.server.Server;
+import us.sparknetwork.base.server.LocalServerData;
+import us.sparknetwork.base.server.ServerManager;
+import us.sparknetwork.base.user.finder.UserFinder;
 
 import java.util.Set;
 import java.util.UUID;

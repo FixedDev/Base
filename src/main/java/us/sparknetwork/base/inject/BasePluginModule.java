@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.api.RedissonClient;
 import us.sparknetwork.base.chat.BaseChatFormatManager;
 import us.sparknetwork.base.chat.ChatFormatManager;
-import us.sparknetwork.base.handlers.server.LocalServerData;
+import us.sparknetwork.base.server.LocalServerData;
 
 @AllArgsConstructor
 public class BasePluginModule extends AbstractModule {
