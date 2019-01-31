@@ -53,7 +53,7 @@ public class ChatListener implements Listener {
         staffChatChannel.registerListener(listener);
     }
 
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.NORMAL)
     public void chatListener(AsyncPlayerChatEvent e) {
         Optional<User.Complete> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(e.getPlayer().getUniqueId().toString()));
 
