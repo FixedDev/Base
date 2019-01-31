@@ -44,6 +44,10 @@ public class JoinMessageListener implements Listener {
         boolean isUserVanished = state.isVanished();
 
         if (isUserVanished) {
+            if(oldJoinMessage == null){
+                return;
+            }
+
             Bukkit.getConsoleSender().sendMessage(oldJoinMessage);
             event.setJoinMessage(null);
             return;
@@ -56,7 +60,9 @@ public class JoinMessageListener implements Listener {
             return;
         }
 
-        Bukkit.getConsoleSender().sendMessage(oldJoinMessage);
+        if(oldJoinMessage != null){
+            Bukkit.getConsoleSender().sendMessage(oldJoinMessage);
+        }
 
         joinMessage = joinMessage.replace("{name}", event.getPlayer().getName())
                 .replace("{displayName}", event.getPlayer().getDisplayName())
@@ -87,6 +93,10 @@ public class JoinMessageListener implements Listener {
         boolean isUserVanished = state.isVanished();
 
         if (isUserVanished) {
+            if(oldLeaveMessage == null){
+                return;
+            }
+
             Bukkit.getConsoleSender().sendMessage(oldLeaveMessage);
             event.setQuitMessage(null);
             return;
@@ -100,7 +110,9 @@ public class JoinMessageListener implements Listener {
             return;
         }
 
-        Bukkit.getConsoleSender().sendMessage(oldLeaveMessage);
+        if(oldLeaveMessage != null){
+            Bukkit.getConsoleSender().sendMessage(oldLeaveMessage);
+        }
 
         leaveMessage = leaveMessage.replace("{name}", event.getPlayer().getName())
                 .replace("{displayName}", event.getPlayer().getDisplayName())
