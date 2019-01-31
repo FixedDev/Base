@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.jetbrains.annotations.NotNull;
+import us.sparknetwork.base.restart.RestartPriority;
+import us.sparknetwork.base.server.type.Server;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -28,6 +32,8 @@ public class ServerData extends LocalServerData implements Server {
                @JsonProperty("ip") String ip,
                @JsonProperty("port") int port,
                @JsonProperty("startedAt") Instant startedAt,
+               @JsonProperty("nextRestartDate") LocalDateTime dateTime,
+               @JsonProperty("nextRestartPriority") RestartPriority restartPriority,
                @JsonProperty("online") boolean online,
                @JsonProperty("whitelisted") boolean whitelisted,
                @JsonProperty("role") ServerRole serverRole,
@@ -35,7 +41,7 @@ public class ServerData extends LocalServerData implements Server {
                @JsonProperty("onlinePlayerNicks") Set<String> onlinePlayerNicks,
                @JsonProperty("onlinePlayerIds") Set<UUID> onlinePlayerIds,
                @JsonProperty("maxPlayers") int maxPlayers) {
-        super(id, ip, port, online, startedAt);
+        super(id, ip, port, online, startedAt, dateTime, restartPriority);
         this.whitelisted = whitelisted;
         this.role = serverRole;
         this.visibility = visibility;
@@ -50,21 +56,25 @@ public class ServerData extends LocalServerData implements Server {
     }
 
     @Override
+    @NotNull
     public ServerRole getRole() {
         return role;
     }
 
     @Override
+    @NotNull
     public ServerVisibility getVisibility() {
         return visibility;
     }
 
     @Override
+    @NotNull
     public Set<String> getOnlinePlayerNicks() {
         return onlinePlayerNicks;
     }
 
     @Override
+    @NotNull
     public Set<UUID> getOnlinePlayerIds() {
         return onlinePlayerIds;
     }
