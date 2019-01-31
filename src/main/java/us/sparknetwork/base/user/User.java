@@ -6,7 +6,6 @@ import us.sparknetwork.base.datamanager.Model;
 
 import java.util.List;
 import java.util.UUID;
-
 @JsonDeserialize(as = BaseUser.class)
 public interface User extends Model, Identity {
 
