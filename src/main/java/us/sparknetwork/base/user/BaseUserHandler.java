@@ -177,11 +177,13 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                 Collection player = Collections.singleton(e.getPlayer());
                 Set<String> userIds = Bukkit.getOnlinePlayers().stream().map(OfflinePlayer::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
 
-                this.findSync(userIds, userIds.size()).stream().filter(State::isVanished).forEach((userState) -> {
-                    updateVanishState(Bukkit.getPlayer(userState.getUUID()), player, true);
-                });
+                Bukkit.getScheduler().runTask(plugin, () -> {
+                    this.findSync(userIds, userIds.size()).stream().filter(State::isVanished).forEach((userState) -> {
+                        updateVanishState(Bukkit.getPlayer(userState.getUUID()), player, true);
+                    });
 
-                this.save(userData);
+                    this.save(userData);
+                });
             } catch (Throwable var7) {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
