@@ -366,10 +366,6 @@ public class BaseUser implements User.Complete {
     }
 
     public void setVanished(boolean vanished) {
-        if (vanished == this.vanished) {
-            return;
-        }
-
         this.vanished = vanished;
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(getUUID());
