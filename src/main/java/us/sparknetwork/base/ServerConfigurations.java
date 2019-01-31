@@ -53,6 +53,8 @@ public class ServerConfigurations {
     }
 
     public void saveConfig() {
+        this.serverConfig.set("server.role", SERVER_ROLE.toString());
+        this.serverConfig.set("server.visibility", SERVER_VISIBILIY.toString());
         this.serverConfig.set("hook-protocollib", HOOK_PROTOCOL_LIB);
         this.serverConfig.set("language", LANGUAGE);
         this.serverConfig.set("chat.muted", MUTED_CHAT);
