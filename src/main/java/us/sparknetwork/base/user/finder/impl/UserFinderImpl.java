@@ -8,7 +8,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import us.sparknetwork.base.server.Server;
+import us.sparknetwork.base.server.type.Server;
 import us.sparknetwork.base.server.LocalServerData;
 import us.sparknetwork.base.server.ServerManager;
 import us.sparknetwork.base.user.finder.UserFinder;
