@@ -9,7 +9,7 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.server.Server;
+import us.sparknetwork.base.server.type.Server;
 import us.sparknetwork.base.server.ServerManager;
 
 import javax.annotation.Nullable;
