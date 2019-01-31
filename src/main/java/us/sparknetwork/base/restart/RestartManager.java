@@ -12,7 +12,5 @@ public interface RestartManager {
 
     void setMaximumUptime(Period period);
 
-    enum RestartPriority {
-        LOW, MEDIUM, HIGH
-    }
+
 }
