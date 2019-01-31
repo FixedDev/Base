@@ -16,7 +16,7 @@ public class ServerModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(us.sparknetwork.base.server.Server.class).to(LocalServerData.class);
+        bind(us.sparknetwork.base.server.type.Server.class).to(LocalServerData.class);
         bind(LocalServerData.class).toInstance(serverData);
     }
 
