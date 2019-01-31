@@ -48,6 +48,11 @@ public class ServerConfigurations {
         SERVER_ROLE = ServerRole.valueOf(serverConfig.getString("server.role", SERVER_ROLE.toString()));
         SERVER_VISIBILIY = ServerVisibility.valueOf(serverConfig.getString("server.visibility", SERVER_VISIBILIY.toString()));
 
+        if(SERVER_ROLE == ServerRole.BUNGEE){
+            plugin.getLogger().warning("Well, i think that a bukkit server shouldn't have BUNGEE role, changing it to OTHER");
+
+            SERVER_ROLE = ServerRole.OTHER;
+        }
 
         this.saveConfig();
     }
