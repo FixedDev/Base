@@ -8,6 +8,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.redisson.api.*;
 
 import java.util.*;
@@ -33,8 +35,9 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         mongoCollection = database.getCollection(dataPrefix, (Class<O>) modelClazz);
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<O> findOne(String id) {
+    public ListenableFuture<O> findOne(@NotNull String id) {
         return executorService.submit(() -> {
             O object;
 
@@ -54,8 +57,9 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         });
     }
 
+    @Nullable
     @Override
-    public O findOneSync(String id) {
+    public O findOneSync(@NotNull String id) {
         O object;
 
         RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + id);
@@ -73,8 +77,9 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         return object;
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<Set<O>> find(Set<String> ids, int limit) {
+    public ListenableFuture<Set<O>> find(@NotNull Set<String> ids, int limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("The specified limit must be 0 or more");
         }
@@ -110,8 +115,9 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         });
     }
 
+    @NotNull
     @Override
-    public Set<O> findSync(Set<String> ids, int limit) {
+    public Set<O> findSync(@NotNull Set<String> ids, int limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("The specified limit must be 0 or more");
         }
@@ -146,6 +152,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         return objects;
     }
 
+    @NotNull
     @Override
     public ListenableFuture<Set<O>> find(int limit) {
         if (limit < 0) {
@@ -169,6 +176,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         //return executorService.submit(() -> new HashSet<>(advancedDatastore.find(dataPrefix, modelClazz).asList(new FindOptions().limit(limit))));
     }
 
+    @NotNull
     @Override
     public Set<O> findSync(int limit) {
         if (limit < 0) {
@@ -227,8 +235,9 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         });
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<Void> delete(O object) {
+    public ListenableFuture<Void> delete(@NotNull O object) {
         return delete(object.getId());
     }
 
@@ -244,8 +253,9 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
     }
 
 
+    @NotNull
     @Override
-    public ListenableFuture<Void> delete(Set<O> objects) {
+    public ListenableFuture<Void> delete(@NotNull Set<O> objects) {
         return executorService.submit(() -> {
             RBatch rBatch = redissonClient.createBatch(BatchOptions.defaults());
 

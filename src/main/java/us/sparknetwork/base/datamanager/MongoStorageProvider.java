@@ -8,6 +8,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.redisson.api.*;
 
 import java.util.HashSet;
@@ -32,18 +34,21 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         mongoCollection = database.getCollection(dataPrefix, (Class<O>) modelClazz);
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<O> findOne(String id) {
+    public ListenableFuture<O> findOne(@NotNull String id) {
         return executorService.submit(() -> mongoCollection.find(createIdQuery(id)).first());
     }
 
+    @Nullable
     @Override
-    public O findOneSync(String id) {
+    public O findOneSync(@NotNull String id) {
         return mongoCollection.find(createIdQuery(id)).first();
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<Set<O>> find(Set<String> ids, int limit) {
+    public ListenableFuture<Set<O>> find(@NotNull Set<String> ids, int limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("The specified limit must be 0 or more");
         }
@@ -70,8 +75,9 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         });
     }
 
+    @NotNull
     @Override
-    public Set<O> findSync(Set<String> ids, int limit) {
+    public Set<O> findSync(@NotNull Set<String> ids, int limit) {
         if (limit < 0) {
             throw new IllegalArgumentException("The specified limit must be 0 or more");
         }
@@ -97,6 +103,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         return objects;
     }
 
+    @NotNull
     @Override
     public ListenableFuture<Set<O>> find(int limit) {
         if (limit < 0) {
@@ -116,6 +123,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         //return executorService.submit(() -> new HashSet<>(advancedDatastore.find(dataPrefix, modelClazz).asList(new FindOptions().limit(limit))));
     }
 
+    @NotNull
     @Override
     public Set<O> findSync(int limit) {
         if (limit < 0) {
@@ -132,16 +140,18 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         return objects;
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<Void> save(O o) {
+    public ListenableFuture<Void> save(@NotNull O o) {
         return executorService.submit(() -> {
             this.mongoCollection.replaceOne(createIdQuery(o.getId()), o, new ReplaceOptions().upsert(true));
             return null;
         });
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<Void> save(Set<O> o) {
+    public ListenableFuture<Void> save(@NotNull Set<O> o) {
         return executorService.submit(() -> {
             Set<O> toSaveInMongoDB = new HashSet<>();
 
@@ -157,8 +167,9 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         });
     }
 
+    @NotNull
     @Override
-    public ListenableFuture<Void> delete(O object) {
+    public ListenableFuture<Void> delete(@NotNull O object) {
         return delete(object.getId());
     }
 
@@ -171,8 +182,9 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
     }
 
 
+    @NotNull
     @Override
-    public ListenableFuture<Void> delete(Set<O> objects) {
+    public ListenableFuture<Void> delete(@NotNull Set<O> objects) {
         return executorService.submit(() -> {
 
             for (O object : objects) {

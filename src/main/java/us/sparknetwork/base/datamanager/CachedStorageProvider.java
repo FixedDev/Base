@@ -1,6 +1,7 @@
 package us.sparknetwork.base.datamanager;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -24,13 +25,15 @@ public interface CachedStorageProvider<O extends Model> extends StorageProvider<
 
     ListenableFuture<Void> save(Set<O> objects, boolean force);
 
+    @NotNull
     @Override
-    default ListenableFuture<Void> save(O objects) {
+    default ListenableFuture<Void> save(@NotNull O objects) {
         return save(objects, false);
     }
 
+    @NotNull
     @Override
-    default ListenableFuture<Void> save(Set<O> objects) {
+    default ListenableFuture<Void> save(@NotNull Set<O> objects) {
         return save(objects, false);
     }
 }
