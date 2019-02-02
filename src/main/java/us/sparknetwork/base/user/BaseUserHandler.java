@@ -5,11 +5,7 @@ import com.google.inject.Inject;
 import com.mongodb.client.MongoDatabase;
 
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -26,11 +22,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.player.PlayerLoginEvent.Result;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -96,20 +88,37 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
 
     }
 
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPreLogin(AsyncPlayerPreLoginEvent e) {
+        ListenableFutureUtils.addCallback(ListenableFutureUtils.addOptionalToReturnValue(this.findOne(e.getUniqueId().toString())), (user) -> {
+            User.Complete userData = user.orElse(new BaseUser(e.getUniqueId()));
+
+            // Save in cache the userData and/or create the userdata
+            this.save(userData);
+        });
+    }
+
     @EventHandler(priority = EventPriority.LOWEST)
     public void onLogin(PlayerLoginEvent e) {
-        ListenableFutureUtils.addCallback(ListenableFutureUtils.addOptionalToReturnValue(this.findOne(e.getPlayer().getUniqueId().toString())), (user) -> {
-            try {
-                User.Complete userData = user.orElse(new BaseUser(e.getPlayer().getUniqueId()));
-                userData.setLastServerId(Bukkit.getServerName());
-                userData.setOnline(true);
-                this.save(userData);
-            } catch (Throwable var4) {
-                e.disallow(Result.KICK_OTHER, this.i18n.translate("load.fail.data"));
-                BasePlugin.logError(this.plugin.getLogger(), "load", "data", e.getPlayer().getUniqueId().toString(), var4);
-            }
+        // Player is already in redis, should be not problem to load it sync
+        Optional<User.Complete> optionalUser = Optional.ofNullable(findOneSync(e.getPlayer().getUniqueId().toString()));
 
-        });
+        if (!optionalUser.isPresent()) {
+            e.disallow(Result.KICK_OTHER, i18n.translate("load.fail.data"));
+            return;
+        }
+
+        try {
+            User.Complete userData = optionalUser.get();
+            userData.setLastServerId(Bukkit.getServerName());
+            userData.setOnline(true);
+
+            this.save(userData);
+        } catch (Exception ex) {
+            plugin.getLogger().log(Level.SEVERE, "There was an exception while handling user " + e.getPlayer().getUniqueId().toString() + " login data", ex);
+        }
+
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -142,7 +151,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
                 });
-                BasePlugin.logError(this.plugin.getLogger(), "load", "data", e.getPlayer().getUniqueId().toString(), var4);
+                plugin.getLogger().log(Level.SEVERE, "There was an exception while handling user " + e.getPlayer().getUniqueId().toString() + " data", var4);
             }
 
         });
