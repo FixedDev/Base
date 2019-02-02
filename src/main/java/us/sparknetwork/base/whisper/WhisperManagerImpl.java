@@ -59,7 +59,9 @@ public class WhisperManagerImpl implements WhisperManager {
         String targetNick = to.hasNick() ? to.getNick() : to.getLastName();
 
         if (offlineTarget.isOnline()) {
-            if (!to.getPrivateMessagesVisible()) {
+            if(!(to.getPrivateMessagesVisibility() == User.WhisperVisibility.FRIENDS && !to.isFriendOf(from))
+                    || to.getPrivateMessagesVisibility() == User.WhisperVisibility.NONE) {
+
                 sender.sendMessage(i18n.format("pm.not.visible", targetNick));
                 return Futures.immediateFuture(null);
             }
@@ -85,7 +87,9 @@ public class WhisperManagerImpl implements WhisperManager {
                 return Futures.immediateFuture(null);
             }
 
-            if (!to.getPrivateMessagesVisible()) {
+            if(!(to.getPrivateMessagesVisibility() == User.WhisperVisibility.FRIENDS && !to.isFriendOf(from))
+                    || to.getPrivateMessagesVisibility() == User.WhisperVisibility.NONE) {
+
                 sender.sendMessage(i18n.format("pm.not.visible", targetNick));
                 return Futures.immediateFuture(null);
             }
