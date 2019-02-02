@@ -137,6 +137,11 @@ public class BaseUser implements User.Complete {
         this.vanished = vanished;
         this.freezed = freezed;
         this.godModeEnabled = godModeEnabled;
+
+        // I don't care if intellij says that it can't be null, jackson can actually make it null
+        if (friends == null) {
+            this.friends = new ArrayList<>();
+        }
     }
 
     public BaseUser(@NotNull UUID uuid) {
@@ -188,7 +193,9 @@ public class BaseUser implements User.Complete {
     @Override
     @NotNull
     public String getLastName() {
-        Preconditions.checkArgument(!nameHistory.isEmpty(), "No last name found for user " + getUUID().toString());
+        if(nameHistory.isEmpty()){
+            throw new IllegalStateException("No last name found for user" + getUUID());
+        }
 
         return nameHistory.get(nameHistory.size() - 1);
     }
