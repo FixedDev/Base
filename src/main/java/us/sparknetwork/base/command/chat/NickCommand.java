@@ -34,7 +34,7 @@ public class NickCommand implements CommandClass {
         if (context.getArguments().size() == 1) {
             target = (Player) sender;
             originalNick = context.getArgument(0);
-        } else if (context.getArguments().size() == 2) {
+        } else if (context.getArguments().size() == 2 && sender.hasPermission("base.command.nick.others")) {
             target = context.getObject(0, Player.class);
             originalNick = context.getArgument(1);
 
@@ -69,8 +69,10 @@ public class NickCommand implements CommandClass {
                     nick = nick.replaceAll("&[A-Fa-f0-9[lkmno]]", "");
                 }
 
-                if (nick.length() >= 24) {
-                    nick = originalNick.substring(0, 48);
+                int nickLengthDifference = nick.length() - ChatColor.stripColor(nick).length();
+
+                if (ChatColor.stripColor(nick).length() >= 20) {
+                    nick = nick.substring(0, 20 + nickLengthDifference);
                 }
 
                 if (this.dataHandler.getPlayerByNick(nick) != null || Bukkit.getPlayer(nick) != null) {
