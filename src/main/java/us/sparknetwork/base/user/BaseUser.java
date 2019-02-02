@@ -1,6 +1,7 @@
 package us.sparknetwork.base.user;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.base.Preconditions;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @JsonSerialize(as = User.Complete.class)
+@JsonIgnoreProperties("privateMessagesVisible")
 public class BaseUser implements User.Complete {
 
     /*
@@ -75,8 +77,16 @@ public class BaseUser implements User.Complete {
 
     @NotNull
     private List<UUID> ignoredPlayers;
-    private boolean privateMessagesVisible;
+    @NotNull
+    private WhisperVisibility visibility;
     private boolean socialSpyVisible;
+
+    /*
+     * Friends fields
+     */
+    @NotNull
+    private List<UUID> friends;
+    private int friendsLimit;
 
     /*
      * State fields
@@ -100,8 +110,10 @@ public class BaseUser implements User.Complete {
                     @JsonProperty("inStaffChat") boolean inStaffChat,
                     @Nullable @JsonProperty("lastPrivateMessageReplier") UUID lastPrivateMessageReplier,
                     @NotNull @JsonProperty("ignoredPlayers") List<UUID> ignoredPlayers,
-                    @JsonProperty("privateMessagesVisible") boolean privateMessagesVisible,
+                    @JsonProperty(value = "privateMessagesVisibility") WhisperVisibility visibility,
                     @JsonProperty("socialSpyVisible") boolean socialSpyVisible,
+                    @JsonProperty("friends") @NotNull List<UUID> friends,
+                    @JsonProperty("friendsLimit") int friendsLimit,
                     @JsonProperty("vanished") boolean vanished,
                     @JsonProperty("freezed") boolean freezed,
                     @JsonProperty("godModeEnabled") boolean godModeEnabled) {
@@ -118,8 +130,10 @@ public class BaseUser implements User.Complete {
         this.inStaffChat = inStaffChat;
         this.lastPrivateMessageReplier = lastPrivateMessageReplier;
         this.ignoredPlayers = ignoredPlayers;
-        this.privateMessagesVisible = privateMessagesVisible;
+        this.visibility = visibility;
         this.socialSpyVisible = socialSpyVisible;
+        this.friends = friends;
+        this.friendsLimit = friendsLimit;
         this.vanished = vanished;
         this.freezed = freezed;
         this.godModeEnabled = godModeEnabled;
@@ -130,8 +144,9 @@ public class BaseUser implements User.Complete {
         this.nameHistory = new ArrayList<>();
         this.addressHistory = new ArrayList<>();
         this.ignoredPlayers = new ArrayList<>();
+        this.friends = new ArrayList<>();
         this.globalChatVisible = true;
-        this.privateMessagesVisible = true;
+        this.visibility = WhisperVisibility.NONE;
     }
 
 
@@ -336,15 +351,17 @@ public class BaseUser implements User.Complete {
 
     }
 
+    @NotNull
     @Override
-    public boolean getPrivateMessagesVisible() {
-        return privateMessagesVisible;
+    public WhisperVisibility getPrivateMessagesVisibility() {
+        return visibility;
     }
 
     @Override
-    public void setPrivateMessagesVisible(boolean privateMessagesVisible) {
-        this.privateMessagesVisible = privateMessagesVisible;
+    public void setPrivateMessagesVisibility(@NotNull WhisperVisibility visibility) {
+        this.visibility = visibility;
     }
+
 
     @Override
     public boolean isSocialSpyVisible() {
@@ -408,5 +425,46 @@ public class BaseUser implements User.Complete {
     @Override
     public void setGodModeEnabled(boolean godMode) {
         this.godModeEnabled = godMode;
+    }
+
+    /*
+     * Friends Implementation
+     */
+    @Override
+    public List<UUID> getFriends() {
+        return new ArrayList<>(friends);
+    }
+
+    @Override
+    public void addFriend(@NotNull Identity userId) {
+        if (friends.contains(userId.getUUID())) {
+            return;
+        }
+
+        friends.add(userId.getUUID());
+    }
+
+    @Override
+    public void removeFriend(@NotNull Identity userId) {
+        if (!friends.contains(userId.getUUID())) {
+            return;
+        }
+
+        friends.remove(userId.getUUID());
+    }
+
+    @Override
+    public boolean isFriendOf(@NotNull Identity identity) {
+        return friends.contains(identity.getUUID());
+    }
+
+    @Override
+    public int getFriendsLimit() {
+        return friendsLimit;
+    }
+
+    @Override
+    public void setFriendsLimit(int limit) {
+        this.friendsLimit = limit;
     }
 }
