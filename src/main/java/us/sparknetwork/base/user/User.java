@@ -1,11 +1,14 @@
 package us.sparknetwork.base.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.datamanager.Model;
 
 import java.util.List;
 import java.util.UUID;
+
 @JsonDeserialize(as = BaseUser.class)
 public interface User extends Model, Identity {
 
@@ -14,7 +17,7 @@ public interface User extends Model, Identity {
         return getUUID().toString();
     }
 
-    interface Complete extends User, ConnectionData, AddressHistoryData, ChatData, ChatSettings, WhisperData, WhisperSettings, State {
+    interface Complete extends User, ConnectionData, AddressHistoryData, ChatData, ChatSettings, WhisperData, WhisperSettings, Friends, State {
     }
 
     interface ConnectionData extends Identity {
@@ -75,13 +78,33 @@ public interface User extends Model, Identity {
 
         void removeIgnoredPlayer(UUID playerUUID);
 
-        boolean getPrivateMessagesVisible();
+        @NotNull
+        WhisperVisibility getPrivateMessagesVisibility();
 
-        void setPrivateMessagesVisible(boolean privateMessagesVisible);
+        void setPrivateMessagesVisibility(@NotNull WhisperVisibility visibility);
 
         boolean isSocialSpyVisible();
 
         void setSocialSpyVisible(boolean socialSpyVisible);
+    }
+
+    enum WhisperVisibility {
+        NONE, FRIENDS, ALL
+    }
+
+    interface Friends extends Identity {
+        List<UUID> getFriends();
+
+        void addFriend(@NotNull Identity identity);
+
+        void removeFriend(@NotNull Identity identity);
+
+        @JsonIgnore
+        boolean isFriendOf(@NotNull Identity identity);
+
+        int getFriendsLimit();
+
+        void setFriendsLimit(int limit);
     }
 
     interface State extends Identity {
