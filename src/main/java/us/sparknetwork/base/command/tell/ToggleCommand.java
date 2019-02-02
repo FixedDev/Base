@@ -21,7 +21,7 @@ public class ToggleCommand implements CommandClass {
     @Inject
     private UserHandler settingsHandler;
 
-    @Command(names = {"togglemessages", "togglemsg", "togglepm", "tpm", "toggleprivatemessages"}, max = 0, onlyPlayer = true, permission = "base.command.togglemessages", usage = "Usage: /<command>")
+    @Command(names = {"messagesvisibility", "msgvisibility", "pmvisibility", "privatemessagesvisibility"}, max = 0, onlyPlayer = true, permission = "base.command.togglemessages", usage = "Usage: /<command>")
     public boolean toggleMessages(Player sender, CommandContext args) {
         addCallback(addOptionalToReturnValue(settingsHandler.findOne(sender.getUniqueId().toString())), optionalSettings -> {
             if (!optionalSettings.isPresent()) {
@@ -29,15 +29,28 @@ public class ToggleCommand implements CommandClass {
             }
             User.Complete settings = optionalSettings.get();
 
-            settings.setPrivateMessagesVisible(!settings.getPrivateMessagesVisible());
+            User.WhisperVisibility nextVisiblity = getNextVisibility(settings.getPrivateMessagesVisibility());
 
+            settings.setPrivateMessagesVisibility(nextVisiblity);
             settingsHandler.save(settings);
 
-            String bool = LangConfigurations.parseVisibility(i18n, settings.getPrivateMessagesVisible());
+            String bool = LangConfigurations.parseWhisperVisibility(i18n, nextVisiblity);
 
             sender.sendMessage(i18n.format("toggle.messages", sender.getName(), bool));
         });
         return true;
     }
 
+
+    private User.WhisperVisibility getNextVisibility(User.WhisperVisibility visibility) {
+        switch (visibility) {
+            case FRIENDS:
+                return User.WhisperVisibility.NONE;
+            case ALL:
+                return User.WhisperVisibility.FRIENDS;
+            case NONE:
+            default:
+                return User.WhisperVisibility.ALL;
+        }
+    }
 }
