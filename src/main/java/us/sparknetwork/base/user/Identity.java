@@ -18,7 +18,7 @@ public interface Identity {
     String getLastName();
 
     @NotNull
-    List getNameHistory();
+    List<String> getNameHistory();
 
     void tryAddName(String var1);
 
