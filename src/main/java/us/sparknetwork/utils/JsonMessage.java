@@ -1,6 +1,6 @@
 package us.sparknetwork.utils;
 
-//Created by Justis Root. Released into the public domain.
+//Created by Justis Root, Modified by Gilberto Garcia.
 //https://gist.github.com/justisr
 //
 //Source is licensed for any use, provided that this copyright notice is retained.
@@ -16,6 +16,7 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 /**
  * @author JustisR
@@ -28,6 +29,8 @@ import java.util.Locale;
 
 public class JsonMessage {
 
+    private static final Pattern formatPattern = Pattern.compile("[A-Fa-f0-9[lkmno]]");
+
     private String msg;
 
     /**
@@ -35,6 +38,14 @@ public class JsonMessage {
      */
     public JsonMessage() {
         msg = "[{\"text\":\"\",\"extra\":[{\"text\": \"\"}";
+    }
+
+    public JsonMessage(String message) {
+        msg = message;
+
+        if (msg.endsWith("]}]")) {
+            msg = msg.substring(0, msg.length() - 3);
+        }
     }
 
     @Override
@@ -89,30 +100,6 @@ public class JsonMessage {
         }
     }
 
-    public static String escapeColors(String text) {
-        String string = ",{\"text\":\"\",\"extra\":[";
-
-        String[] colors = text.split(String.valueOf(ChatColor.COLOR_CHAR));
-        for (int i = 0; i < colors.length; i++) {
-            if (i == 0 && !text.startsWith(String.valueOf(ChatColor.COLOR_CHAR))) {
-                colors[i] = "{\"text\":\"" + colors[i] + "\"}";
-            } else if (colors[i].length() < 1) {
-                colors[i] = "{\"text\":\"\"}";
-            } else {
-                ChatColor color = ChatColor.getByChar(colors[i].substring(0, 1));
-                colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"color\":\"" + color.name().toLowerCase(Locale.US) + "\"}";
-            }
-            if (i + 1 != colors.length) colors[i] = colors[i] + ",";
-        }
-
-        StringBuilder builder = new StringBuilder(string);
-        for (String str : colors) {
-            builder.append(str);
-        }
-
-        return builder.toString();
-    }
-
     /**
      * Append text to the json message.
      *
@@ -154,7 +141,27 @@ public class JsonMessage {
                     colors[i] = "{\"text\":\"\"}";
                 } else {
                     ChatColor color = ChatColor.getByChar(colors[i].substring(0, 1));
-                    colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"color\":\"" + color.name().toLowerCase(Locale.US) + "\"}";
+                    if (color.isFormat()) {
+                        switch (color) {
+                            case BOLD:
+                                colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"bold\": true}";
+                                break;
+                            case MAGIC:
+                                colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"obfuscated\": true}";
+                                break;
+                            case STRIKETHROUGH:
+                                colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"strikethrough\": true}";
+                                break;
+                            case UNDERLINE:
+                                colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"underlined\": true}";
+                                break;
+                            case ITALIC:
+                                colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"italic\": true}";
+                                break;
+                        }
+                    } else {
+                        colors[i] = "{\"text\":\"" + colors[i].substring(1, colors[i].length()) + "\",\"color\":\"" + color.name().toLowerCase(Locale.US) + "\"}";
+                    }
                 }
                 if (i + 1 != colors.length) colors[i] = colors[i] + ",";
             }
@@ -186,7 +193,8 @@ public class JsonMessage {
         public JsonStringBuilder setHoverAsAchievement(String ach) {
             if (getServerVersion().startsWith("v1_12"))
                 hover = ",\"hoverEvent\":{\"action\":\"show_text\",\"value\":\"" + esc(ach) + "\"}";
-            else hover = ",\"hoverEvent\":{\"action\":\"show_achievement\",\"value\":\"achievement." + esc(ach) + "\"}";
+            else
+                hover = ",\"hoverEvent\":{\"action\":\"show_achievement\",\"value\":\"achievement." + esc(ach) + "\"}";
             return this;
         }
 
