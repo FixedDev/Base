@@ -65,9 +65,11 @@ public class NickCommand implements CommandClass {
 
                 if (sender.hasPermission("base.command.nick.color")) {
                     nick = ChatColor.translateAlternateColorCodes('&', nick);
+                } else {
+                    nick = nick.replaceAll("&[A-Fa-f0-9[lkmno]]", "");
                 }
 
-                if (nick.length() >= 48) {
+                if (nick.length() >= 24) {
                     nick = originalNick.substring(0, 48);
                 }
 
