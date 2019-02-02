@@ -133,6 +133,8 @@ public class ChatListener implements Listener {
                 .replace("{prefix}", this.getPrefix(e.getPlayer()))
                 .replace("{suffix}", this.getSuffix(e.getPlayer()));
 
+        chatFormat = ChatColor.translateAlternateColorCodes('&', chatFormat);
+
         Player[] messageRecipientsArray = e.getRecipients().toArray(new Player[0]);
 
         if (playerChatFormat.isUsePlaceholderApi()) {
