@@ -3,6 +3,7 @@ package us.sparknetwork.base;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.TypeFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
@@ -19,6 +20,7 @@ import fr.javatic.mongo.jacksonCodec.JacksonCodecProvider;
 import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 import lombok.Getter;
 
+import me.ggamer55.bcm.bukkit.BukkitCommandHandler;
 import net.milkbowl.vault.chat.Chat;
 import org.apache.commons.lang.StringUtils;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -32,6 +34,7 @@ import org.redisson.config.SingleServerConfig;
 import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.command.chat.*;
 import us.sparknetwork.base.command.essentials.*;
+import us.sparknetwork.base.command.essentials.friends.FriendsMainCommand;
 import us.sparknetwork.base.command.inventory.InventoryCommands;
 import us.sparknetwork.base.command.inventory.InvseeCommand;
 import us.sparknetwork.base.command.inventory.ItemCommands;
@@ -268,6 +271,8 @@ public class BasePlugin extends JavaPlugin {
 
         TypeFactory tf = TypeFactory.defaultInstance().withClassLoader(this.getClassLoader());
         mapper.setTypeFactory(tf);
+
+        mapper.registerModule(new JavaTimeModule());
     }
 
     private void registerHandlers() {
@@ -327,6 +332,10 @@ public class BasePlugin extends JavaPlugin {
         for (CommandClass commandClass : commandClasses) {
             commandHandler.registerCommandClass(commandClass);
         }
+
+        BukkitCommandHandler commandHandler = new BukkitCommandHandler(this.getLogger());
+
+        commandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
     }
 
 
