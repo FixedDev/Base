@@ -19,10 +19,9 @@ import static us.sparknetwork.utils.ListenableFutureUtils.addCallback;
 public class FriendsRemoveCommand extends AbstractAdvancedCommand {
 
     private UserHandler userHandler;
-    private FriendRequestHandler requestHandler;
     private I18n i18n;
 
-    FriendsRemoveCommand(UserHandler userHandler, FriendRequestHandler requestHandler, I18n i18n) {
+    FriendsRemoveCommand(UserHandler userHandler, I18n i18n) {
         super(new String[]{"remove", "delete"},
                 "/<command> <player>",
                 "",
@@ -35,7 +34,6 @@ public class FriendsRemoveCommand extends AbstractAdvancedCommand {
                 new ArrayList<>());
 
         this.userHandler = userHandler;
-        this.requestHandler = requestHandler;
         this.i18n = i18n;
     }
 
