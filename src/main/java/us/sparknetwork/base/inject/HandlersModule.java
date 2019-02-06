@@ -7,6 +7,8 @@ import us.sparknetwork.base.user.BaseUserHandler;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.user.finder.UserFinder;
 import us.sparknetwork.base.user.finder.impl.UserFinderImpl;
+import us.sparknetwork.base.user.friends.BaseFriendRequestHandler;
+import us.sparknetwork.base.user.friends.FriendRequestHandler;
 import us.sparknetwork.base.whisper.WhisperManager;
 import us.sparknetwork.base.whisper.WhisperManagerImpl;
 import us.sparknetwork.base.itemdb.impl.ItemDb;
@@ -23,6 +25,7 @@ public class HandlersModule extends AbstractModule {
         bind(UserFinder.class).to(UserFinderImpl.class);
         bind(ItemDb.class).to(SimpleItemDb.class);
         bind(UserHandler.class).to(BaseUserHandler.class);
+        bind(FriendRequestHandler.class).to(BaseFriendRequestHandler.class);
         bind(WhisperManager.class).to(WhisperManagerImpl.class);
     }
 }
