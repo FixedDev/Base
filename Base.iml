@@ -30,6 +30,8 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.md-5:bungeecord-chat:1.8-SNAPSHOT" level="project" />
     <orderEntry type="module" module-name="CommandManager" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:reflectasm:1.11.7" level="project" />
+    <orderEntry type="module" module-name="BCM-Bukkit" />
+    <orderEntry type="module" module-name="BCM-Universal" />
     <orderEntry type="module" module-name="scoreboard" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.comphenix.protocol:ProtocolLib-API:4.3.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: cglib:cglib-nodep:3.2.5" level="project" />
@@ -68,7 +70,6 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.9.8" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.8.17" level="project" />
     <orderEntry type="library" name="Maven: org.jodd:jodd-bean:3.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.jodd:jodd-core:3.7.1" level="project" />
@@ -77,6 +78,8 @@
     <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:3.9.1" level="project" />
     <orderEntry type="library" name="Maven: fr.javatic.mongo:mongo-jackson-codec:3.2.2__0.5" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: de.undercouch:bson4jackson:2.7.0" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.ben-manes.caffeine:caffeine:2.6.2" level="project" />
     <orderEntry type="library" name="Maven: org.jetbrains:annotations:16.0.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.projectlombok:lombok:1.16.18" level="project" />
