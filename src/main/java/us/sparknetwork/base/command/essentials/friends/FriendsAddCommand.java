@@ -57,6 +57,12 @@ public class FriendsAddCommand extends AbstractAdvancedCommand {
             return true;
         }
 
+        if(sender == target){
+            sender.sendMessage(i18n.translate("friends.cant.add.self"));
+
+            return true;
+        }
+
         addCallback(ListenableFutureUtils.combine(this.userHandler.findOne(sender.getUniqueId().toString()), this.userHandler.findOne(target.getUniqueId().toString())), (data) -> {
             User.Complete from = data.getFirst();
             User.Complete to = data.getSecond();
