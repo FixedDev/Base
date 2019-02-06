@@ -24,6 +24,7 @@ public class FriendsMainCommand extends AbstractAdvancedCommand {
         this.registerSubCommand(new FriendsAcceptCommand(userHandler, requestHandler, i18n));
         this.registerSubCommand(new FriendsDenyCommand(userHandler, requestHandler, i18n));
         this.registerSubCommand(new FriendsAddCommand(userHandler, requestHandler, i18n));
+        this.registerSubCommand(new FriendsRemoveCommand(userHandler, i18n));
         this.registerSubCommand(new FriendsSetLimitCommand(userHandler, i18n));
     }
 
@@ -36,7 +37,7 @@ public class FriendsMainCommand extends AbstractAdvancedCommand {
     public List<String> getSuggestions(Namespace namespace, CommandArguments arguments) {
         CommandSender sender = namespace.getObject(CommandSender.class, "sender");
 
-        List<String> basicCommands = new ArrayList<>(Arrays.asList("accept", "deny", "add"));
+        List<String> basicCommands = new ArrayList<>(Arrays.asList("accept", "deny", "add", "remove"));
 
         if(sender.hasPermission("base.command.friends.setlimit")){
             basicCommands.add("setlimit");
