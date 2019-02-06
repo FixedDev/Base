@@ -152,6 +152,8 @@ public class BaseUser implements User.Complete {
         this.friends = new ArrayList<>();
         this.globalChatVisible = true;
         this.visibility = WhisperVisibility.NONE;
+
+        this.friendsLimit = -1;
     }
 
 
@@ -193,7 +195,7 @@ public class BaseUser implements User.Complete {
     @Override
     @NotNull
     public String getLastName() {
-        if(nameHistory.isEmpty()){
+        if (nameHistory.isEmpty()) {
             throw new IllegalStateException("No last name found for user" + getUUID());
         }
 
@@ -437,6 +439,7 @@ public class BaseUser implements User.Complete {
     /*
      * Friends Implementation
      */
+    @NotNull
     @Override
     public List<UUID> getFriends() {
         return new ArrayList<>(friends);
@@ -461,6 +464,11 @@ public class BaseUser implements User.Complete {
     }
 
     @Override
+    public int getFriendsNumber() {
+        return friends.size();
+    }
+
+    @Override
     public boolean isFriendOf(@NotNull Identity identity) {
         return friends.contains(identity.getUUID());
     }
@@ -474,4 +482,6 @@ public class BaseUser implements User.Complete {
     public void setFriendsLimit(int limit) {
         this.friendsLimit = limit;
     }
+
+
 }

@@ -1,7 +1,6 @@
 package us.sparknetwork.base.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.datamanager.Model;
@@ -93,11 +92,15 @@ public interface User extends Model, Identity {
     }
 
     interface Friends extends Identity {
+        @NotNull
         List<UUID> getFriends();
 
         void addFriend(@NotNull Identity identity);
 
         void removeFriend(@NotNull Identity identity);
+
+        @JsonIgnore
+        int getFriendsNumber();
 
         @JsonIgnore
         boolean isFriendOf(@NotNull Identity identity);
