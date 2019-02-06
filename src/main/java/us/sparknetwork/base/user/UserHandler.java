@@ -8,6 +8,6 @@ import us.sparknetwork.base.datamanager.CachedStorageProvider;
 
 public interface UserHandler extends CachedStorageProvider<User.Complete>, Listener {
     @Nullable
-    Player getPlayerByNick(@NotNull String var1);
+    Player getPlayerByNick(@NotNull String nick);
 }
 
