@@ -86,7 +86,7 @@ public class StaffChatCommands implements CommandClass {
 
         String bool = userSettings.isInStaffChat() ? "StaffChat" : "Global";
 
-        sender.sendMessage(MessageFormat.format(i18n.translate("toggle.staff.chat"), sender.getName(), bool));
+        sender.sendMessage(i18n.format("toggle.staff.chat", sender.getName(), bool));
 
         return true;
     }
