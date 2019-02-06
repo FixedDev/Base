@@ -151,7 +151,7 @@ public class BaseUser implements User.Complete {
         this.ignoredPlayers = new ArrayList<>();
         this.friends = new ArrayList<>();
         this.globalChatVisible = true;
-        this.visibility = WhisperVisibility.NONE;
+        this.visibility = WhisperVisibility.ALL;
 
         this.friendsLimit = -1;
     }
