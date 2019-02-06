@@ -15,6 +15,51 @@
 
     <artifactId>Base</artifactId>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scmConnectionUrl>scm:git:file://localhost/${basedir}/.git/</scmConnectionUrl>
+
+                    <revisionOnScmFailure>unknown</revisionOnScmFailure>
+
+                    <shortRevisionLength>5</shortRevisionLength>
+                    <scmDirectory>${basedir}/.git</scmDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>io.github.michaldo</groupId>
+                <artifactId>nashorn-maven-plugin</artifactId>
+                <version>0.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>eval</goal>
+                        </goals>
+                        <configuration>
+                            <script>
+                                $project.artifact.version = "${project.version}-${buildNumber}";
+                            </script>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <repositories>
         <repository>
             <id>vault-repo</id>

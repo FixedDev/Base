@@ -1,7 +1,7 @@
 name: Base
 main: us.sparknetwork.base.BasePlugin
 author: Ggamer55
-version: ${pom.version}
+version: ${project.version}-${buildNumber}
 softdepend: [ProtocolLib, PlaceholderAPI]
 depend: [Vault]
 
