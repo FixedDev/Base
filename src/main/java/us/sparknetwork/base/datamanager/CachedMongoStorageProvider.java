@@ -8,6 +8,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.ReplaceOptions;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.*;
@@ -197,13 +198,52 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         return objects;
     }
 
+
+    @Override
+    public @NotNull ListenableFuture<O> findOneByQuery(Bson bsonQuery) {
+        return executorService.submit(() -> mongoCollection.find(bsonQuery).first());
+    }
+
+    @Override
+    public @Nullable O findOneByQuerySync(Bson bsonQuery) {
+        return mongoCollection.find(bsonQuery).first();
+    }
+
+    @Override
+    public @NotNull ListenableFuture<Set<O>> findByQuery(Bson bsonQuery, int skip, int limit) {
+        if (limit < 1) {
+            throw new IllegalArgumentException("Limit should be 1 or more!");
+        }
+
+        return executorService.submit(() -> {
+            Set<O> objects = new HashSet<>();
+
+            mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
+
+            return objects;
+        });
+    }
+
+    @Override
+    public @NotNull Set<O> findByQuerySync(Bson bsonQuery, int skip, int limit) {
+        if (limit < 1) {
+            throw new IllegalArgumentException("Limit should be 1 or more!");
+        }
+
+        Set<O> objects = new HashSet<>();
+
+        mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
+
+        return objects;
+    }
+
+
     @Override
     public ListenableFuture<Void> save(O o, boolean force) {
         return executorService.submit(() -> {
             RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + o.getId());
             rBucket.set(o);
             rBucket.expire(2, TimeUnit.MINUTES);
-
 
             this.mongoCollection.replaceOne(createIdQuery(o.getId()), o, new ReplaceOptions().upsert(true));
 

@@ -6,8 +6,11 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
+import org.bson.BsonDocument;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.redisson.api.*;
@@ -24,7 +27,6 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
 
     private String dataPrefix;
     private Class<? extends O> modelClazz;
-
 
     public MongoStorageProvider(ListeningExecutorService executorService, MongoDatabase database, String dataPrefix, Class<? extends O> modelClazz) {
         this.executorService = executorService;
@@ -136,6 +138,52 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         Set<O> objects = new HashSet<>();
 
         mongoCollection.find().limit(limit).into(objects);
+
+        return objects;
+    }
+
+    @Override
+    public @NotNull ListenableFuture<O> findOneByQuery(Bson bsonQuery) {
+        return executorService.submit(() -> mongoCollection.find(bsonQuery).first());
+    }
+
+    @Override
+    public @Nullable O findOneByQuerySync(Bson bsonQuery) {
+        return mongoCollection.find(bsonQuery).first();
+    }
+
+    @Override
+    public @NotNull ListenableFuture<Set<O>> findByQuery(Bson bsonQuery, int skip, int limit) {
+        if (limit < 1) {
+            throw new IllegalArgumentException("Limit should be 1 or more!");
+        }
+
+        if(skip < 0){
+            throw new IllegalArgumentException("Skip should be 0 or more!");
+        }
+
+        return executorService.submit(() -> {
+            Set<O> objects = new HashSet<>();
+
+            mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
+
+            return objects;
+        });
+    }
+
+    @Override
+    public @NotNull Set<O> findByQuerySync(Bson bsonQuery, int skip, int limit) {
+        if (limit < 1) {
+            throw new IllegalArgumentException("Limit should be 1 or more!");
+        }
+
+        if(skip < 0){
+            throw new IllegalArgumentException("Skip should be 0 or more!");
+        }
+
+        Set<O> objects = new HashSet<>();
+
+        mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
 
         return objects;
     }

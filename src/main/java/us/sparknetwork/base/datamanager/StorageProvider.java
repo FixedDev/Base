@@ -1,6 +1,7 @@
 package us.sparknetwork.base.datamanager;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +32,14 @@ public interface StorageProvider<O extends Model> {
 
     @NotNull
     ListenableFuture<Void> save(@NotNull Set<O> objects);
+
+    @NotNull ListenableFuture<O> findOneByQuery(Bson bsonQuery);
+
+    O findOneByQuerySync(Bson bsonQuery);
+
+    @NotNull ListenableFuture<Set<O>> findByQuery(Bson bsonQuery, int skip, int limit);
+
+    @NotNull Set<O> findByQuerySync(Bson bsonQuery, int skip, int limit);
 
     @NotNull
     ListenableFuture<Void> delete(@NotNull O object);

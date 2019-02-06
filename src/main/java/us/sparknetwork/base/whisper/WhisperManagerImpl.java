@@ -50,6 +50,7 @@ public class WhisperManagerImpl implements WhisperManager {
     public ListenableFuture sendMessageAsync(@NotNull Player sender, @NotNull User.Complete from, @NotNull User.Complete to, String content) {
         Objects.requireNonNull(sender);
         Objects.requireNonNull(from);
+        Objects.requireNonNull(to);
 
         OfflinePlayer offlineTarget = Bukkit.getOfflinePlayer(to.getUUID());
 
@@ -125,7 +126,6 @@ public class WhisperManagerImpl implements WhisperManager {
             userData.setLastPrivateMessageReplier(message.getFrom().getUUID());
             userDataHandler.save(userData);
         });
-
     }
 
     private void sendSocialSpyMessage(WhisperMessage message) {
