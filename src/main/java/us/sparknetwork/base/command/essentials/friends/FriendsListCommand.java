@@ -2,6 +2,7 @@ package us.sparknetwork.base.command.essentials.friends;
 
 import me.ggamer55.bcm.AbstractAdvancedCommand;
 import me.ggamer55.bcm.CommandContext;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
@@ -64,13 +65,13 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
             JsonMessage.JsonStringBuilder message = new JsonMessage().append(i18n.translate("friends.list.prefix"));
             message = message.save().append("");
 
-            if(user.getFriendsNumber() == 0){
+            if (user.getFriendsNumber() == 0) {
                 message.save().append(i18n.translate("none"));
             }
 
-             Iterator<User.Complete> userFriendsIterator = userFriends.iterator();
+            Iterator<User.Complete> userFriendsIterator = userFriends.iterator();
 
-            while (userFriendsIterator.hasNext()){
+            while (userFriendsIterator.hasNext()) {
                 User.Complete userFriend = userFriendsIterator.next();
 
                 String friendNick;
@@ -84,12 +85,19 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
                 message = message.save().append(friendNick);
 
                 if (userFriend.isOnline()) {
+                    String randomId = UUID.randomUUID().toString();
+
+                    temporaryCommandUtils.registerTemporalCommand(sender, randomId, player -> {
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "send " + player.getName() + " " + userFriend.getLastServerId());
+                    });
+
                     message = message
                             .setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n"))
+                            .setClickAsExecuteCmd(randomId)
                             .save().append("");
                 }
 
-                if(userFriendsIterator.hasNext()){
+                if (userFriendsIterator.hasNext()) {
                     message = message.save().append(i18n.translate("friends.list.delimiter"));
                 }
             }
