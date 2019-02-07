@@ -12,6 +12,7 @@ import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.utils.JsonMessage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -60,16 +61,20 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
             Set<User.Complete> userFriends = userHandler.findSync(friends, friends.size());
 
             JsonMessage.JsonStringBuilder message = new JsonMessage().append(i18n.translate("friends.list.prefix"));
-            message = message.save().append(" ");
+            message = message.save().append("");
 
-            if(userFriends.isEmpty()){
+            if(user.getFriendsNumber() == 0){
                 message.save().append(i18n.translate("none"));
             }
 
-            for (User.Complete userFriend : userFriends) {
+             Iterator<User.Complete> userFriendsIterator = userFriends.iterator();
+
+            while (userFriendsIterator.hasNext()){
+                User.Complete userFriend = userFriendsIterator.next();
+
                 String friendNick;
 
-                if (user.isOnline()) {
+                if (userFriend.isOnline()) {
                     friendNick = i18n.translate("friends.list.online") + userFriend.getLastName();
                 } else {
                     friendNick = i18n.translate("friends.list.offline") + userFriend.getLastName();
@@ -78,8 +83,11 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
                 message = message.save().append(friendNick);
 
                 if (user.isOnline()) {
-                    message = message.setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n")).save()
-                            .append(i18n.translate("friends.list.delimiter"));
+                    message = message.setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n")).save().append("");
+                }
+
+                if(userFriendsIterator.hasNext()){
+                    message = message.save().append(i18n.translate("friends.list.delimiter"));
                 }
             }
 
