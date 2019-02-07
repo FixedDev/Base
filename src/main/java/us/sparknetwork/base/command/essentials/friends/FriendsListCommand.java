@@ -50,13 +50,6 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
 
         Player sender = (Player) commandSender;
 
-        OfflinePlayer target = Bukkit.getOfflinePlayer(context.getArgument(0));
-
-        if (target.getUniqueId() == null) {
-            commandSender.sendMessage(this.i18n.format("user.not.found", context.getArgument(0)));
-            return true;
-        }
-
         addCallback(this.userHandler.findOne(sender.getUniqueId().toString()), (user) -> {
             if (user == null) {
                 return;
