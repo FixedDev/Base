@@ -82,7 +82,7 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
 
                 message = message.save().append(friendNick);
 
-                if (user.isOnline()) {
+                if (userFriend.isOnline()) {
                     message = message.setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n")).save().append("");
                 }
 
