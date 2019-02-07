@@ -65,7 +65,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);
 
-        Bson query = and(eq("from", from.getUUID().toString()), eq("to", to.getUUID().toString()));
+        Bson query = and(eq("from", to.getUUID().toString()), eq("to", from.getUUID().toString()));
 
         return ListenableFutureUtils.transformFutureAsync(this.findOneByQuery(query), friendRequest -> {
             if (friendRequest == null) {
@@ -81,7 +81,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
             delete(friendRequest);
 
             if (requestSender.isOnline()) {
-                requestSender.getPlayer().sendMessage(i18n.format("friends.request.accepted", to.hasNick() ? to.getNick() : to.getLastName()));
+                requestSender.getPlayer().sendMessage(i18n.format("friends.request.accepted", from.hasNick() ? from.getNick() : from.getLastName()));
             }
 
             FriendRequestReply requestReply = new FriendRequestReply(friendRequest, FriendRequestReply.RequestReply.ACCEPTED);
@@ -109,7 +109,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
             OfflinePlayer requestSender = Bukkit.getOfflinePlayer(to.getUUID());
 
             if (requestSender.isOnline()) {
-                requestSender.getPlayer().sendMessage(i18n.format("friends.request.denied", to.hasNick() ? to.getNick() : to.getLastName()));
+                requestSender.getPlayer().sendMessage(i18n.format("friends.request.denied", from.hasNick() ? from.getNick() : from.getLastName()));
             }
 
             FriendRequestReply requestReply = new FriendRequestReply(friendRequest, FriendRequestReply.RequestReply.DENIED);
