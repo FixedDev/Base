@@ -2,14 +2,13 @@ package us.sparknetwork.base.command.essentials.friends;
 
 import me.ggamer55.bcm.AbstractAdvancedCommand;
 import me.ggamer55.bcm.CommandContext;
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.user.User;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.utils.JsonMessage;
+import us.sparknetwork.utils.TemporaryCommandUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,8 +22,9 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
 
     private UserHandler userHandler;
     private I18n i18n;
+    private TemporaryCommandUtils temporaryCommandUtils;
 
-    FriendsListCommand(UserHandler userHandler, I18n i18n) {
+    FriendsListCommand(UserHandler userHandler, I18n i18n, TemporaryCommandUtils temporaryCommandUtils) {
         super(new String[]{"list"},
                 "/<command>",
                 "",
@@ -38,6 +38,7 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
 
         this.userHandler = userHandler;
         this.i18n = i18n;
+        this.temporaryCommandUtils = temporaryCommandUtils;
     }
 
 
@@ -83,7 +84,9 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
                 message = message.save().append(friendNick);
 
                 if (userFriend.isOnline()) {
-                    message = message.setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n")).save().append("");
+                    message = message
+                            .setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n"))
+                            .save().append("");
                 }
 
                 if(userFriendsIterator.hasNext()){
