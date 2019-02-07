@@ -176,6 +176,8 @@ public class BasePlugin extends JavaPlugin {
             PlaceholderAPIHook.hookPlaceholders(injector);
             this.getLogger().info("PlaceholderAPI hook enabled");
         }
+
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
     }
 
     @Override
