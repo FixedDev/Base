@@ -338,7 +338,7 @@ public class BasePlugin extends JavaPlugin {
         BukkitCommandHandler commandHandler = new BukkitCommandHandler(this.getLogger());
 
         commandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
-        commandHandler.registerCommandClass(new SendCommand());
+        commandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
     }
 
 
