@@ -1,5 +1,6 @@
 package us.sparknetwork.utils;
 
+import com.google.inject.Singleton;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
-
+@Singleton
 public class TemporaryCommandUtils implements Listener {
 
     private Map<String, TemporalCommand> temporalCommandMap;
