@@ -69,7 +69,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
 
         return ListenableFutureUtils.transformFutureAsync(this.findOneByQuery(query), friendRequest -> {
             if (friendRequest == null) {
-                accepter.sendMessage(i18n.format("friends.request.not.found", from.hasNick() ? from.getNick() : from.getLastName()));
+                accepter.sendMessage(i18n.format("friends.request.not.found", to.hasNick() ? to.getNick() : to.getLastName()));
                 return Futures.immediateFuture(new FriendRequestReply(null, FriendRequestReply.RequestReply.NOT_FOUND));
             }
 
@@ -78,6 +78,8 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
             from.addFriend(to);
             to.addFriend(from);
 
+            delete(friendRequest);
+
             if (requestSender.isOnline()) {
                 requestSender.getPlayer().sendMessage(i18n.format("friends.request.accepted", to.hasNick() ? to.getNick() : to.getLastName()));
             }
@@ -85,7 +87,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
             FriendRequestReply requestReply = new FriendRequestReply(friendRequest, FriendRequestReply.RequestReply.ACCEPTED);
             friendRequestReplyChannel.sendMessage(requestReply);
 
-            accepter.sendMessage(i18n.format("friends.request.accept", from.hasNick() ? from.getNick() : from.getLastName()));
+            accepter.sendMessage(i18n.format("friends.request.accept", to.hasNick() ? to.getNick() : to.getLastName()));
             return Futures.immediateFuture(requestReply);
         }, executorService);
     }
@@ -96,11 +98,11 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);
 
-        Bson query = and(eq("from", from.getUUID().toString()), eq("to", to.getUUID().toString()));
+        Bson query = and(eq("from", to.getUUID().toString()), eq("to", from.getUUID().toString()));
 
         return ListenableFutureUtils.transformFutureAsync(this.findOneByQuery(query), friendRequest -> {
             if (friendRequest == null) {
-                denier.sendMessage(i18n.format("friends.request.not.found", from.hasNick() ? from.getNick() : from.getLastName()));
+                denier.sendMessage(i18n.format("friends.request.not.found", to.hasNick() ? to.getNick() : to.getLastName()));
                 return Futures.immediateFuture(new FriendRequestReply(null, FriendRequestReply.RequestReply.NOT_FOUND));
             }
 
@@ -113,7 +115,9 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
             FriendRequestReply requestReply = new FriendRequestReply(friendRequest, FriendRequestReply.RequestReply.DENIED);
             friendRequestReplyChannel.sendMessage(requestReply);
 
-            denier.sendMessage(i18n.format("friends.request.deny", from.hasNick() ? from.getNick() : from.getLastName()));
+            delete(friendRequest);
+
+            denier.sendMessage(i18n.format("friends.request.deny", to.hasNick() ? to.getNick() : to.getLastName()));
             return Futures.immediateFuture(requestReply);
         }, executorService);
     }

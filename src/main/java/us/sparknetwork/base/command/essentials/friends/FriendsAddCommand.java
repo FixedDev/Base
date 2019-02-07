@@ -57,7 +57,7 @@ public class FriendsAddCommand extends AbstractAdvancedCommand {
             return true;
         }
 
-        if(sender == target){
+        if (sender == target) {
             sender.sendMessage(i18n.translate("friends.cant.add.self"));
 
             return true;
@@ -69,6 +69,11 @@ public class FriendsAddCommand extends AbstractAdvancedCommand {
 
             if (to == null) {
                 commandSender.sendMessage(this.i18n.format("user.not.found", context.getArgument(0)));
+                return;
+            }
+
+            if (to.isFriendOf(from)) {
+                commandSender.sendMessage(i18n.format("friends.already", to.hasNick() ? to.getNick() : to.getLastName()));
                 return;
             }
 

@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.user.User;
 import us.sparknetwork.base.user.UserHandler;
-import us.sparknetwork.base.user.friends.FriendRequestHandler;
 import us.sparknetwork.utils.ListenableFutureUtils;
 
 import java.util.ArrayList;
@@ -67,6 +66,11 @@ public class FriendsRemoveCommand extends AbstractAdvancedCommand {
 
             if (to == null) {
                 commandSender.sendMessage(this.i18n.format("user.not.found", context.getArgument(0)));
+                return;
+            }
+
+            if (!from.isFriendOf(to)) {
+                commandSender.sendMessage(i18n.format("friends.not.already", to.hasNick() ? to.getNick() : to.getLastName()));
                 return;
             }
 
