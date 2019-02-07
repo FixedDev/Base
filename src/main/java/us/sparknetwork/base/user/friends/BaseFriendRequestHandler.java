@@ -73,7 +73,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
                 return Futures.immediateFuture(new FriendRequestReply(null, FriendRequestReply.RequestReply.NOT_FOUND));
             }
 
-            OfflinePlayer requestSender = Bukkit.getOfflinePlayer(from.getUUID());
+            OfflinePlayer requestSender = Bukkit.getOfflinePlayer(to.getUUID());
 
             from.addFriend(to);
             to.addFriend(from);
@@ -106,7 +106,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
                 return Futures.immediateFuture(new FriendRequestReply(null, FriendRequestReply.RequestReply.NOT_FOUND));
             }
 
-            OfflinePlayer requestSender = Bukkit.getOfflinePlayer(from.getUUID());
+            OfflinePlayer requestSender = Bukkit.getOfflinePlayer(to.getUUID());
 
             if (requestSender.isOnline()) {
                 requestSender.getPlayer().sendMessage(i18n.format("friends.request.denied", to.hasNick() ? to.getNick() : to.getLastName()));

@@ -42,14 +42,14 @@ public class FriendRequestListener implements ChannelListener<FriendRequest> {
         Player requestReceiver = offlineRequestReceiver.getPlayer();
 
         executorService.submit(() -> {
-            User.Complete from = userHandler.findOneSync(data.getFrom().toString());
+            User.Complete to = userHandler.findOneSync(data.getTo().toString());
 
-            if (from == null) {
-                plugin.getLogger().warning("Received an FriendRequest with an invalid sender, requestId: " + data.getId() + " senderId: " + data.getFrom().toString());
+            if (to == null) {
+                plugin.getLogger().warning("Received an FriendRequest with an invalid sender, requestId: " + data.getId() + " senderId: " + data.getTo().toString());
                 return;
             }
 
-            requestReceiver.getPlayer().sendMessage(i18n.format("friends.request.receive", from.hasNick() ? from.getNick() : from.getLastName()));
+            requestReceiver.getPlayer().sendMessage(i18n.format("friends.request.receive", to.hasNick() ? to.getNick() : to.getLastName()));
         });
 
     }

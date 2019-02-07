@@ -42,7 +42,7 @@ public class FriendsRequestReplyListener implements ChannelListener<FriendReques
         Player requestSender = offlineRequestSender.getPlayer();
 
         executorService.submit(() -> {
-            User.Complete to = userHandler.findOneSync(data.getRequest().getTo().toString());
+            User.Complete to = userHandler.findOneSync(data.getRequest().getFrom().toString());
 
             if(to == null){
                 return;
