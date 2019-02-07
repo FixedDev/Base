@@ -77,6 +77,9 @@ public class FriendsRemoveCommand extends AbstractAdvancedCommand {
             from.removeFriend(to);
             to.removeFriend(from);
 
+            userHandler.save(to);
+            userHandler.save(from);
+
             sender.sendMessage(i18n.format("friends.remove", to.hasNick() ? to.getNick() : to.getLastName(), from.getFriendsNumber()));
         });
         return true;

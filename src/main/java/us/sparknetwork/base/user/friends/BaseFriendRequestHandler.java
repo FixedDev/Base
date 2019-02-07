@@ -78,6 +78,9 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
             from.addFriend(to);
             to.addFriend(from);
 
+            userHandler.save(to);
+            userHandler.save(from);
+
             delete(friendRequest);
 
             if (requestSender.isOnline()) {
