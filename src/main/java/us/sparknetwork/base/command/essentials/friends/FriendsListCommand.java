@@ -65,6 +65,8 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
             JsonMessage.JsonStringBuilder message = new JsonMessage().append(i18n.translate("friends.list.prefix"));
             message = message.save().append("");
 
+            System.out.println(user.getFriendsNumber());
+
             if (user.getFriendsNumber() == 0) {
                 message.save().append(i18n.translate("none"));
             }
@@ -93,7 +95,7 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
 
                     message = message
                             .setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n"))
-                            .setClickAsExecuteCmd(randomId)
+                            .setClickAsExecuteCmd("/" + randomId)
                             .save().append("");
                 }
 
