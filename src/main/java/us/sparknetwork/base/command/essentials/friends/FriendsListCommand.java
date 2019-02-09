@@ -76,11 +76,8 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
             JsonMessage.JsonStringBuilder message = new JsonMessage().append(i18n.translate("friends.list.prefix"));
             message = message.save().append("");
 
-            System.out.println(user.getFriendsNumber());
-            System.out.println(i18n.translate("none"));
-
             if (user.getFriendsNumber() == 0) {
-                message.save().append(i18n.translate("none"));
+                message = message.save().append(i18n.translate("none"));
             }
 
             Iterator<User.Complete> userFriendsIterator = userFriends.iterator();
