@@ -39,13 +39,9 @@ public class TemporaryCommandUtils implements Listener {
 
     @EventHandler
     public void onPlayerPreProcess(PlayerCommandPreprocessEvent e) {
-        String command = e.getMessage();
+        String command = e.getMessage().substring(1);
 
         if (!temporalCommandMap.containsKey(command.toLowerCase())) {
-            return;
-        }
-
-        if (!playerIdToCommandName.get(e.getPlayer().getUniqueId()).contains(command.toLowerCase())) {
             return;
         }
 
@@ -54,7 +50,7 @@ public class TemporaryCommandUtils implements Listener {
         temporalCommand.run(e.getPlayer());
 
         temporalCommandMap.remove(command.toLowerCase());
-        playerIdToCommandName.remove(e.getPlayer().getUniqueId());
+        playerIdToCommandName.getOrDefault(e.getPlayer().getUniqueId(), new ArrayList<>()).remove(command.toLowerCase());
 
         e.setCancelled(true);
     }
