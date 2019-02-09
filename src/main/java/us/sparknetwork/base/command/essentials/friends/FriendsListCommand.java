@@ -1,20 +1,29 @@
 package us.sparknetwork.base.command.essentials.friends;
 
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import me.ggamer55.bcm.AbstractAdvancedCommand;
 import me.ggamer55.bcm.CommandContext;
+import me.ggamer55.bcm.basic.exceptions.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.user.User;
 import us.sparknetwork.base.user.UserHandler;
+import us.sparknetwork.base.user.finder.UserFinder;
 import us.sparknetwork.utils.JsonMessage;
+import us.sparknetwork.utils.ListenableFutureUtils;
 import us.sparknetwork.utils.TemporaryCommandUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import static us.sparknetwork.utils.ListenableFutureUtils.addCallback;
@@ -22,10 +31,11 @@ import static us.sparknetwork.utils.ListenableFutureUtils.addCallback;
 public class FriendsListCommand extends AbstractAdvancedCommand {
 
     private UserHandler userHandler;
+    private UserFinder userFinder;
     private I18n i18n;
     private TemporaryCommandUtils temporaryCommandUtils;
 
-    FriendsListCommand(UserHandler userHandler, I18n i18n, TemporaryCommandUtils temporaryCommandUtils) {
+    FriendsListCommand(UserHandler userHandler, UserFinder userFinder, I18n i18n, TemporaryCommandUtils temporaryCommandUtils) {
         super(new String[]{"list"},
                 "/<command>",
                 "",
@@ -38,6 +48,7 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
                 new ArrayList<>());
 
         this.userHandler = userHandler;
+        this.userFinder = userFinder;
         this.i18n = i18n;
         this.temporaryCommandUtils = temporaryCommandUtils;
     }
@@ -78,29 +89,42 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
 
                 String friendNick;
 
-                if (userFriend.isOnline()) {
-                    friendNick = i18n.translate("friends.list.online") + userFriend.getLastName();
-                } else {
-                    friendNick = i18n.translate("friends.list.offline") + userFriend.getLastName();
-                }
+                ListenableFuture<Boolean> isOnline = userFinder.isOnline(userFriend.getUUID(), UserFinder.Scope.GLOBAL);
 
-                message = message.save().append(friendNick);
+                try {
+                    Boolean online = isOnline.get(1, TimeUnit.SECONDS);
 
-                if (userFriend.isOnline()) {
-                    String randomId = UUID.randomUUID().toString();
+                    if (online) {
+                        friendNick = i18n.translate("friends.list.online") + userFriend.getLastName();
+                    } else {
+                        friendNick = i18n.translate("friends.list.offline") + userFriend.getLastName();
+                    }
 
-                    temporaryCommandUtils.registerTemporalCommand(sender, randomId, player -> {
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "send " + player.getName() + " " + userFriend.getLastServerId());
-                    });
+                    message = message.save().append(friendNick);
 
-                    message = message
-                            .setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n"))
-                            .setClickAsExecuteCmd("/" + randomId)
-                            .save().append("");
-                }
+                    if (online) {
+                        String randomId = UUID.randomUUID().toString();
 
-                if (userFriendsIterator.hasNext()) {
-                    message = message.save().append(i18n.translate("friends.list.delimiter"));
+                        temporaryCommandUtils.registerTemporalCommand(sender, randomId, player -> {
+                            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "send " + player.getName() + " " + userFriend.getLastServerId());
+                        });
+
+                        message = message
+                                .setHoverAsTooltip(i18n.format("friends.list.hover", userFriend.getLastServerId()).split("\n"))
+                                .setClickAsExecuteCmd("/" + randomId)
+                                .save().append("");
+                    }
+
+                    if (userFriendsIterator.hasNext()) {
+                        message = message.save().append(i18n.translate("friends.list.delimiter"));
+                    }
+
+                } catch (InterruptedException | TimeoutException | ExecutionException ex) {
+                    sender.sendMessage(i18n.translate("error.ocurred"));
+
+                    if (!(ex instanceof TimeoutException)) {
+                        Bukkit.getLogger().log(Level.SEVERE, "There was an error while retrieving online state of " + userFriend.getId());
+                    }
                 }
             }
 

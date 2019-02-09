@@ -8,6 +8,7 @@ import me.ggamer55.bcm.basic.Namespace;
 import org.bukkit.command.CommandSender;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.user.UserHandler;
+import us.sparknetwork.base.user.finder.UserFinder;
 import us.sparknetwork.base.user.friends.FriendRequestHandler;
 import us.sparknetwork.utils.TemporaryCommandUtils;
 
@@ -17,7 +18,7 @@ import java.util.List;
 
 public class FriendsMainCommand extends AbstractAdvancedCommand {
     @Inject
-    FriendsMainCommand(I18n i18n, UserHandler userHandler, FriendRequestHandler requestHandler, TemporaryCommandUtils temporaryCommandUtils) {
+    FriendsMainCommand(I18n i18n, UserHandler userHandler, UserFinder finder, FriendRequestHandler requestHandler, TemporaryCommandUtils temporaryCommandUtils) {
         super(new String[]{"friends"});
 
         setUsage("/<command> <subcommand>");
@@ -26,7 +27,7 @@ public class FriendsMainCommand extends AbstractAdvancedCommand {
         this.registerSubCommand(new FriendsDenyCommand(userHandler, requestHandler, i18n));
         this.registerSubCommand(new FriendsAddCommand(userHandler, requestHandler, i18n));
         this.registerSubCommand(new FriendsRemoveCommand(userHandler, i18n));
-        this.registerSubCommand(new FriendsListCommand(userHandler, i18n, temporaryCommandUtils));
+        this.registerSubCommand(new FriendsListCommand(userHandler, finder, i18n, temporaryCommandUtils));
         this.registerSubCommand(new FriendsSetLimitCommand(userHandler, i18n));
     }
 
