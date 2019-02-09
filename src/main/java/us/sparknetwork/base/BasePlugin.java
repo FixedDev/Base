@@ -55,6 +55,7 @@ import us.sparknetwork.base.listeners.JoinMessageListener;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.CommandHandler;
 import us.sparknetwork.utils.Config;
+import us.sparknetwork.utils.TemporaryCommandUtils;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -350,6 +351,8 @@ public class BasePlugin extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(injector.getInstance(ChatListener.class), this);
         this.getServer().getPluginManager().registerEvents(injector.getInstance(JoinMessageListener.class), this);
         this.getServer().getPluginManager().registerEvents(injector.getInstance(InvseeCommand.class), this);
+
+        this.getServer().getPluginManager().registerEvents(injector.getInstance(TemporaryCommandUtils.class), this);
     }
 
 
