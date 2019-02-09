@@ -146,6 +146,32 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                     }
                 }
 
+                List<String> availableLimits = new ArrayList<>();
+
+                e.getPlayer().getEffectivePermissions().forEach(permissionAttachmentInfo -> {
+                    String permission = permissionAttachmentInfo.getPermission();
+
+                    if (!permission.startsWith("base.friends.limit") || !permissionAttachmentInfo.getValue()) {
+                        return;
+                    }
+
+                    String limit = permission.replace("base.friends.limit", "");
+
+                    availableLimits.add(limit);
+                });
+
+                if (availableLimits.contains("unlimited")) {
+                    userData.setFriendsLimit(Integer.MAX_VALUE);
+                } else {
+                    availableLimits.stream().map(s -> {
+                        try {
+                            return Integer.parseInt(s);
+                        } catch (NumberFormatException ex) {
+                            return 5;
+                        }
+                    }).sorted(Integer::compare).forEachOrdered(userData::setFriendsLimit);
+                }
+
                 this.save(userData);
             } catch (Throwable var4) {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
