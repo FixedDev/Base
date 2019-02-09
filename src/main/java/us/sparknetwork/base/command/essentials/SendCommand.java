@@ -31,7 +31,7 @@ public class SendCommand implements CommandClass {
         target.sendMessage(i18n.format("player.server.sending", server, sender.getName()));
         sendToServer(target, server);
 
-        sender.sendMessage(i18n.format("player.server.send", target.getName(), sender.getName()));
+        sender.sendMessage(i18n.format("player.server.send", target.getName(), server));
 
         return true;
     }
