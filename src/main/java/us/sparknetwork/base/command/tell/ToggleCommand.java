@@ -43,6 +43,10 @@ public class ToggleCommand implements CommandClass {
 
 
     private User.WhisperVisibility getNextVisibility(User.WhisperVisibility visibility) {
+        if(visibility == null){
+            return User.WhisperVisibility.ALL;
+        }
+
         switch (visibility) {
             case FRIENDS:
                 return User.WhisperVisibility.NONE;
