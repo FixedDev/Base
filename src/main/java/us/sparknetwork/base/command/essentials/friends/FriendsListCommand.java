@@ -77,6 +77,7 @@ public class FriendsListCommand extends AbstractAdvancedCommand {
             message = message.save().append("");
 
             System.out.println(user.getFriendsNumber());
+            System.out.println(i18n.translate("none"));
 
             if (user.getFriendsNumber() == 0) {
                 message.save().append(i18n.translate("none"));
