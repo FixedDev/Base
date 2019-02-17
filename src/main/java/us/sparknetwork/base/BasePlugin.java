@@ -43,6 +43,8 @@ import us.sparknetwork.base.command.tell.SendCommands;
 import us.sparknetwork.base.command.tell.SocialSpyCommand;
 import us.sparknetwork.base.command.tell.ToggleCommand;
 import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
+import us.sparknetwork.base.module.ModuleHandler;
+import us.sparknetwork.base.module.ModuleHandlerModule;
 import us.sparknetwork.base.server.LocalServerData;
 import us.sparknetwork.base.server.MongoServerManager;
 import us.sparknetwork.base.server.ServerManager;
@@ -78,9 +80,9 @@ public class BasePlugin extends JavaPlugin {
 
     private ListeningExecutorService executorService;
 
-    private Gson gson;
-
     // Injected fields
+    @Inject
+    private ModuleHandler moduleHandler;
     @Inject
     private CommandHandler commandHandler;
 
@@ -138,8 +140,6 @@ public class BasePlugin extends JavaPlugin {
         }
 
         executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
-
-        gson = new GsonBuilder().setPrettyPrinting().enableComplexMapKeySerialization().create();
     }
 
 
@@ -155,9 +155,8 @@ public class BasePlugin extends JavaPlugin {
 
         serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
 
-        injector = Guice.createInjector(Stage.PRODUCTION, new BasePluginModule(this, serverData, chat, gson, redisson, mongoClient, database, executorService));
+        injector = Guice.createInjector(Stage.PRODUCTION, new BasePluginModule(this, serverData, chat, redisson, mongoClient, database, executorService), new ModuleHandlerModule(ModuleHandler.getLoadedModules()));
         injector.injectMembers(this);
-
 
         try {
             this.startServices();
@@ -270,7 +269,6 @@ public class BasePlugin extends JavaPlugin {
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
                 .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
-   //     mapper.registerModule(new MapperModule());
 
         TypeFactory tf = TypeFactory.defaultInstance().withClassLoader(this.getClassLoader());
         mapper.setTypeFactory(tf);
@@ -288,6 +286,8 @@ public class BasePlugin extends JavaPlugin {
     }
 
     private void startServices() throws Exception {
+        moduleHandler.start();
+
         ServerManager serverManager = injector.getInstance(ServerManager.class);
         serverManager.start();
 
