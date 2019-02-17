@@ -162,6 +162,8 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
 
                 if (availableLimits.contains("unlimited")) {
                     userData.setFriendsLimit(Integer.MAX_VALUE);
+                } else if (availableLimits.isEmpty()) {
+                    userData.setFriendsLimit(5);
                 } else {
                     availableLimits.stream().map(s -> {
                         try {
