@@ -21,8 +21,6 @@ public class BasePluginModule extends AbstractModule {
 
     private Chat chat;
 
-    private Gson gson;
-
     private RedissonClient redisson;
 
     private MongoClient mongoClient;
@@ -33,7 +31,6 @@ public class BasePluginModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(JavaPlugin.class).toInstance(plugin);
-        bind(Gson.class).toInstance(gson);
         bind(ListeningExecutorService.class).toInstance(executorService);
 
         bind(Chat.class).toInstance(chat);
