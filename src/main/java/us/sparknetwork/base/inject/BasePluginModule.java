@@ -45,6 +45,5 @@ public class BasePluginModule extends AbstractModule {
         install(new DatabaseModule(redisson, mongoClient, database));
         install(new HandlersModule());
         install(new CommandHandlerModule());
-
     }
 }
