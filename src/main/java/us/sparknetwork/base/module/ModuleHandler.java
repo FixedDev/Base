@@ -70,12 +70,12 @@ public class ModuleHandler extends AbstractService {
 
         loadedModules.forEach(module -> {
             if (StringUtils.isBlank(module.name())) {
-                logger.log(Level.WARNING, "Failed to register module {0}, because it doesn't have a name");
+                logger.log(Level.WARNING, "Failed to register module {0}, because it doesn't have a name", module.getClass().getName());
                 return;
             }
 
-            if (StringUtils.isBlank(module.version())) {
-                logger.log(Level.WARNING, "Failed to register module {0}, because it doesn't have a version");
+            if (module.version() == null || module.version().trim().isEmpty()) {
+                logger.log(Level.WARNING, "Failed to register module {0}, because it doesn't have a version", module.name());
                 return;
             }
 
