@@ -4,8 +4,6 @@ import com.google.inject.AbstractModule;
 import us.sparknetwork.utils.inject.ProtectedBinder;
 
 import java.util.Collection;
-import java.util.List;
-
 
 public class ModuleHandlerModule extends AbstractModule {
 
