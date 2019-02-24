@@ -52,7 +52,8 @@ public class NickCommand implements CommandClass {
                     settings.setNick(null);
 
                     target.setDisplayName(target.getName());
-                    target.setPlayerListName(target.getName());
+                    // target.setPlayerListName(target.getName());
+
 
                     this.dataHandler.save(settings);
 
@@ -85,7 +86,7 @@ public class NickCommand implements CommandClass {
 
                 settings.setNick(nick);
                 target.setDisplayName(nick);
-                target.setPlayerListName(nick);
+                // target.setPlayerListName(target.getName());
 
                 this.dataHandler.save(settings);
 
@@ -95,4 +96,5 @@ public class NickCommand implements CommandClass {
         return true;
 
     }
+
 }

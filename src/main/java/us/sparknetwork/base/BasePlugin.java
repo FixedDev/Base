@@ -178,6 +178,8 @@ public class BasePlugin extends JavaPlugin {
         }
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
+
     }
 
     @Override

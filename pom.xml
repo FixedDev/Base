@@ -219,6 +219,13 @@
             <version>16.0.2</version>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.nametagedit</groupId>
+            <artifactId>nametagedit</artifactId>
+            <version>4.1.0</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 </project>
