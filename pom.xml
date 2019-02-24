@@ -57,43 +57,10 @@
                     </execution>
                 </executions>
             </plugin>
-
-            <plugin>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <relocations>
-                        <relocation>
-                            <pattern>io.netty</pattern>
-                            <shadedPattern>us.sparknetwork.lib.io.netty</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.fasterxml</pattern>
-                            <shadedPattern>us.sparknetwork.lib.com.fasterxml</shadedPattern>
-                        </relocation>
-                        <relocation>
-                            <pattern>com.google.common</pattern>
-                            <shadedPattern>us.sparknetwork.lib.com.google.common</shadedPattern>
-                        </relocation>
-                    </relocations>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 
     <repositories>
-        <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
-        </repository>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -142,7 +109,7 @@
         <dependency>
             <groupId>us.sparknetwork</groupId>
             <artifactId>BCM-Bukkit</artifactId>
-            <version>1.2</version>
+            <version>1.2.1</version>
             <scope>compile</scope>
         </dependency>
 

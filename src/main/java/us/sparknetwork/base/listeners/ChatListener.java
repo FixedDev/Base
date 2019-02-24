@@ -53,7 +53,7 @@ public class ChatListener implements Listener {
         staffChatChannel.registerListener(listener);
     }
 
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void chatListener(AsyncPlayerChatEvent e) {
         Optional<User.Complete> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(e.getPlayer().getUniqueId().toString()));
 
@@ -74,7 +74,7 @@ public class ChatListener implements Listener {
     }
 
     private void handleNormalChat(AsyncPlayerChatEvent e, User.Complete userData) {
-        Set<String> userIds = Bukkit.getOnlinePlayers().stream().map(Player::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
+        Set<String> userIds = e.getRecipients().stream().map(Player::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
 
         Set<User.Complete> userSettingsSet = settingsHandler.findSync(userIds, userIds.size());
 
@@ -141,7 +141,7 @@ public class ChatListener implements Listener {
             chatFormat = PlaceholderApiReplacer.parsePlaceholders(e.getPlayer(), chatFormat);
 
             if (playerChatFormat.isAllowRelationalPlaceholders()) {
-                for (Player viewer : Bukkit.getOnlinePlayers()) {
+                for (Player viewer : messageRecipientsArray) {
                     chatFormat = PlaceholderApiReplacer.parseRelationalPlaceholders(e.getPlayer(), viewer, chatFormat);
 
                     JsonMessage.sendRawJson(chatFormat, viewer);

@@ -3,7 +3,7 @@ package us.sparknetwork.base.command.essentials.friends;
 import com.google.inject.Inject;
 import me.ggamer55.bcm.AbstractAdvancedCommand;
 import me.ggamer55.bcm.CommandContext;
-import me.ggamer55.bcm.basic.CommandArguments;
+import me.ggamer55.bcm.basic.ArgumentArray;
 import me.ggamer55.bcm.basic.Namespace;
 import org.bukkit.command.CommandSender;
 import us.sparknetwork.base.I18n;
@@ -29,6 +29,7 @@ public class FriendsMainCommand extends AbstractAdvancedCommand {
         this.registerSubCommand(new FriendsRemoveCommand(userHandler, i18n));
         this.registerSubCommand(new FriendsListCommand(userHandler, finder, i18n, temporaryCommandUtils));
         this.registerSubCommand(new FriendsSetLimitCommand(userHandler, i18n));
+
     }
 
     @Override
@@ -37,7 +38,7 @@ public class FriendsMainCommand extends AbstractAdvancedCommand {
     }
 
     @Override
-    public List<String> getSuggestions(Namespace namespace, CommandArguments arguments) {
+    public List<String> getSuggestions(Namespace namespace, ArgumentArray arguments) {
         CommandSender sender = namespace.getObject(CommandSender.class, "sender");
 
         List<String> basicCommands = new ArrayList<>(Arrays.asList("accept", "deny", "add", "remove"));

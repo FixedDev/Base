@@ -5,7 +5,6 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
-import us.sparknetwork.base.Service;
 import us.sparknetwork.utils.AbstractService;
 
 import java.util.List;
