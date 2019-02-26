@@ -72,9 +72,9 @@
     <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.8.17" level="project" />
     <orderEntry type="library" name="Maven: org.jodd:jodd-bean:3.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.jodd:jodd-core:3.7.1" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-sync:3.9.1" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:bson:3.9.1" level="project" />
-    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:3.9.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-sync:3.10.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:bson:3.10.1" level="project" />
+    <orderEntry type="library" name="Maven: org.mongodb:mongodb-driver-core:3.10.1" level="project" />
     <orderEntry type="library" name="Maven: fr.javatic.mongo:mongo-jackson-codec:3.2.2__0.5" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: de.undercouch:bson4jackson:2.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8" level="project" />
