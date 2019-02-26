@@ -163,8 +163,6 @@ public class ChatListener implements Listener {
             e.setMessage(ChatColor.translateAlternateColorCodes('&', e.getMessage()));
         }
 
-        Bukkit.getConsoleSender().sendMessage(i18n.format("chat.staff.format", e.getPlayer().getName(), e.getMessage()));
-
         Set<String> userIds = Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("base.command.staffchat.see")).map(Player::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
 
         Set<Player> players = settingsHandler.findSync(userIds, userIds.size()).stream().filter(Objects::nonNull).filter(User.ChatSettings::isStaffChatVisible).map(playerSettings -> Bukkit.getPlayer(playerSettings.getUUID())).collect(Collectors.toSet());
