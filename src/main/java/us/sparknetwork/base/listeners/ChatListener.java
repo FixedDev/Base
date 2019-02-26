@@ -155,8 +155,6 @@ public class ChatListener implements Listener {
     }
 
     private void handleStaffChat(AsyncPlayerChatEvent e, User.Complete userSettings) {
-        e.setCancelled(true);
-
         if (!userSettings.isStaffChatVisible()) {
             e.getPlayer().sendMessage(i18n.translate("staff.chat.invisible"));
         }
