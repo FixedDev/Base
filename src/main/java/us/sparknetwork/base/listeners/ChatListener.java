@@ -172,7 +172,7 @@ public class ChatListener implements Listener {
         e.getRecipients().clear();
         e.getRecipients().addAll(players);
 
-        e.setFormat(i18n.format("chat.staff.format", e.getPlayer().getName(), "%1$s"));
+        e.setFormat(i18n.format("chat.staff.format", e.getPlayer().getName(), "%2$s"));
 
         StaffChatMessage message = new StaffChatMessage(e.getPlayer().getName(), e.getMessage());
 
