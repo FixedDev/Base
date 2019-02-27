@@ -57,7 +57,7 @@ public class ServerConfigurations {
             SERVER_ROLE = ServerRole.OTHER;
         }
 
-        RESTART_TIME = DateUtil.parseStringDuration(serverConfig.getString("restart-time", "6h"));
+        RESTART_TIME = DateUtil.parseStringDuration(serverConfig.getString("restart.restart-time", "6h"));
 
         this.saveConfig();
     }
