@@ -3,7 +3,7 @@ package us.sparknetwork.base.restart;
 import lombok.Getter;
 
 public enum RestartPriority {
-    LOW(10), NORMAL(5), HIGH(0);
+    LOW(10), NORMAL(20), HIGH(-1);
 
     @Getter
     private int maximumPlayers;

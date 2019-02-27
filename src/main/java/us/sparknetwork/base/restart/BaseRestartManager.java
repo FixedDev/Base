@@ -82,7 +82,7 @@ public class BaseRestartManager extends AbstractService implements RestartManage
             if (secondsLeft <= 0) {
                 int restartMaximumPlayers = restartPriority.getMaximumPlayers();
 
-                if (localServer.getOnlinePlayerNicks().size() <= restartMaximumPlayers) {
+                if (localServer.getOnlinePlayerNicks().size() <= restartMaximumPlayers || restartMaximumPlayers == -1) {
                     Bukkit.broadcastMessage(i18n.format("restart.now"));
 
                     scheduler.runTaskLater(plugin, () -> Bukkit.getServer().shutdown(), 2);
