@@ -86,7 +86,7 @@ public class ChatListener implements Listener {
         if (timeBeforeUnmute > 0 && !e.getPlayer().hasPermission("base.chat.muted.bypass")) {
             e.setCancelled(true);
 
-            e.getPlayer().sendMessage(MessageFormat.format(i18n.translate("already.muted.chat"), DateUtil.getHumanReadableDate(timeBeforeUnmute, )));
+            e.getPlayer().sendMessage(MessageFormat.format(i18n.translate("already.muted.chat"), DateUtil.getHumanReadableDate(timeBeforeUnmute, i18n)));
             return;
         }
 
@@ -94,7 +94,7 @@ public class ChatListener implements Listener {
         if (ServerConfigurations.SLOW_CHAT >= System.currentTimeMillis() && timeBeforeTalk > 0 && !e.getPlayer().hasPermission("base.chat.slow.bypass")) {
             e.setCancelled(true);
 
-            e.getPlayer().sendMessage(MessageFormat.format(i18n.translate("already.slowed.chat"), DateUtil.getHumanReadableDate(timeBeforeTalk, )));
+            e.getPlayer().sendMessage(MessageFormat.format(i18n.translate("already.slowed.chat"), DateUtil.getHumanReadableDate(timeBeforeTalk, i18n)));
             return;
         }
 
