@@ -351,6 +351,7 @@ public class BasePlugin extends JavaPlugin {
 
         commandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
         commandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
+        commandHandler.registerCommandClass(injector.getInstance(RestartCommands.class));
     }
 
 
