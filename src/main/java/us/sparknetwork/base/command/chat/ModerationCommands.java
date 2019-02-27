@@ -24,7 +24,7 @@ public class ModerationCommands implements CommandClass {
 
     @Command(names = {"clearchat", "cc"}, usage = "Usage: /<command> [reason]", flags = {'s'}, permission = "base.command.clearchat")
     public boolean clearChat(CommandSender sender, CommandContext context) {
-        String reason = context.getArguments().size() > 0 ? context.getJoinedArgs(0) : "None";
+        String reason = context.getArguments().isEmpty() ? context.getJoinedArgs(0) : "None";
 
         Bukkit.getOnlinePlayers().forEach(onlinePlayer -> {
             IntStream.range(0, 100).forEach(number -> onlinePlayer.sendMessage("\n\n\n\n\n\n\n\n\n\n"));
@@ -48,7 +48,7 @@ public class ModerationCommands implements CommandClass {
         long time = TimeUnit.MINUTES.toMillis(5);
 
         if (context.getArguments().size() == 1) {
-            long newTime = DateUtil.parse(context.getArgument(0));
+            long newTime = DateUtil.parseStringDuration(context.getArgument(0));
             time = newTime == -1 ? TimeUnit.MINUTES.toMillis(5) : newTime;
         }
 
@@ -65,23 +65,22 @@ public class ModerationCommands implements CommandClass {
         ServerConfigurations.getInstance().saveConfig();
 
         if (!(sender instanceof Player)) {
-            Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("muted.chat"), sender.getName(), DateUtil.getHumanReadableDate(time)));
+            Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("muted.chat"), sender.getName(), DateUtil.getHumanReadableDate(time,  i18n)));
 
             return true;
         }
         Player playerSender = (Player) sender;
 
-        Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("muted.chat"), playerSender.getDisplayName(), DateUtil.getHumanReadableDate(time)));
+        Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("muted.chat"), playerSender.getDisplayName(), DateUtil.getHumanReadableDate(time,  i18n)));
         return true;
     }
 
     @Command(names = {"slowchat"}, usage = "Usage: /<command>", max = 1, permission = "base.command.slowchat")
     public boolean slowChat(CommandSender sender, CommandContext context) {
-
         long time = TimeUnit.MINUTES.toMillis(5);
 
         if (context.getArguments().size() == 1) {
-            long newTime = DateUtil.parse(context.getArgument(0));
+            long newTime = DateUtil.parseStringDuration(context.getArgument(0));
             time = newTime == -1 ? TimeUnit.MINUTES.toMillis(5) : newTime;
         }
 
@@ -98,13 +97,13 @@ public class ModerationCommands implements CommandClass {
         ServerConfigurations.getInstance().saveConfig();
 
         if (!(sender instanceof Player)) {
-            Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("slowed.chat"), sender.getName(), DateUtil.getHumanReadableDate(time)));
+            Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("slowed.chat"), sender.getName(), DateUtil.getHumanReadableDate(time,  i18n)));
 
             return true;
         }
         Player playerSender = (Player) sender;
 
-        Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("slowed.chat"), playerSender.getDisplayName(), DateUtil.getHumanReadableDate(time)));
+        Bukkit.broadcastMessage(MessageFormat.format(i18n.translate("slowed.chat"), playerSender.getDisplayName(), DateUtil.getHumanReadableDate(time, i18n)));
         return true;
     }
 }

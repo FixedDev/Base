@@ -2,6 +2,9 @@ server:
   role: OTHER
   visibility: PUBLIC
 
+restart:
+  restart-time: 6h
+
 hook-protocollib: false
 language: en
 chat:

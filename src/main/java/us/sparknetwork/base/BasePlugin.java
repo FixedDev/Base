@@ -45,6 +45,8 @@ import us.sparknetwork.base.command.tell.ToggleCommand;
 import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
 import us.sparknetwork.base.module.ModuleHandler;
 import us.sparknetwork.base.module.ModuleHandlerModule;
+import us.sparknetwork.base.restart.RestartManager;
+import us.sparknetwork.base.restart.RestartPriority;
 import us.sparknetwork.base.server.LocalServerData;
 import us.sparknetwork.base.server.MongoServerManager;
 import us.sparknetwork.base.server.ServerManager;
@@ -59,6 +61,7 @@ import us.sparknetwork.cm.CommandHandler;
 import us.sparknetwork.utils.Config;
 import us.sparknetwork.utils.TemporaryCommandUtils;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -289,23 +292,29 @@ public class BasePlugin extends JavaPlugin {
 
     private void startServices() throws Exception {
         moduleHandler.start();
-
-        ServerManager serverManager = injector.getInstance(ServerManager.class);
         serverManager.start();
 
         ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
         chatFormatManager.start();
+
+        RestartManager restartManager = injector.getInstance(RestartManager.class);
+        restartManager.start();
+
+        restartManager.scheduleRestartIn(Duration.ofMillis(ServerConfigurations.RESTART_TIME), RestartPriority.NORMAL);
     }
 
     private void stopServices() {
         if (injector == null) {
             return;
         }
-        Service serverManager = injector.getInstance(ServerManager.class);
+        moduleHandler.stop();
         serverManager.stop();
 
         ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
         chatFormatManager.stop();
+
+        RestartManager restartManager = injector.getInstance(RestartManager.class);
+        restartManager.stop();
     }
 
     private void registerCommands() {

@@ -41,7 +41,7 @@ public class FriendsMainCommand extends AbstractAdvancedCommand {
     public List<String> getSuggestions(Namespace namespace, ArgumentArray arguments) {
         CommandSender sender = namespace.getObject(CommandSender.class, "sender");
 
-        List<String> basicCommands = new ArrayList<>(Arrays.asList("accept", "deny", "add", "remove"));
+        List<String> basicCommands = new ArrayList<>(Arrays.asList("accept", "deny", "add", "remove", "list"));
 
         if (sender.hasPermission("base.command.friends.setlimit")) {
             basicCommands.add("setlimit");

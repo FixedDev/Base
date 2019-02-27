@@ -2,12 +2,15 @@
 
 package us.sparknetwork.utils;
 
+import us.sparknetwork.base.I18n;
+
+import java.time.Duration;
 import java.util.StringJoiner;
 import java.util.concurrent.TimeUnit;
 
 public class DateUtil {
 
-    public static String getHumanReadableDate(long time) {
+    public static String getHumanReadableDate(long time, I18n i18n) {
         long remainingTime = time / 1000;
 
         StringJoiner joiner = new StringJoiner(" ");
@@ -24,65 +27,72 @@ public class DateUtil {
             years = remainingTime / (TimeUnit.DAYS.toSeconds(1) * 365);
             remainingTime %= TimeUnit.DAYS.toSeconds(1) * 365;
             joiner.add(years + "");
-            joiner.add(years > 1 ? "years" : "year");
+            joiner.add(years > 1 ? i18n.translate("time.years") : i18n.translate("time.year"));
         }
 
         if (remainingTime >= TimeUnit.DAYS.toSeconds(1) * 30) {
             months = remainingTime / (TimeUnit.DAYS.toSeconds(1) * 30);
             remainingTime %= TimeUnit.DAYS.toSeconds(1) * 30;
             joiner.add(months + "");
-            joiner.add(months > 1 ? "months" : "month");
+            joiner.add(months > 1 ? i18n.translate("time.months") : i18n.translate("time.month"));
         }
 
         if (remainingTime >= TimeUnit.DAYS.toSeconds(1) * 7) {
             weeks = remainingTime / (TimeUnit.DAYS.toSeconds(1) * 7);
             remainingTime %= TimeUnit.DAYS.toSeconds(1) * 7;
             joiner.add(weeks + "");
-            joiner.add(weeks > 1 ? "weeks" : "week");
+            joiner.add(weeks > 1 ? i18n.translate("time.weeks") : i18n.translate("time.week"));
         }
 
         if (remainingTime >= TimeUnit.DAYS.toSeconds(1)) {
             days = remainingTime / TimeUnit.DAYS.toSeconds(1);
             remainingTime %= TimeUnit.DAYS.toSeconds(1);
             joiner.add(days + "");
-            joiner.add(days > 1 ? "days" : "day");
+            joiner.add(days > 1 ? i18n.translate("time.days") : i18n.translate("time.day"));
         }
 
         if (remainingTime >= TimeUnit.HOURS.toSeconds(1)) {
             hours = remainingTime / TimeUnit.HOURS.toSeconds(1);
             remainingTime %= TimeUnit.HOURS.toSeconds(1);
             joiner.add(hours + "");
-            joiner.add(hours > 1 ? "hours" : "hour");
+            joiner.add(hours > 1 ? i18n.translate("time.hours") : i18n.translate("time.hour"));
         }
 
         if (remainingTime >= TimeUnit.MINUTES.toSeconds(1)) {
             minutes = remainingTime / TimeUnit.MINUTES.toSeconds(1);
             remainingTime %= TimeUnit.MINUTES.toSeconds(1);
             joiner.add(minutes + "");
-            joiner.add(minutes > 1 ? "minutes" : "minute");
+            joiner.add(minutes > 1 ? i18n.translate("time.minutes") : i18n.translate("time.minute"));
         }
 
         if (remainingTime > 0) {
             seconds = remainingTime;
             joiner.add(seconds + "");
-            joiner.add(seconds > 1 ? "seconds" : "second");
+            joiner.add(seconds > 1 ? i18n.translate("time.seconds") : i18n.translate("time.second"));
         }
         return joiner.toString();
     }
 
-    public static long parse(final String input) {
+    public static String durationToPrettyDate(Duration duration, I18n i18n) {
+        return getHumanReadableDate(duration.toMillis(), i18n);
+    }
+
+    public static long parseStringDuration(String input) {
         if (input == null || input.isEmpty()) {
             return -1L;
         }
         long result = 0L;
         StringBuilder number = new StringBuilder();
+
         for (int i = 0; i < input.length(); ++i) {
             final char c = input.charAt(i);
+
             if (Character.isDigit(c)) {
                 number.append(c);
             } else {
-                final String str;
-                if (Character.isLetter(c) && !(str = number.toString()).isEmpty()) {
+                final String str = number.toString();
+
+                if (Character.isLetter(c) && !str.isEmpty()) {
                     result += convert(Integer.parseInt(str), c);
                     number = new StringBuilder();
                 }

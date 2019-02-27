@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.base.server.ServerRole;
 import us.sparknetwork.base.server.ServerVisibility;
 import us.sparknetwork.utils.Config;
+import us.sparknetwork.utils.DateUtil;
 
 public class ServerConfigurations {
 
@@ -26,6 +27,8 @@ public class ServerConfigurations {
 
     public static long SLOW_CHAT = 0;
     public static int SLOW_CHAT_DELAY = 3;
+
+    public static long RESTART_TIME = 60L * 60L;
 
     public static ServerRole SERVER_ROLE = ServerRole.OTHER;
     public static ServerVisibility SERVER_VISIBILIY = ServerVisibility.PUBLIC;
@@ -53,6 +56,8 @@ public class ServerConfigurations {
 
             SERVER_ROLE = ServerRole.OTHER;
         }
+
+        RESTART_TIME = DateUtil.parseStringDuration(serverConfig.getString("restart-time", "6h"));
 
         this.saveConfig();
     }
