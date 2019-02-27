@@ -96,12 +96,14 @@ public class I18n {
 
     public void updateLocale(String locale) {
         if (!StringUtils.isNotBlank(locale)) throw new IllegalArgumentException("The locale is null or empty");
-        String[] localeParts = locale.split("[_\\.]");
+        String[] localeParts = locale.split("[_]");
 
-        if (localeParts.length == 2) {
-            this.setCurrentLocale(new Locale(localeParts[0], localeParts[1]));
+        if (localeParts.length == 3) {
+            currentLocale = new Locale(localeParts[0], localeParts[1], localeParts[2]);
+        } else if (localeParts.length == 2) {
+            currentLocale = new Locale(localeParts[0], localeParts[1]);
         } else if (localeParts.length == 1) {
-            this.setCurrentLocale(new Locale(localeParts[0]));
+            currentLocale = new Locale(localeParts[0]);
         }
 
     }
