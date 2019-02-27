@@ -73,8 +73,65 @@ public class DateUtil {
         return joiner.toString();
     }
 
+
     public static String durationToPrettyDate(Duration duration, I18n i18n) {
         return getHumanReadableDate(duration.toMillis(), i18n);
+    }
+
+    public static String millisToStringDuration(final long time) {
+        long remainingTime = time / 1000;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        long years;
+        long months;
+        long weeks;
+        long days;
+        long hours;
+        long minutes;
+        long seconds;
+
+        if (remainingTime >= TimeUnit.DAYS.toSeconds(1) * 365) {
+            years = remainingTime / (TimeUnit.DAYS.toSeconds(1) * 365);
+            remainingTime %= TimeUnit.DAYS.toSeconds(1) * 365;
+            stringBuilder.append(years + "y");
+        }
+
+        if (remainingTime >= TimeUnit.DAYS.toSeconds(1) * 30) {
+            months = remainingTime / (TimeUnit.DAYS.toSeconds(1) * 30);
+            remainingTime %= TimeUnit.DAYS.toSeconds(1) * 30;
+            stringBuilder.append(months + "M");
+        }
+
+        if (remainingTime >= TimeUnit.DAYS.toSeconds(1) * 7) {
+            weeks = remainingTime / (TimeUnit.DAYS.toSeconds(1) * 7);
+            remainingTime %= TimeUnit.DAYS.toSeconds(1) * 7;
+            stringBuilder.append(weeks + "w");
+        }
+
+        if (remainingTime >= TimeUnit.DAYS.toSeconds(1)) {
+            days = remainingTime / TimeUnit.DAYS.toSeconds(1);
+            remainingTime %= TimeUnit.DAYS.toSeconds(1);
+            stringBuilder.append(days + "d");
+        }
+
+        if (remainingTime >= TimeUnit.HOURS.toSeconds(1)) {
+            hours = remainingTime / TimeUnit.HOURS.toSeconds(1);
+            remainingTime %= TimeUnit.HOURS.toSeconds(1);
+            stringBuilder.append(hours + "h");
+        }
+
+        if (remainingTime >= TimeUnit.MINUTES.toSeconds(1)) {
+            minutes = remainingTime / TimeUnit.MINUTES.toSeconds(1);
+            remainingTime %= TimeUnit.MINUTES.toSeconds(1);
+            stringBuilder.append(minutes + "m");
+        }
+
+        if (remainingTime >= 0) {
+            seconds = remainingTime;
+            stringBuilder.append(seconds + "s");
+        }
+        return stringBuilder.toString();
     }
 
     public static long parseStringDuration(String input) {
