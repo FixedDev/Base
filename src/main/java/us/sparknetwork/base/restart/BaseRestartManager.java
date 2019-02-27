@@ -113,7 +113,7 @@ public class BaseRestartManager extends AbstractService implements RestartManage
             if (announceRestartTime.contains(secondsLeft)) {
                 Bukkit.broadcastMessage(i18n.format("restart.in", DateUtil.getHumanReadableDate(secondsLeft * 1000, i18n)));
             }
-        }, 1, 1);
+        }, 0, 20);
     }
 
     @Override
