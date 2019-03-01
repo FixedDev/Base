@@ -174,6 +174,8 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                     }).sorted(Integer::compare).forEachOrdered(userData::setFriendsLimit);
                 }
 
+                userData.setLastJoin(System.currentTimeMillis());
+
                 this.save(userData);
             } catch (Throwable var4) {
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
@@ -241,7 +243,6 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
 
             User.Complete userData = user.get();
 
-            userData.setLastJoin(System.currentTimeMillis());
             userData.setOnline(false);
 
             if (userData.getNick() != null) {
