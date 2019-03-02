@@ -134,7 +134,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                     if (!this.by_nickname.containsKey(userData.getNick()) && Bukkit.getPlayer(userData.getNick()) == null) {
 
                         e.getPlayer().setDisplayName(userData.getNick());
-                        e.getPlayer().setPlayerListName(userData.getNick());
+                      //  e.getPlayer().setPlayerListName(userData.getNick());
 
                         this.by_nickname.put(userData.getNick(), userData.getUUID());
                     } else {
@@ -142,7 +142,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                         userData.setNick(null);
 
                         e.getPlayer().setDisplayName(userData.getLastName());
-                        e.getPlayer().setPlayerListName(userData.getLastName());
+                      //  e.getPlayer().setPlayerListName(userData.getLastName());
                     }
                 }
 
