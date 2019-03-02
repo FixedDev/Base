@@ -327,7 +327,6 @@ public class BasePlugin extends JavaPlugin {
         commandClasses.add(injector.getInstance(NickCommand.class));
 
         commandClasses.add(injector.getInstance(KickAllCommand.class));
-        commandClasses.add(injector.getInstance(PlayerCommands.class));
         commandClasses.add(injector.getInstance(StaffCommands.class));
         commandClasses.add(injector.getInstance(TeleportCommands.class));
         commandClasses.add(injector.getInstance(ServerCommands.class));
@@ -352,6 +351,7 @@ public class BasePlugin extends JavaPlugin {
         commandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
         commandHandler.registerCommandClass(injector.getInstance(RestartCommands.class));
         commandHandler.registerCommandClass(injector.getInstance(HelpopCommands.class));
+        commandHandler.registerCommandClass(injector.getInstance(PlayerCommands.class));
     }
 
 

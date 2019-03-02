@@ -1,14 +1,16 @@
 package us.sparknetwork.base.command.essentials;
 
 import com.google.inject.Inject;
+import me.ggamer55.bcm.parametric.CommandClass;
+import me.ggamer55.bcm.parametric.annotation.Command;
+import me.ggamer55.bcm.parametric.annotation.Optional;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
-import us.sparknetwork.cm.CommandClass;
-import us.sparknetwork.cm.annotation.Command;
-import us.sparknetwork.cm.command.arguments.CommandContext;
+
 
 import java.text.MessageFormat;
 
@@ -18,14 +20,14 @@ public class PlayerCommands implements CommandClass {
     private I18n i18n;
 
     @Command(names = {"fly", "flight"}, max = 1, permission = "base.command.fly", usage = "Usage: /<command> [player]")
-    public boolean flyCommand(CommandSender sender, CommandContext args) {
-        if (args.getArguments().size() == 0 && !(sender instanceof Player)) {
+    public boolean flyCommand(CommandSender sender, @Optional("self") String player) {
+        if (player.equalsIgnoreCase("self") && !(sender instanceof Player)) {
             return false;
         }
 
         Player target;
 
-        if (args.getArguments().size() == 0) {
+        if (player.equalsIgnoreCase("self")) {
             target = (Player) sender;
         } else {
             if (!sender.hasPermission("base.command.fly.others")) {
@@ -33,10 +35,10 @@ public class PlayerCommands implements CommandClass {
                 return true;
             }
 
-            target = args.getObject(0, Player.class);
+            target = Bukkit.getPlayer(player);
 
             if (target == null) {
-                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), args.getArgument(0)));
+                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), player));
                 return true;
             }
         }
@@ -47,20 +49,20 @@ public class PlayerCommands implements CommandClass {
     }
 
     @Command(names = "feed", max = 1, permission = "base.command.feed", usage = "Usage: /<comand> [player]")
-    public boolean feedCommand(CommandSender sender, CommandContext args) {
-        if (args.getArguments().size() == 0 && !(sender instanceof Player)) {
+    public boolean feedCommand(CommandSender sender, @Optional("self") String player) {
+        if (player.equalsIgnoreCase("self") && !(sender instanceof Player)) {
             return false;
         }
 
         Player target;
 
-        if (args.getArguments().size() == 0) {
+        if (player.equalsIgnoreCase("self")) {
             target = (Player) sender;
         } else {
-            target = args.getObject(0, Player.class);
+            target = Bukkit.getPlayer(player);
 
             if (target == null) {
-                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), args.getArgument(0)));
+                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), player));
                 return true;
             }
 
@@ -77,20 +79,20 @@ public class PlayerCommands implements CommandClass {
     }
 
     @Command(names = "heal", max = 1, permission = "base.command.heal", usage = "Usage: /<comand> [player]")
-    public boolean healCommand(CommandSender sender, CommandContext args) {
-        if (args.getArguments().size() == 0 && !(sender instanceof Player)) {
+    public boolean healCommand(CommandSender sender, @Optional("self") String player) {
+        if (player.equalsIgnoreCase("self") && !(sender instanceof Player)) {
             return false;
         }
 
         Player target;
 
-        if (args.getArguments().size() == 0) {
+        if (player.equalsIgnoreCase("self")) {
             target = (Player) sender;
         } else {
-            target = args.getObject(0, Player.class);
+            target = Bukkit.getPlayer(player);
 
             if (target == null) {
-                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), args.getArgument(0)));
+                sender.sendMessage(MessageFormat.format(i18n.translate("offline.player"), player));
                 return true;
             }
 
@@ -105,7 +107,7 @@ public class PlayerCommands implements CommandClass {
         target.setFireTicks(0);
         target.setHealth(target.getMaxHealth());
         target.setFoodLevel(20);
-        sender.sendMessage(MessageFormat.format(i18n.translate("healed.player"), target.getDisplayName()));
+        sender.sendMessage(i18n.format("healed.player", target.getDisplayName()));
         return true;
     }
 
