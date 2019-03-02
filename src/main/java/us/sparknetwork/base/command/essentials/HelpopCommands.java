@@ -1,6 +1,9 @@
 package us.sparknetwork.base.command.essentials;
 
 import com.google.inject.Inject;
+import me.ggamer55.bcm.parametric.CommandClass;
+import me.ggamer55.bcm.parametric.annotation.Command;
+import me.ggamer55.bcm.parametric.annotation.JoinedString;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import us.sparknetwork.base.I18n;
@@ -8,9 +11,6 @@ import us.sparknetwork.base.listeners.message.HelpopListener;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.HelpopMessage;
-import us.sparknetwork.cm.CommandClass;
-import us.sparknetwork.cm.annotation.Command;
-import us.sparknetwork.cm.command.arguments.CommandContext;
 
 import java.text.MessageFormat;
 
@@ -28,9 +28,7 @@ public class HelpopCommands implements CommandClass {
     }
 
     @Command(names = {"helpop", "ac", "request"}, min = 1, permission = "base.command.helpop", usage = "Usage: /<command> <text...>")
-    public boolean helpopCommand(CommandSender sender, CommandContext context) {
-        String message = context.getJoinedArgs(0);
-
+    public boolean helpopCommand(CommandSender sender, @JoinedString String message) {
         String helpopMessage = MessageFormat.format(i18n.translate("helpop"), sender.getName(), message);
 
         Bukkit.getOnlinePlayers().stream().filter(player -> player.hasPermission("base.command.helpop.receive")).forEach(player -> {
