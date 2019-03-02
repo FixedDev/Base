@@ -5,6 +5,7 @@ import com.google.inject.Inject;
 import me.ggamer55.bcm.parametric.CommandClass;
 import me.ggamer55.bcm.parametric.annotation.Command;
 import me.ggamer55.bcm.parametric.annotation.JoinedString;
+import me.ggamer55.bcm.parametric.annotation.Optional;
 import me.ggamer55.bcm.parametric.annotation.Parameter;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +28,7 @@ public class RestartCommands implements CommandClass {
     private I18n i18n;
 
     @Command(names = "restartnow", max = 1, usage = "/<command> [priority]")
-    public boolean restartNowCommand(@Parameter("sender") CommandSender sender, @Parameter(value = "priority", defaultValue = "HIGH") String stringPriority) {
+    public boolean restartNowCommand(@Parameter("sender") CommandSender sender, @Parameter(value = "priority") @Optional("HIGH") String stringPriority) {
         if (sender instanceof Player) {
             sender.sendMessage(ChatColor.RED + "No Permission.");
             return true;
@@ -40,7 +41,7 @@ public class RestartCommands implements CommandClass {
     }
 
     @Command(names = "restartat", max = 2, min = 2, usage = "/<command> <date> <hour> [priority]")
-    public boolean restartAtCommand(@Parameter("sender") CommandSender sender, @Parameter("date") @JoinedString(2) String date,  @Parameter(value = "priority", defaultValue = "LOW") String stringPriority) {
+    public boolean restartAtCommand(@Parameter("sender") CommandSender sender, @Parameter("date") @JoinedString(2) String date,  @Parameter(value = "priority") @Optional("LOW") String stringPriority) {
         if (sender instanceof Player) {
             sender.sendMessage(ChatColor.RED + "No Permission.");
             return true;
