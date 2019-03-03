@@ -7,7 +7,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.gson.*;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -43,13 +42,13 @@ import us.sparknetwork.base.command.tell.SendCommands;
 import us.sparknetwork.base.command.tell.SocialSpyCommand;
 import us.sparknetwork.base.command.tell.ToggleCommand;
 import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
+import us.sparknetwork.base.listeners.JoinFullServer;
 import us.sparknetwork.base.module.ModuleHandler;
 import us.sparknetwork.base.module.ModuleHandlerModule;
 import us.sparknetwork.base.restart.RestartManager;
 import us.sparknetwork.base.restart.RestartPriority;
 import us.sparknetwork.base.server.LocalServerData;
 import us.sparknetwork.base.server.MongoServerManager;
-import us.sparknetwork.base.server.ServerManager;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.hooks.PlaceholderAPIHook;
 import us.sparknetwork.base.hooks.ProtocolLibHook;
@@ -71,8 +70,6 @@ import java.util.logging.Logger;
 public class BasePlugin extends JavaPlugin {
 
     // Non injected fields
-    @Getter
-    private static BasePlugin plugin;
 
     private LocalServerData serverData;
 
@@ -136,8 +133,6 @@ public class BasePlugin extends JavaPlugin {
 
     @Override
     public void onLoad() {
-        plugin = this;
-
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
@@ -149,7 +144,7 @@ public class BasePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         if (!this.setupChat()) {
-            this.getLogger().severe("Failed to load Vault Chat API, disabling plugin!!!");
+            this.getLogger().severe("Failed to load Vault Chat API, disabling plugin.");
             this.setEnabled(false);
             return;
         }
@@ -181,15 +176,11 @@ public class BasePlugin extends JavaPlugin {
         }
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-
-
     }
 
     @Override
     public void onDisable() {
         this.stopServices();
-
-        plugin = null;
 
         if (injector != null) {
             injector = null;
@@ -232,7 +223,7 @@ public class BasePlugin extends JavaPlugin {
 
     private void startMongo(Config config) {
         String connectionString;
-        if (config.getString("mongo.auth.user", "").isEmpty() || plugin.getConfig().getString("mongo.auth.password", "").isEmpty()) {
+        if (config.getString("mongo.auth.user", "").isEmpty() || getConfig().getString("mongo.auth.password", "").isEmpty()) {
             connectionString = "mongodb://{host}:{port}/";
         } else {
             connectionString = "mongodb://{user}:{password}@{host}:{port}/?authSource={database}";
@@ -249,7 +240,7 @@ public class BasePlugin extends JavaPlugin {
 
         mongoClient = MongoClients.create(MongoClientSettings.builder()
                 .applyConnectionString(connectionStringObject)
-                .applyToSslSettings(builder -> builder.enabled(plugin.getConfig().getBoolean("mongo.ssl", false)))
+                .applyToSslSettings(builder -> builder.enabled(getConfig().getBoolean("mongo.ssl", false)))
                 .build());
 
 
@@ -345,13 +336,13 @@ public class BasePlugin extends JavaPlugin {
             commandHandler.registerCommandClass(commandClass);
         }
 
-        BukkitCommandHandler commandHandler = new BukkitCommandHandler(this.getLogger());
+        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger());
 
-        commandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
-        commandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
-        commandHandler.registerCommandClass(injector.getInstance(RestartCommands.class));
-        commandHandler.registerCommandClass(injector.getInstance(HelpopCommands.class));
-        commandHandler.registerCommandClass(injector.getInstance(PlayerCommands.class));
+        newCommandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
+        newCommandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
+        newCommandHandler.registerCommandClass(injector.getInstance(RestartCommands.class));
+        newCommandHandler.registerCommandClass(injector.getInstance(HelpopCommands.class));
+        newCommandHandler.registerCommandClass(injector.getInstance(PlayerCommands.class));
     }
 
 
@@ -365,6 +356,8 @@ public class BasePlugin extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(injector.getInstance(InvseeCommand.class), this);
 
         this.getServer().getPluginManager().registerEvents(injector.getInstance(TemporaryCommandUtils.class), this);
+
+        this.getServer().getPluginManager().registerEvents(injector.getInstance(JoinFullServer.class), this);
     }
 
 
