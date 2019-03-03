@@ -57,4 +57,11 @@
             </plugin>
         </plugins>
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>us.sparknetwork</groupId>
+            <artifactId>Base-api</artifactId>
+        </dependency>
+    </dependencies>
 </project>

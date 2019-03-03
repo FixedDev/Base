@@ -1,8 +1,8 @@
-package us.sparknetwork.base.chat;
+package us.sparknetwork.base.api.chat;
 
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
-import us.sparknetwork.utils.JsonMessage;
+import us.sparknetwork.base.api.util.JsonMessage;
 
 import java.util.List;
 

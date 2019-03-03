@@ -1,4 +1,4 @@
-package us.sparknetwork.base.chat;
+package us.sparknetwork.base.api.chat;
 
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.Service;

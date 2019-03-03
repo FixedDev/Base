@@ -1,4 +1,4 @@
-package us.sparknetwork.utils;
+package us.sparknetwork.base.api.util;
 
 //Created by Justis Root, Modified by Gilberto Garcia.
 //https://gist.github.com/justisr

@@ -1,10 +1,8 @@
 package us.sparknetwork.base.command.essentials.friends;
 
-import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import me.ggamer55.bcm.AbstractAdvancedCommand;
 import me.ggamer55.bcm.CommandContext;
-import me.ggamer55.bcm.basic.exceptions.CommandException;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -13,7 +11,6 @@ import us.sparknetwork.base.user.User;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.user.finder.UserFinder;
 import us.sparknetwork.utils.JsonMessage;
-import us.sparknetwork.utils.ListenableFutureUtils;
 import us.sparknetwork.utils.TemporaryCommandUtils;
 
 import java.util.ArrayList;

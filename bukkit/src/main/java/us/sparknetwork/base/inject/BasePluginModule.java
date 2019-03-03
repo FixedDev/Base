@@ -1,7 +1,6 @@
 package us.sparknetwork.base.inject;
 
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.gson.Gson;
 import com.google.inject.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
@@ -9,7 +8,6 @@ import lombok.AllArgsConstructor;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.api.RedissonClient;
-import us.sparknetwork.base.chat.BaseChatFormatManager;
 import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.server.LocalServerData;
 
@@ -34,8 +32,6 @@ public class BasePluginModule extends AbstractModule {
         bind(ListeningExecutorService.class).toInstance(executorService);
 
         bind(Chat.class).toInstance(chat);
-
-        bind(ChatFormatManager.class).to(BaseChatFormatManager.class);
 
         install(new ServerModule(serverData));
 
