@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.listeners.message.HelpopListener;
-import us.sparknetwork.base.messager.Channel;
-import us.sparknetwork.base.messager.Messenger;
+import us.sparknetwork.base.api.messager.Channel;
+import us.sparknetwork.base.api.messager.Messenger;
 import us.sparknetwork.base.messager.messages.HelpopMessage;
 
 import java.text.MessageFormat;

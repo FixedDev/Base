@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
-import us.sparknetwork.base.datamanager.Model;
+import us.sparknetwork.base.api.datamanager.Model;
 
 import java.time.Instant;
 import java.util.UUID;

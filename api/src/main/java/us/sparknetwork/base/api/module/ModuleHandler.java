@@ -1,11 +1,11 @@
-package us.sparknetwork.base.module;
+package us.sparknetwork.base.api.module;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import lombok.Getter;
 import org.apache.commons.lang.StringUtils;
-import us.sparknetwork.utils.AbstractService;
+import us.sparknetwork.base.api.AbstractService;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package us.sparknetwork.utils.inject;
+package us.sparknetwork.base.api.inject;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;

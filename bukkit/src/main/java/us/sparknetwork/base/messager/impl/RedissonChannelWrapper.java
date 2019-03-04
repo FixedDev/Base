@@ -3,7 +3,7 @@ package us.sparknetwork.base.messager.impl;
 import lombok.AllArgsConstructor;
 import org.redisson.api.listener.MessageListener;
 import us.sparknetwork.base.server.type.Server;
-import us.sparknetwork.base.messager.ChannelListener;
+import us.sparknetwork.base.api.messager.ChannelListener;
 
 import java.util.Objects;
 

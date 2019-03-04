@@ -1,7 +1,7 @@
-package us.sparknetwork.base.module;
+package us.sparknetwork.base.api.module;
 
 import com.google.inject.AbstractModule;
-import us.sparknetwork.utils.inject.ProtectedBinder;
+import us.sparknetwork.base.api.inject.ProtectedBinder;
 
 import java.util.Collection;
 

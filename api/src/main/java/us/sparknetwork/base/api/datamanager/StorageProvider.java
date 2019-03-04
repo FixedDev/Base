@@ -1,4 +1,4 @@
-package us.sparknetwork.base.datamanager;
+package us.sparknetwork.base.api.datamanager;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import org.bson.conversions.Bson;

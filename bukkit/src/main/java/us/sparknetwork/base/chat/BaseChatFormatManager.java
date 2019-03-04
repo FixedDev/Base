@@ -6,6 +6,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import us.sparknetwork.base.api.chat.ChatFormat;
+import us.sparknetwork.base.api.chat.ChatFormatManager;
+import us.sparknetwork.base.api.chat.PriorityChecking;
 import us.sparknetwork.utils.Config;
 
 import java.util.*;

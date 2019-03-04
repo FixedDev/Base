@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import us.sparknetwork.base.datamanager.CachedStorageProvider;
+import us.sparknetwork.base.api.datamanager.CachedStorageProvider;
 
 public interface UserHandler extends CachedStorageProvider<User.Complete>, Listener {
     @Nullable

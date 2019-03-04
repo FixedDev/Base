@@ -5,8 +5,8 @@ import com.google.gson.reflect.TypeToken;
 import com.google.inject.Inject;
 import org.redisson.api.RedissonClient;
 import us.sparknetwork.base.server.LocalServerData;
-import us.sparknetwork.base.messager.Channel;
-import us.sparknetwork.base.messager.Messenger;
+import us.sparknetwork.base.api.messager.Channel;
+import us.sparknetwork.base.api.messager.Messenger;
 
 import javax.inject.Singleton;
 import java.util.Map;

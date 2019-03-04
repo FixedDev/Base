@@ -1,4 +1,4 @@
-package us.sparknetwork.base.module;
+package us.sparknetwork.base.api.module;
 
 public interface ModuleInfo {
     String name();

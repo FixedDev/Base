@@ -3,13 +3,13 @@ package us.sparknetwork.base.chat;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+import us.sparknetwork.base.api.chat.ChatFormat;
+import us.sparknetwork.base.api.chat.ClickAction;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static us.sparknetwork.base.chat.ClickAction.NONE;
 
 @Getter
 @Setter
@@ -22,7 +22,7 @@ public class BaseChatFormat implements ChatFormat {
     @NotNull
     private String prefix = "";
     @NotNull
-    private ClickAction prefixClickAction = NONE;
+    private ClickAction prefixClickAction = ClickAction.NONE;
     @NotNull
     private String prefixClickActionContent = "";
     @NotNull
@@ -31,7 +31,7 @@ public class BaseChatFormat implements ChatFormat {
     @NotNull
     private String playerName = "{displayName}";
     @NotNull
-    private ClickAction playerNameClickAction = NONE;
+    private ClickAction playerNameClickAction = ClickAction.NONE;
     @NotNull
     private String playerNameClickActionContent = "";
     @NotNull
@@ -40,7 +40,7 @@ public class BaseChatFormat implements ChatFormat {
     @NotNull
     private String suffix = "";
     @NotNull
-    private ClickAction suffixClickAction = NONE;
+    private ClickAction suffixClickAction = ClickAction.NONE;
     @NotNull
     private String suffixClickActionContent = "";
     @NotNull
@@ -88,6 +88,7 @@ public class BaseChatFormat implements ChatFormat {
         this.permission = format.getPermission();
         this.usePlaceholderApi = format.isUsePlaceholderApi();
         this.allowRelationalPlaceholders = format.isAllowRelationalPlaceholders();
+        chatColor = "";
     }
 
     public BaseChatFormat(@NotNull String formatName, int priority) {

@@ -14,7 +14,7 @@ import us.sparknetwork.base.whisper.WhisperManager;
 import us.sparknetwork.base.whisper.WhisperManagerImpl;
 import us.sparknetwork.base.itemdb.impl.ItemDb;
 import us.sparknetwork.base.itemdb.SimpleItemDb;
-import us.sparknetwork.base.messager.Messenger;
+import us.sparknetwork.base.api.messager.Messenger;
 import us.sparknetwork.base.messager.impl.RedisMessenger;
 
 public class HandlersModule extends AbstractModule {

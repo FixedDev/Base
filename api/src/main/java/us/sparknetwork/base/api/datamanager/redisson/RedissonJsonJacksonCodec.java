@@ -1,4 +1,4 @@
-package us.sparknetwork.base.datamanager.redisson;
+package us.sparknetwork.base.api.datamanager.redisson;
 
 import java.io.IOException;
 import java.io.InputStream;

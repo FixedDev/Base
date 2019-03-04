@@ -1,4 +1,4 @@
-package us.sparknetwork.base.restart;
+package us.sparknetwork.base.api.restart;
 
 import lombok.Getter;
 

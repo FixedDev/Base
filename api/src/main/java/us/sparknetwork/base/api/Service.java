@@ -1,4 +1,4 @@
-package us.sparknetwork.base;
+package us.sparknetwork.base.api;
 
 public interface Service {
     /**

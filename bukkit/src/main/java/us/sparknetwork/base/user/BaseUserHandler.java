@@ -32,7 +32,7 @@ import us.sparknetwork.base.BasePlugin;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.LangConfigurations;
 import us.sparknetwork.base.StaffPriority;
-import us.sparknetwork.base.datamanager.CachedMongoStorageProvider;
+import us.sparknetwork.base.api.datamanager.CachedMongoStorageProvider;
 import us.sparknetwork.base.event.UserNickChangeEvent;
 import us.sparknetwork.base.user.User.State;
 

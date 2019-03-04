@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.jetbrains.annotations.NotNull;
-import us.sparknetwork.base.restart.RestartPriority;
+import us.sparknetwork.base.api.restart.RestartPriority;
 import us.sparknetwork.base.server.type.Server;
 
 import java.time.Instant;

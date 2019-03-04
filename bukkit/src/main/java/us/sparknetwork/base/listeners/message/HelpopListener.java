@@ -4,7 +4,7 @@ import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.server.ServerManager;
-import us.sparknetwork.base.messager.ChannelListener;
+import us.sparknetwork.base.api.messager.ChannelListener;
 import us.sparknetwork.base.messager.messages.HelpopMessage;
 
 import java.text.MessageFormat;

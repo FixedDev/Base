@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.ServerConfigurations;
-import us.sparknetwork.base.restart.RestartPriority;
+import us.sparknetwork.base.api.restart.RestartPriority;
 import us.sparknetwork.base.server.type.Server;
 
 import java.time.Instant;

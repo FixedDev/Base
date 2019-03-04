@@ -1,4 +1,4 @@
-package us.sparknetwork.utils.inject;
+package us.sparknetwork.base.api.inject;
 
 import javax.annotation.Nullable;
 

@@ -11,8 +11,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.restart.RestartManager;
-import us.sparknetwork.base.restart.RestartPriority;
+import us.sparknetwork.base.api.restart.RestartManager;
+import us.sparknetwork.base.api.restart.RestartPriority;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

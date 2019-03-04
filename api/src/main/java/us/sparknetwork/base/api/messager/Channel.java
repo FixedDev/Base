@@ -1,4 +1,4 @@
-package us.sparknetwork.base.messager;
+package us.sparknetwork.base.api.messager;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.gson.reflect.TypeToken;

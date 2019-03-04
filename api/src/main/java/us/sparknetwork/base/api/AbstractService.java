@@ -1,6 +1,6 @@
-package us.sparknetwork.utils;
+package us.sparknetwork.base.api;
 
-import us.sparknetwork.base.Service;
+import us.sparknetwork.base.api.Service;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

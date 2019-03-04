@@ -3,7 +3,7 @@ package us.sparknetwork.base.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.NotNull;
-import us.sparknetwork.base.datamanager.Model;
+import us.sparknetwork.base.api.datamanager.Model;
 
 import java.util.List;
 import java.util.UUID;

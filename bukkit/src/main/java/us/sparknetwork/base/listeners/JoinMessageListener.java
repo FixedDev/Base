@@ -11,9 +11,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import us.sparknetwork.base.I18n;
 
+import us.sparknetwork.base.api.util.JsonMessage;
 import us.sparknetwork.base.user.User;
 import us.sparknetwork.base.user.UserHandler;
-import us.sparknetwork.utils.JsonMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,8 +74,6 @@ public class JoinMessageListener implements Listener {
         Player[] onlinePlayersArray = new Player[onlinePlayers.size()];
 
         JsonMessage.sendRawJson(joinMessage, onlinePlayers.toArray(onlinePlayersArray));
-
-
     }
 
     @EventHandler(ignoreCancelled = true)

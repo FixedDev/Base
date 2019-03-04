@@ -13,8 +13,8 @@ import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.user.User;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.user.finder.UserFinder;
-import us.sparknetwork.base.messager.Channel;
-import us.sparknetwork.base.messager.Messenger;
+import us.sparknetwork.base.api.messager.Channel;
+import us.sparknetwork.base.api.messager.Messenger;
 import us.sparknetwork.base.messager.messages.WhisperMessage;
 import us.sparknetwork.utils.ListenableFutureUtils;
 

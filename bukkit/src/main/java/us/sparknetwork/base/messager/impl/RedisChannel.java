@@ -7,8 +7,8 @@ import lombok.Getter;
 import org.redisson.api.RTopic;
 import org.redisson.api.RedissonClient;
 import us.sparknetwork.base.server.LocalServerData;
-import us.sparknetwork.base.messager.Channel;
-import us.sparknetwork.base.messager.ChannelListener;
+import us.sparknetwork.base.api.messager.Channel;
+import us.sparknetwork.base.api.messager.ChannelListener;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

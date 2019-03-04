@@ -4,11 +4,10 @@ import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.messager.ChannelListener;
+import us.sparknetwork.base.api.messager.ChannelListener;
 import us.sparknetwork.base.messager.messages.BroadcastMessage;
 
 import java.text.MessageFormat;
-import java.util.UUID;
 
 public class BroadcastListener implements ChannelListener<BroadcastMessage> {
 
