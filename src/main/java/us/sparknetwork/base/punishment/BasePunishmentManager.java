@@ -4,6 +4,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import com.mongodb.client.MongoDatabase;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.*;
 
+@Singleton
 public class BasePunishmentManager extends MongoStorageProvider<Punishment> implements PunishmentManager {
     private IdGenerator idGenerator;
     private ListeningExecutorService executorService;
