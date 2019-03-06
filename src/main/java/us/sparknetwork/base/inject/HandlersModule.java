@@ -1,6 +1,7 @@
 package us.sparknetwork.base.inject;
 
 import com.google.inject.AbstractModule;
+import us.sparknetwork.base.punishment.PunishmentManagerModule;
 import us.sparknetwork.base.restart.RestartModule;
 import us.sparknetwork.base.server.MongoServerManager;
 import us.sparknetwork.base.server.ServerManager;
@@ -29,5 +30,6 @@ public class HandlersModule extends AbstractModule {
         bind(FriendRequestHandler.class).to(BaseFriendRequestHandler.class);
         bind(WhisperManager.class).to(WhisperManagerImpl.class);
         install(new RestartModule());
+        install(new PunishmentManagerModule());
     }
 }
