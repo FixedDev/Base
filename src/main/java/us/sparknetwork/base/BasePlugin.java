@@ -43,6 +43,7 @@ import us.sparknetwork.base.command.tell.SocialSpyCommand;
 import us.sparknetwork.base.command.tell.ToggleCommand;
 import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
 import us.sparknetwork.base.listeners.JoinFullServer;
+import us.sparknetwork.base.listeners.PunishmentListener;
 import us.sparknetwork.base.module.ModuleHandler;
 import us.sparknetwork.base.module.ModuleHandlerModule;
 import us.sparknetwork.base.restart.RestartManager;
@@ -344,6 +345,7 @@ public class BasePlugin extends JavaPlugin {
         newCommandHandler.registerCommandClass(injector.getInstance(RestartCommands.class));
         newCommandHandler.registerCommandClass(injector.getInstance(HelpopCommands.class));
         newCommandHandler.registerCommandClass(injector.getInstance(PlayerCommands.class));
+        newCommandHandler.registerCommandClass(injector.getInstance(PunishmentCommands.class));
     }
 
 
@@ -359,6 +361,8 @@ public class BasePlugin extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(injector.getInstance(TemporaryCommandUtils.class), this);
 
         this.getServer().getPluginManager().registerEvents(injector.getInstance(JoinFullServer.class), this);
+
+        this.getServer().getPluginManager().registerEvents(injector.getInstance(PunishmentListener.class), this);
     }
 
 

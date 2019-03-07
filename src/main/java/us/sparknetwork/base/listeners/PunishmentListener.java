@@ -1,13 +1,16 @@
 package us.sparknetwork.base.listeners;
 
 import com.google.inject.Inject;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import us.sparknetwork.base.I18n;
+import us.sparknetwork.base.event.PunishmentEvent;
 import us.sparknetwork.base.punishment.Punishment;
 import us.sparknetwork.base.punishment.PunishmentManager;
 import us.sparknetwork.base.punishment.PunishmentType;
@@ -23,6 +26,36 @@ public class PunishmentListener implements Listener {
     private PunishmentManager manager;
     @Inject
     private I18n i18n;
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPunishment(PunishmentEvent event) {
+        Punishment punishment = event.getPunishment();
+
+        if (punishment.getType() == PunishmentType.BAN) {
+            OfflinePlayer punished = Bukkit.getOfflinePlayer(punishment.getPunishedId());
+
+            String banType = i18n.translate("punishment.banned");
+
+            if (punishment.isIpPunishment()) {
+                banType = i18n.translate("punishment.ipbanned");
+            }
+
+            if (punished.isOnline()) {
+                if (!punishment.isPermanent() && punishment.getEndDate() != null) {
+                    punished.getPlayer().kickPlayer(i18n.format("punishment.temporally.kick.message",
+                            banType,
+                            punishment.getIssuerName(),
+                            DateUtil.getHumanReadableDate(Instant.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
+                            punishment.getReason()));
+                } else {
+                    punished.getPlayer().kickPlayer(i18n.format("punishment.kick.message",
+                            banType,
+                            punishment.getIssuerName(),
+                            punishment.getReason()));
+                }
+            }
+        }
+    }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onJoin(PlayerLoginEvent e) {
