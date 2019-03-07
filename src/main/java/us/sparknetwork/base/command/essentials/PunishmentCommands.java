@@ -43,12 +43,18 @@ public class PunishmentCommands implements CommandClass {
             return true;
         }
 
-        Duration banDuration = Duration.ofMillis(DateUtil.parseStringDuration(duration));
+        Instant endDate = null;
 
-        Instant endDate = Instant.now().plus(banDuration);
+        if(!duration.equalsIgnoreCase("permanent")){
+            Duration banDuration = Duration.ofMillis(DateUtil.parseStringDuration(duration));
+
+            endDate = Instant.now().plus(banDuration);
+        }
+
+        final Instant banEndDate = endDate;
 
         ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data -> {
-            punishmentManager.createPunishment(PunishmentType.BAN, sender, data, reason,  endDate, false, silent);
+            punishmentManager.createPunishment(PunishmentType.BAN, sender, data, reason,  banEndDate, false, silent);
         });
 
         return true;
