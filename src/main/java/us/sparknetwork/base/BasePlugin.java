@@ -69,8 +69,9 @@ import java.util.logging.Logger;
 
 public class BasePlugin extends JavaPlugin {
 
-    // Non injected fields
+    public static final UUID CONSOLE_UUID = UUID.fromString("fecac143-508a-4c25-845c-dab5b9b4a03f");
 
+    // Non injected fields
     private LocalServerData serverData;
 
     private RedissonClient redisson;
