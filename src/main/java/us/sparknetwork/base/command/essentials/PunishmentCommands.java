@@ -31,7 +31,7 @@ public class PunishmentCommands implements CommandClass {
                              @Optional("none") String reason,
                              @Parameter(value = "silent", isFlag = true) boolean silent) {
 
-        if (!target.isOnline() && sender.hasPermission("base.command.ban.offline")) {
+        if (!target.isOnline() && !sender.hasPermission("base.command.ban.offline")) {
             sender.sendMessage(ChatColor.RED + "No Permission.");
 
             return true;
