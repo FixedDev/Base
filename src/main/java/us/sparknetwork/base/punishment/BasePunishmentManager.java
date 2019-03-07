@@ -36,7 +36,7 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
 
     @NotNull
     @Override
-    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull Identity issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, Instant endDate, boolean ipPunishment) {
+    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull Identity issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, Instant endDate, boolean ipPunishment, boolean silent) {
         BasePunishment punishment = new BasePunishment(
                 idGenerator.getNextId("punishments") + "",
                 issuer.getUUID(),
@@ -49,7 +49,8 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
                 Instant.now(),
                 endDate,
                 ipPunishment,
-                true);
+                true,
+                silent);
 
         save(punishment);
 

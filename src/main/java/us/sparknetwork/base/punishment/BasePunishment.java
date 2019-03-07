@@ -34,9 +34,11 @@ public class BasePunishment implements Punishment {
 
     private boolean active;
 
-    @ConstructorProperties({"_id","issuerId", "issuerName", "punishedId", "punishedName", "punishedIp", "type", "reason", "issuedDate", "endDate", "ipPunishment", "active"})
+    private boolean silent;
+
+    @ConstructorProperties({"_id","issuerId", "issuerName", "punishedId", "punishedName", "punishedIp", "type", "reason", "issuedDate", "endDate", "ipPunishment", "active", "silent"})
     @JsonCreator
-    BasePunishment(@NotNull String id, @NotNull UUID issuerId, @NotNull String issuerName, @NotNull UUID punishedId, @Nullable String punishedName, @Nullable String punishedIp, @NotNull PunishmentType type, @NotNull String reason, @NotNull Instant issuedDate, @Nullable Instant endDate, boolean ipPunishment, boolean active) {
+    BasePunishment(@NotNull String id, @NotNull UUID issuerId, @NotNull String issuerName, @NotNull UUID punishedId, @Nullable String punishedName, @Nullable String punishedIp, @NotNull PunishmentType type, @NotNull String reason, @NotNull Instant issuedDate, @Nullable Instant endDate, boolean ipPunishment, boolean active, boolean silent) {
         this.id = id;
         this.issuerId = issuerId;
         this.issuerName = issuerName;
@@ -48,6 +50,7 @@ public class BasePunishment implements Punishment {
         this.issuedDate = issuedDate;
         this.endDate = endDate;
         this.ipPunishment = ipPunishment;
+        this.silent = silent;
     }
 
     @Override
@@ -108,6 +111,16 @@ public class BasePunishment implements Punishment {
     @Override
     public boolean isActive() {
         return active;
+    }
+
+    @Override
+    public boolean isSilent() {
+        return silent;
+    }
+
+    @Override
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
 }

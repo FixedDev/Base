@@ -40,6 +40,8 @@ public interface Punishment extends Model {
 
     boolean isActive();
 
+    boolean isSilent();
+
     void setActive(boolean active);
 
     @JsonIgnore

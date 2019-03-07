@@ -16,7 +16,8 @@ public interface PunishmentManager {
                                 @NotNull User.AddressHistoryData punished,
                                 @NotNull String reason,
                                 @Nullable Instant endDate,
-                                boolean ipPunishment);
+                                boolean ipPunishment,
+                                boolean silent);
 
     void savePunishment(Punishment punishment);
 
