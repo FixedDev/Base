@@ -9,16 +9,57 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <modules>
-        <module>api</module>
-        <module>bukkit</module>
-    </modules>
-    <packaging>pom</packaging>
-
     <version>1.3</version>
+    <modelVersion>4.0.0</modelVersion>
     <artifactId>Base</artifactId>
 
-    <modelVersion>4.0.0</modelVersion>
+    <build>
+        <finalName>${project.name}-${project.version}-${buildNumber}</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scmConnectionUrl>scm:git:file://localhost/${basedir}/.git/</scmConnectionUrl>
+
+                    <revisionOnScmFailure>unknown</revisionOnScmFailure>
+
+                    <shortRevisionLength>5</shortRevisionLength>
+                    <scmDirectory>${basedir}/.git</scmDirectory>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>io.github.michaldo</groupId>
+                <artifactId>nashorn-maven-plugin</artifactId>
+                <version>0.0.1</version>
+                <executions>
+                    <execution>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>eval</goal>
+                        </goals>
+                        <configuration>
+                            <script>
+                                $project.artifact.version = "${project.version}-${buildNumber}";
+                            </script>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
     <repositories>
         <repository>
             <id>spigot-repo</id>
@@ -35,6 +76,13 @@
     </repositories>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.inject</groupId>
+            <artifactId>guice</artifactId>
+            <version>4.1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Spigot -->
         <dependency>
             <groupId>org.github.paperspigot</groupId>
@@ -49,26 +97,84 @@
             </exclusions>
         </dependency>
 
+        <!-- Command Manager -->
+
+        <dependency>
+            <groupId>us.sparknetwork</groupId>
+            <artifactId>CommandManager</artifactId>
+            <version>1.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>us.sparknetwork</groupId>
+            <artifactId>BCM-Bukkit</artifactId>
+            <version>1.4</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Scoreboard API -->
+        <dependency>
+            <groupId>us.sparknetwork</groupId>
+            <artifactId>scoreboard</artifactId>
+            <version>1.0.1</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- Protocol Lib -->
+        <dependency>
+            <groupId>com.comphenix.protocol</groupId>
+            <artifactId>ProtocolLib-API</artifactId>
+            <version>4.3.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Placeholder API -->
+        <dependency>
+            <groupId>me.clip</groupId>
+            <artifactId>placeholderapi</artifactId>
+            <version>2.8.7</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Vault API -->
+        <dependency>
+            <groupId>net.milkbowl.vault</groupId>
+            <artifactId>VaultAPI</artifactId>
+            <version>1.6</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Google Things -->
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>27.0.1-jre</version>
+            <scope>compile</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.redisson</groupId>
             <artifactId>redisson</artifactId>
             <version>3.10.0</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Mongo -->
+
         <dependency>
             <groupId>org.mongodb</groupId>
             <artifactId>mongodb-driver-sync</artifactId>
             <version>3.10.1</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>fr.javatic.mongo</groupId>
             <artifactId>mongo-jackson-codec</artifactId>
             <version>3.2.2__0.5</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
@@ -89,23 +195,15 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <version>2.9.8</version>
-            <scope>provided</scope>
-        </dependency>
-
-
-        <!-- Scoreboard API -->
-        <dependency>
-            <groupId>us.sparknetwork</groupId>
-            <artifactId>scoreboard</artifactId>
-            <version>1.0.1</version>
             <scope>compile</scope>
         </dependency>
 
-        <!-- Fanciful -->
+        <!-- Caffeine -->
         <dependency>
-            <groupId> mkremins</groupId>
-            <artifactId>fanciful</artifactId>
-            <version>0.4.0-SNAPSHOT</version>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>2.6.2</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -113,6 +211,23 @@
             <artifactId>annotations</artifactId>
             <version>16.0.2</version>
             <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>text-api</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>text-serializer-legacy</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>text-serializer-gson</artifactId>
+            <version>2.0.0</version>
         </dependency>
     </dependencies>
 
