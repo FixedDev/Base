@@ -7,8 +7,7 @@ public enum PunishmentType {
     MUTE(null),
     KICK(null),
     WARN(null),
-    STRIKE(WARN),
-    IPBAN(BAN);
+    STRIKE(WARN);
 
     private PunishmentType superType;
 
