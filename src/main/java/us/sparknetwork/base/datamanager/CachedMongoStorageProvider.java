@@ -52,6 +52,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
             if (object != null) {
                 rBucket.set(object);
+                rBucket.expire(2, TimeUnit.MINUTES);
             }
 
             return object;
@@ -73,6 +74,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
         if (object != null) {
             rBucket.set(object);
+            rBucket.expire(2, TimeUnit.MINUTES);
         }
 
         return object;
@@ -106,6 +108,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
                 if (object != null) {
                     rBucket.set(object);
+                    rBucket.expire(2, TimeUnit.MINUTES);
 
                     objects.add(object);
                 }
@@ -144,6 +147,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
             if (object != null) {
                 rBucket.set(object);
+                rBucket.expire(2, TimeUnit.MINUTES);
 
                 objects.add(object);
             }
@@ -242,6 +246,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
     public ListenableFuture<Void> save(O o, boolean force) {
         return executorService.submit(() -> {
             RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + o.getId());
+
             rBucket.set(o);
             rBucket.expire(2, TimeUnit.MINUTES);
 
