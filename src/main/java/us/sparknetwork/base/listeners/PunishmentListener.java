@@ -61,49 +61,49 @@ public class PunishmentListener implements Listener {
     public void onJoin(PlayerLoginEvent e) {
         Player player = e.getPlayer();
 
-        ListenableFutureUtils.addCallback(manager.getPunishment(PunishmentType.BAN, player.getUniqueId(), e.getAddress().getHostAddress()), punish -> {
-            if (punish == null) {
-                return;
-            }
+        Punishment punish = manager.getPunishmentSync(PunishmentType.BAN, player.getUniqueId(), e.getAddress().getHostAddress());
 
-            String banType = i18n.translate("punishment.banned");
+        if (punish == null) {
+            return;
+        }
 
-            if (punish.isIpPunishment()) {
-                banType = i18n.translate("punishment.ipbanned");
-            }
+        String banType = i18n.translate("punishment.banned");
 
-            // The punish.endDate == null is just because SonarLint complains that endDate can be null
-            // Even if punish.isPermanent is the same that punish.endDate == null
-            if (punish.isPermanent() || punish.getEndDate() == null) {
-                e.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                        ChatColor.RED + i18n.format("punishment.kick.message",
-                                banType,
-                                punish.getIssuerName(),
-                                punish.getReason()));
+        if (punish.isIpPunishment()) {
+            banType = i18n.translate("punishment.ipbanned");
+        }
 
-                return;
-            }
-
-            long banSecondsLeft = Instant.now().until(punish.getEndDate(), ChronoUnit.SECONDS);
-
-            if (banSecondsLeft <= 0) {
-                punish.setActive(false);
-                manager.savePunishment(punish);
-
-                if (e.getResult() == PlayerLoginEvent.Result.ALLOWED || e.getResult() == PlayerLoginEvent.Result.KICK_BANNED) {
-                    e.allow();
-                }
-                return;
-            }
-
+        // The punish.endDate == null is just because SonarLint complains that endDate can be null
+        // Even if punish.isPermanent is the same that punish.endDate == null
+        if (punish.isPermanent() || punish.getEndDate() == null) {
             e.disallow(PlayerLoginEvent.Result.KICK_BANNED,
-                    ChatColor.RED + i18n.format("punishment.temporal.kick.message",
+                    ChatColor.RED + i18n.format("punishment.kick.message",
                             banType,
                             punish.getIssuerName(),
-                            DateUtil.getHumanReadableDate(banSecondsLeft * 1000, i18n),
                             punish.getReason()));
 
-        });
+            return;
+        }
+
+        long banSecondsLeft = Instant.now().until(punish.getEndDate(), ChronoUnit.SECONDS);
+
+        if (banSecondsLeft <= 0) {
+            punish.setActive(false);
+            manager.savePunishment(punish);
+
+            if (e.getResult() == PlayerLoginEvent.Result.ALLOWED || e.getResult() == PlayerLoginEvent.Result.KICK_BANNED) {
+                e.allow();
+            }
+            return;
+        }
+
+        e.disallow(PlayerLoginEvent.Result.KICK_BANNED,
+                ChatColor.RED + i18n.format("punishment.temporal.kick.message",
+                        banType,
+                        punish.getIssuerName(),
+                        DateUtil.getHumanReadableDate(banSecondsLeft * 1000, i18n),
+                        punish.getReason()));
+
     }
 
 }
