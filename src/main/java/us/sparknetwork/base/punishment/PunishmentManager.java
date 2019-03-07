@@ -1,6 +1,7 @@
 package us.sparknetwork.base.punishment;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.user.Identity;
@@ -12,7 +13,7 @@ import java.util.UUID;
 public interface PunishmentManager {
     @NotNull
     Punishment createPunishment(@NotNull PunishmentType type,
-                                @NotNull Identity issuer,
+                                @NotNull CommandSender issuer,
                                 @NotNull User.AddressHistoryData punished,
                                 @NotNull String reason,
                                 @Nullable Instant endDate,

@@ -8,12 +8,14 @@ import com.google.inject.Singleton;
 import com.mongodb.client.MongoDatabase;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import us.sparknetwork.base.BasePlugin;
 import us.sparknetwork.base.datamanager.MongoStorageProvider;
 import us.sparknetwork.base.event.PunishmentEvent;
 import us.sparknetwork.base.id.IdGenerator;
-import us.sparknetwork.base.user.Identity;
 import us.sparknetwork.base.user.User;
 
 import java.time.Instant;
@@ -36,11 +38,17 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
 
     @NotNull
     @Override
-    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull Identity issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, Instant endDate, boolean ipPunishment, boolean silent) {
+    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull CommandSender issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, Instant endDate, boolean ipPunishment, boolean silent) {
+        UUID uniqueId = BasePlugin.CONSOLE_UUID;
+
+        if(issuer instanceof Player){
+            uniqueId = ((Player) issuer).getUniqueId();
+        }
+
         BasePunishment punishment = new BasePunishment(
                 idGenerator.getNextId("punishments") + "",
-                issuer.getUUID(),
-                issuer.getLastName(),
+                uniqueId,
+                issuer.getName(),
                 punished.getUUID(),
                 punished.getLastName(),
                 punished.getLastIp(),
