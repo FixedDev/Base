@@ -40,6 +40,8 @@ public interface Punishment extends Model {
 
     boolean isActive();
 
+    void setActive(boolean active);
+
     @JsonIgnore
     default boolean isPermanent() {
         return getEndDate() == null;

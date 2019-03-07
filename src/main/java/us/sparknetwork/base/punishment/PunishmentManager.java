@@ -13,6 +13,8 @@ public interface PunishmentManager {
     @NotNull
     Punishment createPunishment(@NotNull PunishmentType type, @NotNull Identity issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, @Nullable Instant endDate, boolean ipPunishment);
 
+    void savePunishment(Punishment punishment);
+
     ListenableFuture<Punishment> getPunishmentById(@NotNull String id);
 
     @Nullable

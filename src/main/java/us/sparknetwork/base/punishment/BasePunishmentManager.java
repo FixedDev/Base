@@ -60,6 +60,11 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
     }
 
     @Override
+    public void savePunishment(Punishment punishment) {
+        save(punishment);
+    }
+
+    @Override
     public ListenableFuture<Punishment> getPunishmentById(@NotNull String id) {
         return findOne(id);
     }
