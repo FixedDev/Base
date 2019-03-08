@@ -2,6 +2,7 @@ package us.sparknetwork.base;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Preconditions;
@@ -267,6 +268,9 @@ public class BasePlugin extends JavaPlugin {
                 .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
                 .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
+
+        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
+        mapper.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, true);
 
         TypeFactory tf = TypeFactory.defaultInstance().withClassLoader(this.getClassLoader());
         mapper.setTypeFactory(tf);
