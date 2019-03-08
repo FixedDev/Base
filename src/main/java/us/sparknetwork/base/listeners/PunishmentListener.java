@@ -85,9 +85,9 @@ public class PunishmentListener implements Listener {
             return;
         }
 
-        long banSecondsLeft = Instant.now().until(punish.getEndDate(), ChronoUnit.SECONDS);
+        long banMillisLeft = Instant.now().until(punish.getEndDate(), ChronoUnit.MILLIS);
 
-        if (banSecondsLeft <= 0) {
+        if (banMillisLeft <= 0) {
             punish.setActive(false);
             manager.savePunishment(punish);
 
@@ -101,7 +101,7 @@ public class PunishmentListener implements Listener {
                 ChatColor.RED + i18n.format("punishment.temporal.kick.message",
                         banType,
                         punish.getIssuerName(),
-                        DateUtil.getHumanReadableDate(banSecondsLeft * 1000, i18n),
+                        DateUtil.getHumanReadableDate(banMillisLeft, i18n),
                         punish.getReason()));
 
     }
