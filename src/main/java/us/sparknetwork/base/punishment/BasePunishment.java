@@ -50,6 +50,7 @@ public class BasePunishment implements Punishment {
         this.issuedDate = issuedDate;
         this.endDate = endDate;
         this.ipPunishment = ipPunishment;
+        this.active = active;
         this.silent = silent;
     }
 

@@ -97,17 +97,19 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
         if (playerId != null) {
             Iterator<Punishment> iterator = findByQuerySync(and(eq("active", true),
                     eq("punishedId", playerId),
-                    eq("type", type)), 0, 1).iterator();
+                    eq("type", type.toString())), 0, 1).iterator();
 
             if (iterator.hasNext()) {
                 return iterator.next();
             }
         }
 
+
+
         if (!StringUtils.isBlank(playerAddress)) {
             Iterator<Punishment> iterator = findByQuerySync(and(eq("active", true),
                     eq("punishedAddress", playerAddress),
-                    eq("type", type)), 0, 1).iterator();
+                    eq("type", type.toString())), 0, 1).iterator();
 
             if (iterator.hasNext()) {
                 Punishment tempPunish = iterator.next();
