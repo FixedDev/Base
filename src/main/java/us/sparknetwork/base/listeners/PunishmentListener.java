@@ -85,7 +85,13 @@ public class PunishmentListener implements Listener {
             return;
         }
 
-        long banMillisLeft = Instant.now().until(punish.getEndDate(), ChronoUnit.MILLIS);
+        long banMillisLeft;
+
+        if(Instant.now().isAfter(punish.getEndDate())){
+            banMillisLeft = 0;
+        } else {
+            banMillisLeft = Instant.now().until(punish.getEndDate(), ChronoUnit.MILLIS);
+        }
 
         if (banMillisLeft <= 0) {
             punish.setActive(false);
