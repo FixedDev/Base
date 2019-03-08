@@ -41,8 +41,15 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
     public Punishment createPunishment(@NotNull PunishmentType type, @NotNull CommandSender issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, Instant endDate, boolean ipPunishment, boolean silent) {
         UUID uniqueId = BasePlugin.CONSOLE_UUID;
 
-        if(issuer instanceof Player){
+        if (issuer instanceof Player) {
             uniqueId = ((Player) issuer).getUniqueId();
+        }
+
+        Punishment oldPunishment = getPunishmentSync(type, punished.getUUID(), punished.getLastIp());
+
+        if(oldPunishment != null){
+            oldPunishment.setActive(false);
+            save(oldPunishment);
         }
 
         BasePunishment punishment = new BasePunishment(
@@ -105,7 +112,6 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
         }
 
 
-
         if (!StringUtils.isBlank(playerAddress)) {
             Iterator<Punishment> iterator = findByQuerySync(and(eq("active", true),
                     eq("punishedAddress", playerAddress),
@@ -114,8 +120,8 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
             if (iterator.hasNext()) {
                 Punishment tempPunish = iterator.next();
 
-                if(tempPunish.isIpPunishment()){
-                   return tempPunish;
+                if (tempPunish.isIpPunishment()) {
+                    return tempPunish;
                 }
 
             }
