@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.BasePlugin;
@@ -28,6 +29,9 @@ import static com.mongodb.client.model.Filters.*;
 public class BasePunishmentManager extends MongoStorageProvider<Punishment> implements PunishmentManager {
     private IdGenerator idGenerator;
     private ListeningExecutorService executorService;
+
+    @Inject
+    private JavaPlugin plugin;
 
     @Inject
     BasePunishmentManager(ListeningExecutorService executorService, MongoDatabase database, IdGenerator generator) {
@@ -69,8 +73,11 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
 
         save(punishment);
 
-        PunishmentEvent event = new PunishmentEvent(punishment);
-        Bukkit.getPluginManager().callEvent(event);
+        // The punishment event should be called in the main thread only
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            PunishmentEvent event = new PunishmentEvent(punishment);
+            Bukkit.getPluginManager().callEvent(event);
+        });
 
         return punishment;
     }
