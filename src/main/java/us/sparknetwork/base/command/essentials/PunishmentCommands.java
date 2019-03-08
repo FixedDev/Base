@@ -53,8 +53,8 @@ public class PunishmentCommands implements CommandClass {
                     secondsLeft = Instant.now().until(oldPunishment.getEndDate(), ChronoUnit.SECONDS);
                 }
 
-                if (oldPunishment.isPermanent() || secondsLeft >= 0 && !sender.hasPermission("base.command.ban.override")) {
-                    sender.sendMessage(ChatColor.RED + "No Permission.");
+                if ((oldPunishment.isPermanent() || secondsLeft >= 0) && !sender.hasPermission("base.command.ban.override")) {
+                    sender.sendMessage(NO_PERMISSION_MESSAGE);
 
                     return;
                 }
