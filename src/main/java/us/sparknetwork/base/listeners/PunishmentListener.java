@@ -108,7 +108,6 @@ public class PunishmentListener implements Listener {
                         punish.getIssuerName(),
                         DateUtil.getHumanReadableDate(banMillisLeft, i18n),
                         punish.getReason()));
-
     }
 
 }
