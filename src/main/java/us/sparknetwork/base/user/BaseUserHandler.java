@@ -262,7 +262,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                 return;
             }
 
-            User.Complete data = user.orElse(new BaseUser(e.getPlayer().getUniqueId()));
+            User.Complete data = user.get();
 
             data.setLastSpeakTime(System.currentTimeMillis());
             this.save(data);
