@@ -23,6 +23,7 @@ import us.sparknetwork.base.user.friends.listener.FriendRequestListener;
 import us.sparknetwork.base.user.friends.listener.FriendsRequestReplyListener;
 import us.sparknetwork.utils.ListenableFutureUtils;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -56,7 +57,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
 
     @Override
     public ListenableFuture<Set<FriendRequest>> getFriendRequestsFor(@NotNull Identity identity) {
-        return this.findByQuery(eq("to", identity.getUUID()), 0, Integer.MAX_VALUE);
+        return ListenableFutureUtils.transformFutureAsync(this.findByQuery(eq("to", identity.getUUID()), 0, Integer.MAX_VALUE), input -> Futures.immediateFuture(new HashSet<>(input)), executorService);
     }
 
     @Override
