@@ -46,7 +46,7 @@ public class PunishmentCommands implements CommandClass {
             return true;
         }
 
-        ListenableFutureUtils.addCallback(punishmentManager.getPunishment(PunishmentType.BAN, target.getUniqueId(), null), oldPunishment -> {
+        ListenableFutureUtils.addCallback(punishmentManager.getLastPunishment(PunishmentType.BAN, target.getUniqueId(), null), oldPunishment -> {
             if (oldPunishment != null) {
                 long secondsLeft = 0;
 
