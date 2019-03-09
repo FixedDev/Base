@@ -45,13 +45,13 @@ public class PunishmentListener implements Listener {
 
             if (punished.isOnline()) {
                 if (!punishment.isPermanent() && punishment.getEndDate() != null) {
-                    punished.getPlayer().kickPlayer(i18n.format("punishment.temporal.banned.message",
+                    punished.getPlayer().kickPlayer(i18n.format("punishment.kick.banned.message",
                             banType,
                             punishment.getIssuerName(),
                             DateUtil.getHumanReadableDate(ZonedDateTime.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
                             punishment.getReason()));
                 } else {
-                    punished.getPlayer().kickPlayer(i18n.format("punishment.banned.message",
+                    punished.getPlayer().kickPlayer(i18n.format("punishment.kick.message",
                             banType,
                             punishment.getIssuerName(),
                             punishment.getReason()));
@@ -78,7 +78,7 @@ public class PunishmentListener implements Listener {
         // Even if punish.isPermanent is the same that punish.endDate == null
         if (punish.isPermanent() || punish.getEndDate() == null) {
             e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
-                    ChatColor.RED + i18n.format("punishment.kick.message",
+                    ChatColor.RED + i18n.format("punishment.banned.message",
                             banType,
                             punish.getIssuerName(),
                             punish.getReason()));
@@ -105,7 +105,7 @@ public class PunishmentListener implements Listener {
         }
 
         e.disallow(AsyncPlayerPreLoginEvent.Result.KICK_BANNED,
-                ChatColor.RED + i18n.format("punishment.temporal.kick.message",
+                ChatColor.RED + i18n.format("punishment.temporal.banned.message",
                         banType,
                         punish.getIssuerName(),
                         DateUtil.getHumanReadableDate(banMillisLeft, i18n),
