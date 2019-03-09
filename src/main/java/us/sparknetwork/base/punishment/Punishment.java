@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.datamanager.Model;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @JsonDeserialize(as = BasePunishment.class)
@@ -30,13 +30,13 @@ public interface Punishment extends Model {
     String getReason();
 
     @NotNull
-    Instant getIssuedDate();
+    ZonedDateTime getIssuedDate();
 
     /**
      * @return null if the punishment is permanent
      */
     @Nullable
-    Instant getEndDate();
+    ZonedDateTime getEndDate();
 
     boolean isIpPunishment();
 

@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.beans.ConstructorProperties;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @JsonSerialize(as = Punishment.class)
@@ -25,8 +25,8 @@ public class BasePunishment implements Punishment {
 
     private @NotNull String reason;
 
-    private @NotNull Instant issuedDate;
-    private @Nullable Instant endDate;
+    private @NotNull ZonedDateTime issuedDate;
+    private @Nullable ZonedDateTime endDate;
 
     private boolean ipPunishment;
 
@@ -36,7 +36,7 @@ public class BasePunishment implements Punishment {
 
     @ConstructorProperties({"_id","issuerId", "issuerName", "punishedId", "punishedName", "punishedIp", "type", "reason", "issuedDate", "endDate", "ipPunishment", "active", "silent"})
     @JsonCreator
-    BasePunishment(@NotNull String id, @NotNull UUID issuerId, @NotNull String issuerName, @NotNull UUID punishedId, @Nullable String punishedName, @Nullable String punishedIp, @NotNull PunishmentType type, @NotNull String reason, @NotNull Instant issuedDate, @Nullable Instant endDate, boolean ipPunishment, boolean active, boolean silent) {
+    BasePunishment(@NotNull String id, @NotNull UUID issuerId, @NotNull String issuerName, @NotNull UUID punishedId, @Nullable String punishedName, @Nullable String punishedIp, @NotNull PunishmentType type, @NotNull String reason, @NotNull ZonedDateTime issuedDate, @Nullable ZonedDateTime endDate, boolean ipPunishment, boolean active, boolean silent) {
         this.id = id;
         this.issuerId = issuerId;
         this.issuerName = issuerName;
@@ -93,12 +93,12 @@ public class BasePunishment implements Punishment {
     }
 
     @Override
-    public @NotNull Instant getIssuedDate() {
+    public @NotNull ZonedDateTime getIssuedDate() {
         return issuedDate;
     }
 
     @Override
-    public @Nullable Instant getEndDate() {
+    public @Nullable ZonedDateTime getEndDate() {
         return endDate;
     }
 

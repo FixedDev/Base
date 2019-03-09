@@ -19,7 +19,7 @@ import us.sparknetwork.base.event.PunishmentEvent;
 import us.sparknetwork.base.id.IdGenerator;
 import us.sparknetwork.base.user.User;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -42,7 +42,7 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
 
     @NotNull
     @Override
-    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull CommandSender issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, Instant endDate, boolean ipPunishment, boolean silent) {
+    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull CommandSender issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, ZonedDateTime endDate, boolean ipPunishment, boolean silent) {
         UUID uniqueId = BasePlugin.CONSOLE_UUID;
 
         if (issuer instanceof Player) {
@@ -65,7 +65,7 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
                 punished.getLastIp(),
                 type,
                 reason,
-                Instant.now(),
+                ZonedDateTime.now(),
                 endDate,
                 ipPunishment,
                 true,

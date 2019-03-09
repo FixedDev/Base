@@ -4,10 +4,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import us.sparknetwork.base.user.Identity;
 import us.sparknetwork.base.user.User;
 
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 public interface PunishmentManager {
@@ -16,7 +15,7 @@ public interface PunishmentManager {
                                 @NotNull CommandSender issuer,
                                 @NotNull User.AddressHistoryData punished,
                                 @NotNull String reason,
-                                @Nullable Instant endDate,
+                                @Nullable ZonedDateTime endDate,
                                 boolean ipPunishment,
                                 boolean silent);
 
