@@ -18,6 +18,7 @@ import us.sparknetwork.utils.DateUtil;
 import us.sparknetwork.utils.ListenableFutureUtils;
 
 import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class PunishmentListener implements Listener {
@@ -87,10 +88,10 @@ public class PunishmentListener implements Listener {
 
         long banMillisLeft;
 
-        if(Instant.now().isAfter(punish.getEndDate())){
+        if(ZonedDateTime.now().isAfter(punish.getEndDate())){
             banMillisLeft = 0;
         } else {
-            banMillisLeft = Instant.now().until(punish.getEndDate(), ChronoUnit.MILLIS);
+            banMillisLeft = ZonedDateTime.now().until(punish.getEndDate(), ChronoUnit.MILLIS);
         }
 
         if (banMillisLeft <= 0) {
