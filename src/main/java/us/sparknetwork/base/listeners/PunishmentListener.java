@@ -46,7 +46,7 @@ public class PunishmentListener implements Listener {
                     punished.getPlayer().kickPlayer(i18n.format("punishment.temporal.kick.message",
                             banType,
                             punishment.getIssuerName(),
-                            DateUtil.getHumanReadableDate(Instant.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
+                            DateUtil.getHumanReadableDate(ZonedDateTime.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
                             punishment.getReason()));
                 } else {
                     punished.getPlayer().kickPlayer(i18n.format("punishment.kick.message",
