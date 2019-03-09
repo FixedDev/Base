@@ -269,8 +269,7 @@ public class BasePlugin extends JavaPlugin {
                 .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
                 .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
 
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, true);
-        mapper.configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, true);
+        mapper.configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, true);
 
         TypeFactory tf = TypeFactory.defaultInstance().withClassLoader(this.getClassLoader());
         mapper.setTypeFactory(tf);
