@@ -220,7 +220,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
         }
 
         return executorService.submit(() -> {
-            Set<O> objects = new HashSet<>();
+            List<O> objects = new ArrayList<>();
 
             mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
 
@@ -234,7 +234,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
             throw new IllegalArgumentException("Limit should be 1 or more!");
         }
 
-        Set<O> objects = new HashSet<>();
+        List<O> objects = new ArrayList<>();
 
         mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
 
