@@ -34,7 +34,7 @@ public class PunishmentListener implements Listener {
 
         formatter.broadcastPunishmentMessage(punishment);
 
-        if (punishment.getType() == PunishmentType.BAN) {
+        if (punishment.getType() == PunishmentType.BAN || punishment.getType() == PunishmentType.KICK) {
             OfflinePlayer punished = Bukkit.getOfflinePlayer(punishment.getPunishedId());
 
             String banType = i18n.translate("punishment.banned");
@@ -44,19 +44,28 @@ public class PunishmentListener implements Listener {
             }
 
             if (punished.isOnline()) {
-                if (!punishment.isPermanent() && punishment.getEndDate() != null) {
-                    punished.getPlayer().kickPlayer(i18n.format("punishment.temporal.kick.message",
-                            banType,
-                            punishment.getIssuerName(),
-                            DateUtil.getHumanReadableDate(ZonedDateTime.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
-                            punishment.getReason()));
-                } else {
-                    punished.getPlayer().kickPlayer(i18n.format("punishment.kick.message",
-                            banType,
-                            punishment.getIssuerName(),
-                            punishment.getReason()));
+                if (punishment.getType() == PunishmentType.BAN) {
+                    if (!punishment.isPermanent() && punishment.getEndDate() != null) {
+                        punished.getPlayer().kickPlayer(i18n.format("punishment.temporal.kick.message",
+                                banType,
+                                punishment.getIssuerName(),
+                                DateUtil.getHumanReadableDate(ZonedDateTime.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
+                                punishment.getReason()));
+                    } else {
+                        punished.getPlayer().kickPlayer(i18n.format("punishment.kick.message",
+                                banType,
+                                punishment.getIssuerName(),
+                                punishment.getReason()));
+                    }
+                    return;
                 }
+
+                punished.getPlayer().kickPlayer(i18n.format("punishment.kick.message",
+                        i18n.translate("punishment.kicked"),
+                        punishment.getIssuerName(),
+                        punishment.getReason()));
             }
+
         }
     }
 
