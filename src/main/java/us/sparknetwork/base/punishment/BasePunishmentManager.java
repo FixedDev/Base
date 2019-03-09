@@ -49,12 +49,16 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
             uniqueId = ((Player) issuer).getUniqueId();
         }
 
-        Punishment oldPunishment = getPunishmentSync(type, punished.getUUID(), punished.getLastIp());
 
-        if(oldPunishment != null){
-            oldPunishment.setActive(false);
-            save(oldPunishment);
+        if (type == PunishmentType.BAN || type == PunishmentType.MUTE) {
+            Punishment oldPunishment = getPunishmentSync(type, punished.getUUID(), punished.getLastIp());
+
+            if (oldPunishment != null) {
+                oldPunishment.setActive(false);
+                save(oldPunishment);
+            }
         }
+
 
         BasePunishment punishment = new BasePunishment(
                 idGenerator.getNextId("punishments") + "",
