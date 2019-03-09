@@ -45,7 +45,7 @@ public class PunishmentListener implements Listener {
 
             if (punished.isOnline()) {
                 if (!punishment.isPermanent() && punishment.getEndDate() != null) {
-                    punished.getPlayer().kickPlayer(i18n.format("punishment.kick.banned.message",
+                    punished.getPlayer().kickPlayer(i18n.format("punishment.temporal.kick.message",
                             banType,
                             punishment.getIssuerName(),
                             DateUtil.getHumanReadableDate(ZonedDateTime.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
