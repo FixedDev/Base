@@ -16,7 +16,7 @@ import us.sparknetwork.utils.DateUtil;
 import us.sparknetwork.utils.ListenableFutureUtils;
 
 import java.time.Duration;
-import java.time.Instant;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 public class PunishmentCommands implements CommandClass {
@@ -50,7 +50,7 @@ public class PunishmentCommands implements CommandClass {
                 long secondsLeft = 0;
 
                 if (!oldPunishment.isPermanent() && oldPunishment.getEndDate() != null) {
-                    secondsLeft = Instant.now().until(oldPunishment.getEndDate(), ChronoUnit.SECONDS);
+                    secondsLeft = ZonedDateTime.now().until(oldPunishment.getEndDate(), ChronoUnit.SECONDS);
                 }
 
                 if ((oldPunishment.isPermanent() || secondsLeft >= 0) && !sender.hasPermission("base.command.ban.override")) {
@@ -110,7 +110,7 @@ public class PunishmentCommands implements CommandClass {
 
             Duration banDuration = Duration.ofMillis(durationInMillis);
 
-            final Instant banEndDate = Instant.now().plus(banDuration);
+            final ZonedDateTime banEndDate = ZonedDateTime.now().plus(banDuration);
 
             ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data ->
                     punishmentManager.createPunishment(PunishmentType.BAN, sender, data, banReason, banEndDate, false, silent)
