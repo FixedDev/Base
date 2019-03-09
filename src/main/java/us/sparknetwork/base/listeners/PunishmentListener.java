@@ -4,16 +4,14 @@ import com.google.inject.Inject;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerPreLoginEvent;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.event.PunishmentEvent;
 import us.sparknetwork.base.punishment.Punishment;
+import us.sparknetwork.base.punishment.PunishmentFormatter;
 import us.sparknetwork.base.punishment.PunishmentManager;
 import us.sparknetwork.base.punishment.PunishmentType;
 import us.sparknetwork.utils.DateUtil;
@@ -26,11 +24,15 @@ public class PunishmentListener implements Listener {
     @Inject
     private PunishmentManager manager;
     @Inject
+    private PunishmentFormatter formatter;
+    @Inject
     private I18n i18n;
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPunishment(PunishmentEvent event) {
         Punishment punishment = event.getPunishment();
+
+        formatter.broadcastPunishmentMessage(punishment);
 
         if (punishment.getType() == PunishmentType.BAN) {
             OfflinePlayer punished = Bukkit.getOfflinePlayer(punishment.getPunishedId());
@@ -43,13 +45,13 @@ public class PunishmentListener implements Listener {
 
             if (punished.isOnline()) {
                 if (!punishment.isPermanent() && punishment.getEndDate() != null) {
-                    punished.getPlayer().kickPlayer(i18n.format("punishment.temporal.kick.message",
+                    punished.getPlayer().kickPlayer(i18n.format("punishment.temporal.banned.message",
                             banType,
                             punishment.getIssuerName(),
                             DateUtil.getHumanReadableDate(ZonedDateTime.now().until(punishment.getEndDate(), ChronoUnit.MILLIS), i18n),
                             punishment.getReason()));
                 } else {
-                    punished.getPlayer().kickPlayer(i18n.format("punishment.kick.message",
+                    punished.getPlayer().kickPlayer(i18n.format("punishment.banned.message",
                             banType,
                             punishment.getIssuerName(),
                             punishment.getReason()));
@@ -60,9 +62,9 @@ public class PunishmentListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onJoin(AsyncPlayerPreLoginEvent e) {
-        Punishment punish = manager.getPunishmentSync(PunishmentType.BAN, e.getUniqueId(), e.getAddress().getHostAddress());
+        Punishment punish = manager.getLastPunishmentSync(PunishmentType.BAN, e.getUniqueId(), e.getAddress().getHostAddress());
 
-        if (punish == null) {
+        if (punish == null || punish.getType() != PunishmentType.BAN) {
             return;
         }
 
