@@ -7,6 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.user.User;
 
 import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface PunishmentManager {
@@ -26,9 +28,14 @@ public interface PunishmentManager {
     @Nullable
     Punishment getPunishmentByIdSync(@NotNull String id);
 
-    ListenableFuture<Punishment> getPunishment(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress);
+    ListenableFuture<Punishment> getLastPunishment(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress);
 
     @Nullable
-    Punishment getPunishmentSync(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress);
+    Punishment getLastPunishmentSync(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress);
+
+    ListenableFuture<List<Punishment>> getPunishments(@Nullable PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress, boolean active);
+
+    @NotNull
+    List<Punishment> getPunishmentsSync(@Nullable PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress, boolean active);
 
 }

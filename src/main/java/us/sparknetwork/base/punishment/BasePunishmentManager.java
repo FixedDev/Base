@@ -7,6 +7,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.mongodb.client.MongoDatabase;
 import org.apache.commons.lang.StringUtils;
+import org.bson.conversions.Bson;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -20,7 +21,9 @@ import us.sparknetwork.base.id.IdGenerator;
 import us.sparknetwork.base.user.User;
 
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.UUID;
 
 import static com.mongodb.client.model.Filters.*;
@@ -51,7 +54,7 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
 
 
         if (type == PunishmentType.BAN || type == PunishmentType.MUTE) {
-            Punishment oldPunishment = getPunishmentSync(type, punished.getUUID(), punished.getLastIp());
+            Punishment oldPunishment = getLastPunishmentSync(type, punished.getUUID(), punished.getLastIp());
 
             if (oldPunishment != null) {
                 oldPunishment.setActive(false);
@@ -102,20 +105,24 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
     }
 
     @Override
-    public ListenableFuture<Punishment> getPunishment(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress) {
+    public ListenableFuture<Punishment> getLastPunishment(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress) {
         if (playerId == null && playerAddress == null) {
             return Futures.immediateFailedFuture(new IllegalArgumentException("The player id or the player address must be not null!"));
         }
 
-        return executorService.submit(() -> getPunishmentSync(type, playerId, playerAddress));
+        return executorService.submit(() -> getLastPunishmentSync(type, playerId, playerAddress));
     }
 
     @Override
-    public @Nullable Punishment getPunishmentSync(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress) {
+    public @Nullable Punishment getLastPunishmentSync(@NotNull PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress) {
+        Bson basicQuery = and(
+                eq("active", true),
+                eq("type", type.toString()));
+
         if (playerId != null) {
-            Iterator<Punishment> iterator = findByQuerySync(and(eq("active", true),
+            Iterator<Punishment> iterator = findByQuerySync(and(
                     eq("punishedId", playerId.toString()),
-                    eq("type", type.toString())), 0, 1).iterator();
+                    basicQuery), 0, 1).iterator();
 
             if (iterator.hasNext()) {
                 return iterator.next();
@@ -124,20 +131,52 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
 
 
         if (!StringUtils.isBlank(playerAddress)) {
-            Iterator<Punishment> iterator = findByQuerySync(and(eq("active", true),
+            Iterator<Punishment> iterator = findByQuerySync(and(
                     eq("punishedAddress", playerAddress),
-                    eq("type", type.toString())), 0, 1).iterator();
+                    eq("ipPunishment", true),
+                    basicQuery), 0, 1).iterator();
 
             if (iterator.hasNext()) {
-                Punishment tempPunish = iterator.next();
-
-                if (tempPunish.isIpPunishment()) {
-                    return tempPunish;
-                }
-
+                return iterator.next();
             }
         }
 
         return null;
+    }
+
+    @Override
+    public ListenableFuture<List<Punishment>> getPunishments(@Nullable PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress, boolean active) {
+        if (playerId == null && playerAddress == null) {
+            return Futures.immediateFailedFuture(new IllegalArgumentException("The player id or the player address must be not null!"));
+        }
+
+        return executorService.submit(() -> getPunishmentsSync(type, playerId, playerAddress, active));
+    }
+
+    @Override
+    public @NotNull List<Punishment> getPunishmentsSync(@Nullable PunishmentType type, @Nullable UUID playerId, @Nullable String playerAddress, boolean active) {
+        List<Punishment> punishments = new ArrayList<>();
+
+        Bson basicQuery = eq("active", active);
+
+        if (type != null) {
+            basicQuery = and(basicQuery, eq("type", type.toString()));
+        }
+
+        if (playerId != null) {
+            punishments.addAll(findByQuerySync(and(
+                    basicQuery,
+                    eq("punishedId", playerId.toString())), 0, Integer.MAX_VALUE));
+        }
+
+
+        if (!StringUtils.isBlank(playerAddress)) {
+            punishments.addAll(findByQuerySync(and(
+                    basicQuery,
+                    eq("punishedAddress", playerAddress),
+                    eq("ipPunishment", true)), 0, Integer.MAX_VALUE));
+        }
+
+        return punishments;
     }
 }
