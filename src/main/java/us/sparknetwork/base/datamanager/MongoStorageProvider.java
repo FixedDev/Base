@@ -6,17 +6,16 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
-import org.bson.BsonDocument;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.redisson.api.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 public class MongoStorageProvider<O extends Model> implements StorageProvider<O> {
@@ -153,7 +152,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
     }
 
     @Override
-    public @NotNull ListenableFuture<Set<O>> findByQuery(Bson bsonQuery, int skip, int limit) {
+    public ListenableFuture<List<O>> findByQuery(Bson bsonQuery, int skip, int limit) {
         if (limit < 1) {
             throw new IllegalArgumentException("Limit should be 1 or more!");
         }
@@ -163,7 +162,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
         }
 
         return executorService.submit(() -> {
-            Set<O> objects = new HashSet<>();
+            List<O> objects = new ArrayList<>();
 
             mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
 
@@ -172,7 +171,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
     }
 
     @Override
-    public @NotNull Set<O> findByQuerySync(Bson bsonQuery, int skip, int limit) {
+    public List<O> findByQuerySync(Bson bsonQuery, int skip, int limit) {
         if (limit < 1) {
             throw new IllegalArgumentException("Limit should be 1 or more!");
         }
@@ -181,7 +180,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
             throw new IllegalArgumentException("Skip should be 0 or more!");
         }
 
-        Set<O> objects = new HashSet<>();
+        List<O> objects = new ArrayList<>();
 
         mongoCollection.find(bsonQuery).skip(skip).limit(limit).into(objects);
 

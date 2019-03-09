@@ -214,7 +214,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
     }
 
     @Override
-    public @NotNull ListenableFuture<Set<O>> findByQuery(Bson bsonQuery, int skip, int limit) {
+    public ListenableFuture<List<O>> findByQuery(Bson bsonQuery, int skip, int limit) {
         if (limit < 1) {
             throw new IllegalArgumentException("Limit should be 1 or more!");
         }
@@ -229,7 +229,7 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
     }
 
     @Override
-    public @NotNull Set<O> findByQuerySync(Bson bsonQuery, int skip, int limit) {
+    public List<O> findByQuerySync(Bson bsonQuery, int skip, int limit) {
         if (limit < 1) {
             throw new IllegalArgumentException("Limit should be 1 or more!");
         }

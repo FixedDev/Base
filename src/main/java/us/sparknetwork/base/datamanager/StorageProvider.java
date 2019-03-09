@@ -5,6 +5,7 @@ import org.bson.conversions.Bson;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 public interface StorageProvider<O extends Model> {
@@ -37,9 +38,9 @@ public interface StorageProvider<O extends Model> {
 
     O findOneByQuerySync(Bson bsonQuery);
 
-    @NotNull ListenableFuture<Set<O>> findByQuery(Bson bsonQuery, int skip, int limit);
+    ListenableFuture<List<O>> findByQuery(Bson bsonQuery, int skip, int limit);
 
-    @NotNull Set<O> findByQuerySync(Bson bsonQuery, int skip, int limit);
+    List<O> findByQuerySync(Bson bsonQuery, int skip, int limit);
 
     @NotNull
     ListenableFuture<Void> delete(@NotNull O object);
