@@ -8,6 +8,7 @@ import me.ggamer55.bcm.parametric.annotation.Parameter;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.punishment.PunishmentManager;
 import us.sparknetwork.base.punishment.PunishmentType;
@@ -39,7 +40,7 @@ public class PunishmentCommands implements CommandClass {
             return true;
         }
 
-        if (target.isOnline() && target.getPlayer().hasPermission("base.command.ban.bypass")) {
+        if (target.isOnline() && target.getPlayer().hasPermission("base.command.ban.bypass") && sender instanceof Player) {
             sender.sendMessage(NO_PERMISSION_MESSAGE);
 
             return true;
