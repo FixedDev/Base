@@ -158,6 +158,7 @@ public class PunishmentListener implements Listener {
                 punish.getIssuerName(),
                 DateUtil.getHumanReadableDate(muteMillisLeft, i18n),
                 punish.getReason()));
+        event.setCancelled(true);
     }
 
 }

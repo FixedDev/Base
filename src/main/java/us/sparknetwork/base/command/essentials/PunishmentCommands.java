@@ -410,7 +410,7 @@ public class PunishmentCommands implements CommandClass {
 
     @Command(names = "unmute", min = 1, max = 1, permission = "base.command.unmute")
     public boolean unmutePlayer(CommandSender sender, OfflinePlayer target) {
-        ListenableFutureUtils.addCallback(punishmentManager.getLastPunishment(PunishmentType.BAN, target.getUniqueId(), null), object -> {
+        ListenableFutureUtils.addCallback(punishmentManager.getLastPunishment(PunishmentType.MUTE, target.getUniqueId(), null), object -> {
             if(object == null){
                 sender.sendMessage(i18n.format("punishment.user.not.muted", target.getName()));
                 return;
