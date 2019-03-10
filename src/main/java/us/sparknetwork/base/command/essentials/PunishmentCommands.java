@@ -407,4 +407,20 @@ public class PunishmentCommands implements CommandClass {
         });
         return true;
     }
+
+    @Command(names = "unmute", min = 1, max = 1, permission = "base.command.unmute")
+    public boolean unmutePlayer(CommandSender sender, OfflinePlayer target) {
+        ListenableFutureUtils.addCallback(punishmentManager.getLastPunishment(PunishmentType.BAN, target.getUniqueId(), null), object -> {
+            if(object == null){
+                sender.sendMessage(i18n.format("punishment.user.not.muted", target.getName()));
+                return;
+            }
+
+            object.setActive(false);
+            punishmentManager.savePunishment(object);
+
+            sender.sendMessage(i18n.format("punishment.unmuted", target.getName()));
+        });
+        return true;
+    }
 }
