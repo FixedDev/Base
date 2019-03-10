@@ -395,6 +395,11 @@ public class PunishmentCommands implements CommandClass {
         }
 
         ListenableFutureUtils.addCallback(punishmentManager.getLastPunishment(PunishmentType.BAN, target.getUniqueId(), ipAddress), object -> {
+            if(object == null){
+                sender.sendMessage(i18n.format("punishment.user.not.banned", target.getName()));
+                return;
+            }
+
             object.setActive(false);
             punishmentManager.savePunishment(object);
 
