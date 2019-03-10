@@ -1,6 +1,7 @@
 package us.sparknetwork.base.punishment;
 
 import com.google.common.util.concurrent.ListenableFuture;
+import com.mongodb.lang.NonNullApi;
 import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -13,9 +14,21 @@ import java.util.UUID;
 
 public interface PunishmentManager {
     @NotNull
+    default Punishment createPunishment(@NotNull PunishmentType type,
+                                        @NotNull CommandSender issuer,
+                                        @NotNull User.AddressHistoryData punished,
+                                        @NotNull String reason,
+                                        @Nullable ZonedDateTime endDate,
+                                        boolean ipPunishment,
+                                        boolean silent) {
+        return createPunishment(type, issuer, punished.getUUID(), punished.getLastName(), punished.getLastIp(), reason, endDate, ipPunishment, silent);
+    }
+
     Punishment createPunishment(@NotNull PunishmentType type,
                                 @NotNull CommandSender issuer,
-                                @NotNull User.AddressHistoryData punished,
+                                @NotNull UUID punishedId,
+                                @NotNull String punishedName,
+                                @Nullable String punishedIp,
                                 @NotNull String reason,
                                 @Nullable ZonedDateTime endDate,
                                 boolean ipPunishment,

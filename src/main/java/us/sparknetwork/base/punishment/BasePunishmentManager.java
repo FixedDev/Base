@@ -43,18 +43,16 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
         this.executorService = executorService;
     }
 
-    @NotNull
     @Override
-    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull CommandSender issuer, @NotNull User.AddressHistoryData punished, @NotNull String reason, ZonedDateTime endDate, boolean ipPunishment, boolean silent) {
+    public Punishment createPunishment(@NotNull PunishmentType type, @NotNull CommandSender issuer, @NotNull UUID punishedId, @NotNull String punishedName, @Nullable String punishedIp, @NotNull String reason, @Nullable ZonedDateTime endDate, boolean ipPunishment, boolean silent) {
         UUID uniqueId = BasePlugin.CONSOLE_UUID;
 
         if (issuer instanceof Player) {
             uniqueId = ((Player) issuer).getUniqueId();
         }
 
-
         if (type == PunishmentType.BAN || type == PunishmentType.MUTE) {
-            Punishment oldPunishment = getLastPunishmentSync(type, punished.getUUID(), punished.getLastIp());
+            Punishment oldPunishment = getLastPunishmentSync(type, punishedId, punishedIp);
 
             if (oldPunishment != null) {
                 oldPunishment.setActive(false);
@@ -62,14 +60,13 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment> impl
             }
         }
 
-
         BasePunishment punishment = new BasePunishment(
                 idGenerator.getNextId("punishments") + "",
                 uniqueId,
                 issuer.getName(),
-                punished.getUUID(),
-                punished.getLastName(),
-                punished.getLastIp(),
+                punishedId,
+                punishedName,
+                punishedIp,
                 type,
                 reason,
                 ZonedDateTime.now(),

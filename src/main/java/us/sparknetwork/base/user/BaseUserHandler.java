@@ -59,7 +59,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
         for (Player viewer : collection) {
             if (!player.equals(viewer)) {
                 if (vanished) {
-                    if (StaffPriority.getByPlayer(player).isMoreThan(StaffPriority.getByPlayer(viewer))) {
+                    if (StaffPriority.getByCommandSender(player).isMoreThan(StaffPriority.getByCommandSender(viewer))) {
                         viewer.hidePlayer(player);
                     }
                 } else {

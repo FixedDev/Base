@@ -32,7 +32,6 @@ public class PunishmentCommands implements CommandClass {
     private static final String NO_PERMISSION_MESSAGE = ChatColor.RED + "No permission.";
 
 
-
     @Command(names = {"ban", "tempban"}, permission = "base.command.ban", min = 1, usage = "/<command> <target> [duration] [reason] [-s]")
     public boolean banPlayer(CommandSender sender, CommandContext context, OfflinePlayer target, @Parameter(value = "s", isFlag = true) boolean silent) {
         if (!target.isOnline() && !sender.hasPermission("base.command.ban.offline")) {
@@ -44,11 +43,11 @@ public class PunishmentCommands implements CommandClass {
         StaffPriority senderPriority = StaffPriority.getByCommandSender(sender);
         StaffPriority targetPriority = StaffPriority.NONE;
 
-        if(target.isOnline()){
+        if (target.isOnline()) {
             targetPriority = StaffPriority.getByCommandSender(target.getPlayer());
         }
 
-        if(targetPriority.isMoreThan(senderPriority)){
+        if (targetPriority.isMoreThan(senderPriority)) {
             sender.sendMessage(NO_PERMISSION_MESSAGE);
 
             return true;
@@ -80,9 +79,15 @@ public class PunishmentCommands implements CommandClass {
                 return true;
             }
 
-            ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data ->
-                    punishmentManager.createPunishment(PunishmentType.BAN, sender, data, i18n.translate("punishment.default.reason"), null, false, silent)
-            );
+            ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data -> {
+                String punishedIp = null;
+
+                if (target.isOnline()) {
+                    punishedIp = target.getPlayer().getAddress().getAddress().getHostAddress();
+                }
+
+                punishmentManager.createPunishment(PunishmentType.BAN, sender, target.getUniqueId(), target.getName(), punishedIp, i18n.translate("punishment.default.reason"), null, false, silent);
+            });
 
             return true;
         }
@@ -121,9 +126,15 @@ public class PunishmentCommands implements CommandClass {
 
             final ZonedDateTime banEndDate = ZonedDateTime.now().plus(banDuration);
 
-            ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data ->
-                    punishmentManager.createPunishment(PunishmentType.BAN, sender, data, banReason, banEndDate, false, silent)
-            );
+            ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data -> {
+                String punishedIp = null;
+
+                if (target.isOnline()) {
+                    punishedIp = target.getPlayer().getAddress().getAddress().getHostAddress();
+                }
+
+                punishmentManager.createPunishment(PunishmentType.BAN, sender, target.getUniqueId(), target.getName(), punishedIp, banReason, banEndDate, false, silent);
+            });
 
             return true;
         }
@@ -138,9 +149,15 @@ public class PunishmentCommands implements CommandClass {
 
         String reason = context.getJoinedArgs(1);
 
-        ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data ->
-                punishmentManager.createPunishment(PunishmentType.BAN, sender, data, reason, null, false, silent)
-        );
+        ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data -> {
+            String punishedIp = null;
+
+            if (target.isOnline()) {
+                punishedIp = target.getPlayer().getAddress().getAddress().getHostAddress();
+            }
+
+            punishmentManager.createPunishment(PunishmentType.BAN, sender, target.getUniqueId(), target.getName(), punishedIp, reason, null, false, silent);
+        });
 
         return true;
     }
@@ -156,11 +173,11 @@ public class PunishmentCommands implements CommandClass {
         StaffPriority senderPriority = StaffPriority.getByCommandSender(sender);
         StaffPriority targetPriority = StaffPriority.NONE;
 
-        if(target.isOnline()){
+        if (target.isOnline()) {
             targetPriority = StaffPriority.getByCommandSender(target.getPlayer());
         }
 
-        if(targetPriority.isMoreThan(senderPriority)){
+        if (targetPriority.isMoreThan(senderPriority)) {
             sender.sendMessage(NO_PERMISSION_MESSAGE);
 
             return true;
@@ -268,11 +285,11 @@ public class PunishmentCommands implements CommandClass {
         StaffPriority senderPriority = StaffPriority.getByCommandSender(sender);
         StaffPriority targetPriority = StaffPriority.NONE;
 
-        if(target.isOnline()){
+        if (target.isOnline()) {
             targetPriority = StaffPriority.getByCommandSender(target.getPlayer());
         }
 
-        if(targetPriority.isMoreThan(senderPriority)){
+        if (targetPriority.isMoreThan(senderPriority)) {
             sender.sendMessage(NO_PERMISSION_MESSAGE);
 
             return true;
@@ -366,6 +383,23 @@ public class PunishmentCommands implements CommandClass {
                 punishmentManager.createPunishment(PunishmentType.MUTE, sender, data, reason, null, false, silent)
         );
 
+        return true;
+    }
+
+    @Command(names = "unban", min = 1, max = 1, permission = "base.command.unban")
+    public boolean unbanPlayer(CommandSender sender, OfflinePlayer target) {
+        String ipAddress = null;
+
+        if(target.isOnline()){
+            ipAddress = target.getPlayer().getAddress().getAddress().getHostAddress();
+        }
+
+        ListenableFutureUtils.addCallback(punishmentManager.getLastPunishment(PunishmentType.BAN, target.getUniqueId(), ipAddress), object -> {
+            object.setActive(false);
+            punishmentManager.savePunishment(object);
+
+            sender.sendMessage(i18n.format("punishment.unbanned", target.getName()));
+        });
         return true;
     }
 }
