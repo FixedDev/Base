@@ -55,6 +55,10 @@ public class ChatListener implements Listener {
     public void chatListener(AsyncPlayerChatEvent e) {
         Optional<User.Complete> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(e.getPlayer().getUniqueId().toString()));
 
+        if(e.isCancelled()){
+            return; // Just in case
+        }
+
         if (!optionalSettings.isPresent()) {
             e.getPlayer().sendMessage(i18n.translate("load.fail.settings"));
 
