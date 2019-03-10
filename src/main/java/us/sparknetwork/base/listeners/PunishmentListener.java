@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.event.PunishmentEvent;
@@ -119,6 +120,44 @@ public class PunishmentListener implements Listener {
                         punish.getIssuerName(),
                         DateUtil.getHumanReadableDate(banMillisLeft, i18n),
                         punish.getReason()));
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onChat(AsyncPlayerChatEvent event) {
+        Punishment punish = manager.getLastPunishmentSync(PunishmentType.MUTE, event.getPlayer().getUniqueId(), null);
+
+        if (punish == null || punish.getType() != PunishmentType.MUTE) {
+            return;
+        }
+
+        // The punish.endDate == null is just because SonarLint complains that endDate can be null
+        // Even if punish.isPermanent is the same that punish.endDate == null
+        if (punish.isPermanent() || punish.getEndDate() == null) {
+            event.getPlayer().sendMessage(i18n.format("punishment.muted.message", punish.getIssuerName(), punish.getReason()));
+            event.setCancelled(true);
+
+            return;
+        }
+
+        long muteMillisLeft;
+
+        if (ZonedDateTime.now().isAfter(punish.getEndDate())) {
+            muteMillisLeft = 0;
+        } else {
+            muteMillisLeft = ZonedDateTime.now().until(punish.getEndDate(), ChronoUnit.MILLIS);
+        }
+
+        if (muteMillisLeft <= 0) {
+            punish.setActive(false);
+            manager.savePunishment(punish);
+
+            return;
+        }
+
+        event.getPlayer().sendMessage(i18n.format("punishment.temporal.muted.message",
+                punish.getIssuerName(),
+                DateUtil.getHumanReadableDate(muteMillisLeft, i18n),
+                punish.getReason()));
     }
 
 }
