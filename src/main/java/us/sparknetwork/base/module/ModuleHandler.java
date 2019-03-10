@@ -80,8 +80,6 @@ public class ModuleHandler extends AbstractService {
 
             this.registeredModules.add(module);
 
-            injector.injectMembers(module);
-
             logger.log(Level.INFO, "Loaded module {0}-{1}", new Object[]{module.name(), module.version()});
         });
 
