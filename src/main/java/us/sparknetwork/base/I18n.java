@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.inject.annotations.ModuleDataFolder;
+import us.sparknetwork.base.inject.annotations.PluginClassLoader;
+import us.sparknetwork.base.inject.annotations.PluginDataFolder;
 import us.sparknetwork.base.inject.annotations.PluginLogger;
 
 import java.io.File;
@@ -51,19 +53,21 @@ public class I18n {
 
     private File dataFolder;
     private Logger logger;
+    private ClassLoader classLoader;
 
     private JavaPlugin plugin;
 
     @Inject
-    public I18n(@ModuleDataFolder File dataFolder, @PluginLogger Logger logger) {
+    public I18n(@PluginDataFolder File dataFolder, @PluginLogger Logger logger, @PluginClassLoader ClassLoader classLoader) {
         this.dataFolder = dataFolder;
         this.logger = logger;
+        this.classLoader = classLoader;
 
         // Just for "reload" support
         ResourceBundle.clearCache();
 
         try {
-            defaultBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, Locale.ENGLISH);
+            defaultBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, Locale.ENGLISH, classLoader);
         } catch (MissingResourceException ex) {
             logger.warning("Failed to load default bundle");
             defaultBundle = NULL_BUNDLE;
@@ -80,7 +84,7 @@ public class I18n {
                 currentLocale = new Locale(localeParts[0]);
             }
 
-            resourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, currentLocale);
+            resourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, currentLocale, classLoader);
         } catch (MissingResourceException ex) {
             logger.warning("Failed to load locale bundle");
             resourceBundle = NULL_BUNDLE;

@@ -5,4 +5,6 @@ public interface ModuleInfo {
     String version();
 
     String[] authors();
+
+    ClassLoader getClassLoader();
 }

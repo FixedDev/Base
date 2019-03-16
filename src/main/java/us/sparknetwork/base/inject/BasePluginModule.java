@@ -9,8 +9,10 @@ import lombok.AllArgsConstructor;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.api.RedissonClient;
+import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.chat.BaseChatFormatManager;
 import us.sparknetwork.base.chat.ChatFormatManager;
+import us.sparknetwork.base.inject.annotations.PluginClassLoader;
 import us.sparknetwork.base.inject.annotations.PluginDataFolder;
 import us.sparknetwork.base.inject.annotations.PluginLogger;
 import us.sparknetwork.base.server.LocalServerData;
@@ -36,8 +38,11 @@ public class BasePluginModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(JavaPlugin.class).toInstance(plugin);
+        bind(ClassLoader.class).annotatedWith(PluginClassLoader.class).toInstance(plugin.getClass().getClassLoader());
         bind(File.class).annotatedWith(PluginDataFolder.class).toInstance(plugin.getDataFolder());
         bind(Logger.class).annotatedWith(PluginLogger.class).toInstance(plugin.getLogger());
+
+        bind(I18n.class);
 
         bind(ListeningExecutorService.class).toInstance(executorService);
 
