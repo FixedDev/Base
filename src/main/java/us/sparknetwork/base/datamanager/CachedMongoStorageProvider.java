@@ -16,7 +16,7 @@ import org.redisson.api.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class CachedMongoStorageProvider<O extends Model> implements CachedStorageProvider<O> {
+public class CachedMongoStorageProvider<O extends Model, P extends PartialModel> implements CachedStorageProvider<O, P> {
 
     private ListeningExecutorService executorService;
 
@@ -25,7 +25,6 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
     private String dataPrefix;
     private Class<? extends O> modelClazz;
-
 
     public CachedMongoStorageProvider(ListeningExecutorService executorService, MongoDatabase database, RedissonClient redisson, String dataPrefix, Class<? extends O> modelClazz) {
         this.executorService = executorService;
@@ -243,37 +242,55 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
 
     @Override
-    public ListenableFuture<Void> save(O o, boolean force) {
+    public ListenableFuture<Void> save(P o, boolean force) {
         return executorService.submit(() -> {
-            RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + o.getId());
+            if (!(o instanceof Model)) {
+                throw new IllegalArgumentException("The model to save doesn't has a id field");
+            }
 
-            rBucket.set(o);
+            O object = (O) o;
+
+            RBucket<O> rBucket = redissonClient.getBucket(dataPrefix + ":" + object.getId());
+
+            rBucket.set(object);
             rBucket.expire(2, TimeUnit.MINUTES);
 
-            this.mongoCollection.replaceOne(createIdQuery(o.getId()), o, new ReplaceOptions().upsert(true));
+            this.mongoCollection.replaceOne(createIdQuery(object.getId()), object, new ReplaceOptions().upsert(true));
 
             return null;
         });
     }
 
     @Override
-    public ListenableFuture<Void> save(Set<O> o, boolean force) {
+    public ListenableFuture<Void> save(Set<P> o, boolean force) {
         return executorService.submit(() -> {
             RBatch rBatch = redissonClient.createBatch(BatchOptions.defaults());
 
             o.forEach(object -> {
-                RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + object.getId());
-                rBucket.setAsync(object);
+                if (!(object instanceof Model)) {
+                    throw new IllegalArgumentException("The model to save doesn't has a id field");
+                }
+
+                O completeObject = (O) object;
+
+                RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + completeObject.getId());
+                rBucket.setAsync(completeObject);
                 rBucket.expireAsync(2, TimeUnit.MINUTES);
             });
 
             rBatch.execute();
 
             o.forEach(object -> {
+                if (!(object instanceof Model)) {
+                    throw new IllegalArgumentException("The model to save doesn't has a id field");
+                }
+
                 ReplaceOptions options = new ReplaceOptions();
                 options.upsert(true);
 
-                this.mongoCollection.replaceOne(createIdQuery(object.getId()), object, options);
+                O completeObject = (O) object;
+
+                this.mongoCollection.replaceOne(createIdQuery(completeObject.getId()), completeObject, options);
             });
 
             return null;
@@ -282,8 +299,12 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
     @NotNull
     @Override
-    public ListenableFuture<Void> delete(@NotNull O object) {
-        return delete(object.getId());
+    public ListenableFuture<Void> delete(@NotNull P object) {
+        if (!(object instanceof Model)) {
+            throw new IllegalArgumentException("The model to delete doesn't has a id field");
+        }
+
+        return delete(((Model) object).getId());
     }
 
     public ListenableFuture<Void> delete(String id) {
@@ -300,15 +321,21 @@ public class CachedMongoStorageProvider<O extends Model> implements CachedStorag
 
     @NotNull
     @Override
-    public ListenableFuture<Void> delete(@NotNull Set<O> objects) {
+    public ListenableFuture<Void> delete(@NotNull Set<P> objects) {
         return executorService.submit(() -> {
             RBatch rBatch = redissonClient.createBatch(BatchOptions.defaults());
 
-            for (O object : objects) {
-                RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + object.getId());
+            for (P object : objects) {
+                if (!(object instanceof Model)) {
+                    throw new IllegalArgumentException("The model to delete doesn't has a id field");
+                }
+
+                O completeModel = (O) object;
+
+                RBucketAsync<O> rBucket = rBatch.getBucket(dataPrefix + ":" + completeModel.getId());
                 rBucket.deleteAsync();
 
-                mongoCollection.findOneAndDelete(createIdQuery(object.getId()));
+                mongoCollection.findOneAndDelete(createIdQuery(completeModel.getId()));
             }
 
             rBatch.execute();

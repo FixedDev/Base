@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
-public interface CachedStorageProvider<O extends Model> extends StorageProvider<O> {
+public interface CachedStorageProvider<O extends Model, P extends PartialModel> extends StorageProvider<O, P> {
 
     ListenableFuture<Set<O>> findAllCached(int limit);
 
@@ -21,19 +21,19 @@ public interface CachedStorageProvider<O extends Model> extends StorageProvider<
 
     void invalidate();
 
-    ListenableFuture<Void> save(O objects, boolean force);
+    ListenableFuture<Void> save(P objects, boolean force);
 
-    ListenableFuture<Void> save(Set<O> objects, boolean force);
+    ListenableFuture<Void> save(Set<P> objects, boolean force);
 
     @NotNull
     @Override
-    default ListenableFuture<Void> save(@NotNull O objects) {
+    default ListenableFuture<Void> save(@NotNull P objects) {
         return save(objects, false);
     }
 
     @NotNull
     @Override
-    default ListenableFuture<Void> save(@NotNull Set<O> objects) {
+    default ListenableFuture<Void> save(@NotNull Set<P> objects) {
         return save(objects, false);
     }
 }

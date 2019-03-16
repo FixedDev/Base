@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public interface StorageProvider<O extends Model> {
+public interface StorageProvider<O extends Model, P extends PartialModel> {
 
     @NotNull
     ListenableFuture<O> findOne(@NotNull String id);
@@ -29,10 +29,10 @@ public interface StorageProvider<O extends Model> {
     Set<O> findSync(int limit);
 
     @NotNull
-    ListenableFuture<Void> save(@NotNull O objects);
+    ListenableFuture<Void> save(@NotNull P objects);
 
     @NotNull
-    ListenableFuture<Void> save(@NotNull Set<O> objects);
+    ListenableFuture<Void> save(@NotNull Set<P> objects);
 
     @NotNull ListenableFuture<O> findOneByQuery(Bson bsonQuery);
 
@@ -43,8 +43,8 @@ public interface StorageProvider<O extends Model> {
     List<O> findByQuerySync(Bson bsonQuery, int skip, int limit);
 
     @NotNull
-    ListenableFuture<Void> delete(@NotNull O object);
+    ListenableFuture<Void> delete(@NotNull P object);
 
     @NotNull
-    ListenableFuture<Void> delete(@NotNull Set<O> objects);
+    ListenableFuture<Void> delete(@NotNull Set<P> objects);
 }

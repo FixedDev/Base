@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class MongoStorageProvider<O extends Model> implements StorageProvider<O> {
+public class MongoStorageProvider<O extends Model, P extends PartialModel> implements StorageProvider<O, P> {
 
     private ListeningExecutorService executorService;
 
@@ -157,7 +157,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
             throw new IllegalArgumentException("Limit should be 1 or more!");
         }
 
-        if(skip < 0){
+        if (skip < 0) {
             throw new IllegalArgumentException("Skip should be 0 or more!");
         }
 
@@ -176,7 +176,7 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
             throw new IllegalArgumentException("Limit should be 1 or more!");
         }
 
-        if(skip < 0){
+        if (skip < 0) {
             throw new IllegalArgumentException("Skip should be 0 or more!");
         }
 
@@ -189,16 +189,20 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
 
     @NotNull
     @Override
-    public ListenableFuture<Void> save(@NotNull O o) {
+    public ListenableFuture<Void> save(@NotNull P o) {
         return executorService.submit(() -> {
-            this.mongoCollection.replaceOne(createIdQuery(o.getId()), o, new ReplaceOptions().upsert(true));
+            if (!(o instanceof Model)) {
+                throw new IllegalArgumentException("The model to delete doesn't has a id field");
+            }
+
+            this.mongoCollection.replaceOne(createIdQuery(((Model) o).getId()), (O) o, new ReplaceOptions().upsert(true));
             return null;
         });
     }
 
     @NotNull
     @Override
-    public ListenableFuture<Void> save(@NotNull Set<O> o) {
+    public ListenableFuture<Void> save(@NotNull Set<P> o) {
         return executorService.submit(() -> {
             Set<O> toSaveInMongoDB = new HashSet<>();
 
@@ -216,8 +220,12 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
 
     @NotNull
     @Override
-    public ListenableFuture<Void> delete(@NotNull O object) {
-        return delete(object.getId());
+    public ListenableFuture<Void> delete(@NotNull P object) {
+        if (!(object instanceof Model)) {
+            throw new IllegalArgumentException("The model to delete doesn't has a id field");
+        }
+
+        return delete(((Model) object).getId());
     }
 
     public ListenableFuture<Void> delete(String id) {
@@ -231,11 +239,15 @@ public class MongoStorageProvider<O extends Model> implements StorageProvider<O>
 
     @NotNull
     @Override
-    public ListenableFuture<Void> delete(@NotNull Set<O> objects) {
+    public ListenableFuture<Void> delete(@NotNull Set<P> objects) {
         return executorService.submit(() -> {
 
-            for (O object : objects) {
-                mongoCollection.findOneAndDelete(createIdQuery(object.getId()));
+            for (P object : objects) {
+                if (!(object instanceof Model)) {
+                    throw new IllegalArgumentException("The model to delete doesn't has a id field");
+                }
+
+                mongoCollection.findOneAndDelete(createIdQuery(((Model) object).getId()));
             }
 
             return null;
