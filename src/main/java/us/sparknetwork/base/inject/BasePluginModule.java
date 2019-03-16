@@ -11,7 +11,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.api.RedissonClient;
 import us.sparknetwork.base.chat.BaseChatFormatManager;
 import us.sparknetwork.base.chat.ChatFormatManager;
+import us.sparknetwork.base.inject.annotations.PluginDataFolder;
+import us.sparknetwork.base.inject.annotations.PluginLogger;
 import us.sparknetwork.base.server.LocalServerData;
+
+import java.io.File;
+import java.util.logging.Logger;
 
 @AllArgsConstructor
 public class BasePluginModule extends AbstractModule {
@@ -31,6 +36,9 @@ public class BasePluginModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(JavaPlugin.class).toInstance(plugin);
+        bind(File.class).annotatedWith(PluginDataFolder.class).toInstance(plugin.getDataFolder());
+        bind(Logger.class).annotatedWith(PluginLogger.class).toInstance(plugin.getLogger());
+
         bind(ListeningExecutorService.class).toInstance(executorService);
 
         bind(Chat.class).toInstance(chat);

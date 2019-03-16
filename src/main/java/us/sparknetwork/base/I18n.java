@@ -6,6 +6,9 @@ import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import us.sparknetwork.base.inject.annotations.ModuleDataFolder;
+import us.sparknetwork.base.inject.annotations.PluginLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,21 +19,23 @@ import java.net.URL;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Singleton
 public class I18n {
 
-    private static final String resourceBundleName = "messages/messages";
+    private static final String RESOURCE_BUNDLE_NAME = "messages/messages";
 
     private static final ResourceBundle NULL_BUNDLE = new ResourceBundle() {
         @Override
-        protected Object handleGetObject(String key) {
+        protected Object handleGetObject(@NotNull String key) {
             return null;
         }
 
         @Override
+        @NotNull
         public Enumeration<String> getKeys() {
-            return null;
+            return new Vector<String>().elements();
         }
 
     };
@@ -44,19 +49,23 @@ public class I18n {
 
     private Map<String, MessageFormat> cachedFormats = new HashMap<>();
 
+    private File dataFolder;
+    private Logger logger;
+
     private JavaPlugin plugin;
 
     @Inject
-    public I18n(JavaPlugin plugin) {
-        this.plugin = plugin;
+    public I18n(@ModuleDataFolder File dataFolder, @PluginLogger Logger logger) {
+        this.dataFolder = dataFolder;
+        this.logger = logger;
 
         // Just for "reload" support
         ResourceBundle.clearCache();
 
         try {
-            defaultBundle = ResourceBundle.getBundle(resourceBundleName, Locale.ENGLISH);
+            defaultBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, Locale.ENGLISH);
         } catch (MissingResourceException ex) {
-            plugin.getLogger().warning("Failed to load default bundle");
+            logger.warning("Failed to load default bundle");
             defaultBundle = NULL_BUNDLE;
         }
 
@@ -71,14 +80,14 @@ public class I18n {
                 currentLocale = new Locale(localeParts[0]);
             }
 
-            resourceBundle = ResourceBundle.getBundle(resourceBundleName, currentLocale);
+            resourceBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, currentLocale);
         } catch (MissingResourceException ex) {
-            plugin.getLogger().warning("Failed to load locale bundle");
+            logger.warning("Failed to load locale bundle");
             resourceBundle = NULL_BUNDLE;
         }
 
         try {
-            customBundle = ResourceBundle.getBundle(resourceBundleName, currentLocale, new ResourceClassLoader(I18n.class.getClassLoader(), plugin.getDataFolder()));
+            customBundle = ResourceBundle.getBundle(RESOURCE_BUNDLE_NAME, currentLocale, new ResourceClassLoader(I18n.class.getClassLoader(), dataFolder));
         } catch (MissingResourceException ex) {
             customBundle = NULL_BUNDLE;
         }
@@ -91,7 +100,7 @@ public class I18n {
 
         this.currentLocale = currentLocale;
         this.resourceBundle = ResourceBundle.getBundle("messages", currentLocale);
-        customBundle = ResourceBundle.getBundle("message", currentLocale, new ResourceClassLoader(I18n.class.getClassLoader(), plugin.getDataFolder()));
+        customBundle = ResourceBundle.getBundle("message", currentLocale, new ResourceClassLoader(I18n.class.getClassLoader(), dataFolder));
     }
 
     public void updateLocale(String locale) {
@@ -122,7 +131,7 @@ public class I18n {
                 }
             }
         } catch (MissingResourceException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to get translation text: {0}", path);
+            logger.log(Level.SEVERE, "Failed to get translation text: {0}", path);
             return "";
         }
 
@@ -140,7 +149,7 @@ public class I18n {
             try {
                 formatter = new MessageFormat(translatedText);
             } catch (IllegalArgumentException e) {
-                plugin.getLogger().log(Level.WARNING, "Invalid text translation: {0}", translatedText);
+                logger.log(Level.WARNING, "Invalid text translation: {0}", translatedText);
 
                 // taken from essentials :3
                 translatedText = translatedText.replaceAll("\\{(\\D*?)\\}", "\\[$1\\]");
