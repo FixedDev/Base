@@ -7,7 +7,6 @@ import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-import us.sparknetwork.base.inject.annotations.ModuleDataFolder;
 import us.sparknetwork.base.inject.annotations.PluginClassLoader;
 import us.sparknetwork.base.inject.annotations.PluginDataFolder;
 import us.sparknetwork.base.inject.annotations.PluginLogger;
