@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.datamanager.Model;
+import us.sparknetwork.base.datamanager.PartialModel;
 
 import java.util.List;
 import java.util.UUID;

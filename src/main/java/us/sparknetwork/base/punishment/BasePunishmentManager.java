@@ -29,7 +29,7 @@ import java.util.UUID;
 import static com.mongodb.client.model.Filters.*;
 
 @Singleton
-public class BasePunishmentManager extends MongoStorageProvider<Punishment> implements PunishmentManager {
+public class BasePunishmentManager extends MongoStorageProvider<Punishment, Punishment> implements PunishmentManager {
     private IdGenerator idGenerator;
     private ListeningExecutorService executorService;
 

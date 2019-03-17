@@ -30,7 +30,7 @@ import java.util.Set;
 import static com.mongodb.client.model.Filters.*;
 
 @Singleton
-public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendRequest> implements FriendRequestHandler {
+public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendRequest, FriendRequest> implements FriendRequestHandler {
 
     @Inject
     private UserHandler userHandler;

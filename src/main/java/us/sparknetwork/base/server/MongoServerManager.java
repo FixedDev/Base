@@ -20,7 +20,7 @@ import java.time.Instant;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Singleton
-public class MongoServerManager extends MongoStorageProvider<Server> implements ServerManager, Listener {
+public class MongoServerManager extends MongoStorageProvider<Server, Server> implements ServerManager, Listener {
 
     private ListeningExecutorService executorService;
 

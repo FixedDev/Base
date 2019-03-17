@@ -40,7 +40,7 @@ import us.sparknetwork.utils.ListenableFutureUtils;
 
 import static us.sparknetwork.utils.ListenableFutureUtils.*;
 
-public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> implements UserHandler {
+public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete, Identity> implements UserHandler {
     @Inject
     private JavaPlugin plugin;
     @Inject
@@ -191,7 +191,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
     public void onJoinStateCheck(PlayerJoinEvent e) {
         ListenableFutureUtils.addCallback(ListenableFutureUtils.addOptionalToReturnValue(this.findOne(e.getPlayer().getUniqueId().toString())), (user) -> {
             try {
-                User.Complete userData = user.orElseThrow(Exception::new);
+                User.State userData = user.orElseThrow(Exception::new);
 
                 String falseString = LangConfigurations.convertBoolean(this.i18n, false);
 
@@ -262,7 +262,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete> i
                 return;
             }
 
-            User.Complete data = user.get();
+            User.ChatData data = user.get();
 
             data.setLastSpeakTime(System.currentTimeMillis());
             this.save(data);
