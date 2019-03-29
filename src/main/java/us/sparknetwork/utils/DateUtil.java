@@ -65,7 +65,7 @@ public class DateUtil {
             joiner.add(minutes > 1 ? i18n.translate("time.minutes") : i18n.translate("time.minute"));
         }
 
-        if (remainingTime > 0) {
+        if (remainingTime >= 0) {
             seconds = remainingTime;
             joiner.add(seconds + "");
             joiner.add(seconds > 1 ? i18n.translate("time.seconds") : i18n.translate("time.second"));
