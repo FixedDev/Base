@@ -21,7 +21,7 @@ public class DependencyDownloader {
     private DependencyDownloader() {
     }
 
-    public static void downloadAndAddToClasspath(URL url, File destinyFile, ClassLoader classLoader) {
+    public static void downloadAndAddToClasspath(URL url, File destinyFile) {
         if (!destinyFile.exists()) {
             try {
                 if (!destinyFile.createNewFile()) {
@@ -34,7 +34,7 @@ public class DependencyDownloader {
         }
 
         try {
-            addJarToClasspath(destinyFile, classLoader);
+            addJarToClasspath(destinyFile);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to add file from " + destinyFile.getName() + " to classpath, exception: ", ex);
         }
@@ -49,17 +49,19 @@ public class DependencyDownloader {
         }
     }
 
-    public static void addFolderJarsToClassPath(File folder, ClassLoader classLoader) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, MalformedURLException {
+    public static void addFolderJarsToClassPath(File folder) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, MalformedURLException {
         if (folder == null || !folder.exists() || !folder.isDirectory()) {
             return;
         }
 
         for (File file : folder.listFiles()) {
-            addJarToClasspath(file, classLoader);
+            addJarToClasspath(file);
         }
     }
 
-    public static void addJarToClasspath(File jar, ClassLoader classLoader) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, MalformedURLException {
+    public static void addJarToClasspath(File jar) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, MalformedURLException {
+        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+
         if (classLoaderAddUrl == null) {
             Class<?> clazz = classLoader.getClass();
 
