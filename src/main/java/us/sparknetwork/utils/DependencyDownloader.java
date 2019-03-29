@@ -21,7 +21,7 @@ public class DependencyDownloader {
     private DependencyDownloader() {
     }
 
-    public static void downloadAndAddToClasspath(URL url, File destinyFile) {
+    public static void downloadAndAddToClasspath(URL url, File destinyFile, ClassLoader classLoader) {
         if (!destinyFile.exists()) {
             try {
                 if (!destinyFile.createNewFile()) {
@@ -34,7 +34,7 @@ public class DependencyDownloader {
         }
 
         try {
-            addJarToClasspath(destinyFile);
+            addJarToClasspath(destinyFile, classLoader);
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, "Failed to add file from " + destinyFile.getName() + " to classpath, exception: ", ex);
         }
@@ -49,10 +49,18 @@ public class DependencyDownloader {
         }
     }
 
-    public static void addJarToClasspath(File jar) throws NoSuchMethodException,  IllegalAccessException, InvocationTargetException, MalformedURLException {
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+    public static void addFolderJarsToClassPath(File folder, ClassLoader classLoader) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, MalformedURLException {
+        if (folder == null || !folder.exists() || !folder.isDirectory()) {
+            return;
+        }
 
-        if(classLoaderAddUrl == null){
+        for (File file : folder.listFiles()) {
+            addJarToClasspath(file, classLoader);
+        }
+    }
+
+    public static void addJarToClasspath(File jar, ClassLoader classLoader) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, MalformedURLException {
+        if (classLoaderAddUrl == null) {
             Class<?> clazz = classLoader.getClass();
 
             Method method = clazz.getSuperclass().getDeclaredMethod("addURL", URL.class);
