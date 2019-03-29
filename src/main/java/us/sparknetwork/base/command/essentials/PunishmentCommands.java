@@ -386,6 +386,50 @@ public class PunishmentCommands implements CommandClass {
         return true;
     }
 
+    @Command(names = "kick", permission = "base.command.kick", min = 1, usage = "/<command> <target> [reason] [-s]")
+    public boolean kickPlayer(CommandSender sender, CommandContext context, OfflinePlayer target, @Parameter(value = "s", isFlag = true) boolean silent) {
+        if (!target.isOnline()) {
+            sender.sendMessage(i18n.format("offline.player", target.getName()));
+
+            return true;
+        }
+
+        StaffPriority senderPriority = StaffPriority.getByCommandSender(sender);
+        StaffPriority targetPriority = StaffPriority.NONE;
+
+        if (target.isOnline()) {
+            targetPriority = StaffPriority.getByCommandSender(target.getPlayer());
+        }
+
+        if (targetPriority.isMoreThan(senderPriority)) {
+            sender.sendMessage(NO_PERMISSION_MESSAGE);
+
+            return true;
+        }
+
+        if (context.getArgumentsLength() == 1) {
+            // Only the target is provided, create a permanent kick if the sender has permission
+            if (!sender.hasPermission("base.command.kick.permanent")) {
+                sender.sendMessage(NO_PERMISSION_MESSAGE);
+                return true;
+            }
+
+            ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data ->
+                    punishmentManager.createPunishment(PunishmentType.KICK, sender, data, i18n.translate("punishment.default.reason"), null, false, silent)
+            );
+
+            return true;
+        }
+
+        String reason = context.getJoinedArgs(1);
+
+        ListenableFutureUtils.addCallback(userHandler.findOne(target.getUniqueId().toString()), data ->
+                punishmentManager.createPunishment(PunishmentType.KICK, sender, data, reason, null, false, silent)
+        );
+
+        return true;
+    }
+
     @Command(names = "unban", min = 1, max = 1, permission = "base.command.unban")
     public boolean unbanPlayer(CommandSender sender, OfflinePlayer target) {
         String ipAddress = null;
