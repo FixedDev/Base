@@ -26,13 +26,13 @@ public class CachedMongoStorageProvider<O extends Model, P extends PartialModel>
     private String dataPrefix;
     private Class<? extends O> modelClazz;
 
-    public CachedMongoStorageProvider(ListeningExecutorService executorService, MongoDatabase database, RedissonClient redisson, String dataPrefix, Class<? extends O> modelClazz) {
+    public CachedMongoStorageProvider(ListeningExecutorService executorService, MongoDatabase database, RedissonClient redisson, String dataPrefix, Class<O> modelClazz) {
         this.executorService = executorService;
         this.redissonClient = redisson;
         this.dataPrefix = dataPrefix;
         this.modelClazz = modelClazz;
 
-        mongoCollection = database.getCollection(dataPrefix, (Class<O>) modelClazz);
+        mongoCollection = database.getCollection(dataPrefix, modelClazz);
     }
 
     @NotNull

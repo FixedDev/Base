@@ -27,12 +27,12 @@ public class MongoStorageProvider<O extends Model, P extends PartialModel> imple
     private String dataPrefix;
     private Class<? extends O> modelClazz;
 
-    public MongoStorageProvider(ListeningExecutorService executorService, MongoDatabase database, String dataPrefix, Class<? extends O> modelClazz) {
+    public MongoStorageProvider(ListeningExecutorService executorService, MongoDatabase database, String dataPrefix, Class<O> modelClazz) {
         this.executorService = executorService;
         this.dataPrefix = dataPrefix;
         this.modelClazz = modelClazz;
 
-        mongoCollection = database.getCollection(dataPrefix, (Class<O>) modelClazz);
+        mongoCollection = database.getCollection(dataPrefix, modelClazz);
     }
 
     @NotNull
