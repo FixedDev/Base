@@ -5,7 +5,9 @@ import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.PluginClassLoader;
 import us.sparknetwork.utils.DependencyDownloader;
 
 import java.io.File;
@@ -52,8 +54,14 @@ public class BasePlugin extends JavaPlugin {
                 return error;
             }
         });
+    }
 
-
+    static {
+        try {
+            DependencyDownloader.addFolderJarsToClassPath(new File("lib"), PluginClassLoader.getSystemClassLoader());
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | MalformedURLException e) {
+            Bukkit.getLogger().log(Level.SEVERE, "Failed to load plugin dependencies", e);
+        }
     }
 
     @Override
@@ -64,13 +72,7 @@ public class BasePlugin extends JavaPlugin {
 
         executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
 
-        try {
-            DependencyDownloader.addFolderJarsToClassPath(new File("lib"));
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | MalformedURLException e) {
-            this.getLogger().log(Level.SEVERE, "Failed to load plugin dependencies, disabling it", e);
 
-            return;
-        }
 
 
         pluginLoader = new BasePluginLoader(this, executorService);
