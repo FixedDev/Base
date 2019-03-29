@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.datamanager.Model;
+import us.sparknetwork.base.datamanager.PartialModel;
 import us.sparknetwork.base.restart.RestartPriority;
 import us.sparknetwork.base.server.ServerData;
 import us.sparknetwork.base.server.ServerRole;
@@ -16,6 +17,10 @@ import java.util.UUID;
 
 @JsonDeserialize(as = ServerData.class)
 public interface Server extends Model {
+
+    interface Partial extends PartialModel {
+
+    }
 
     String getIp();
 

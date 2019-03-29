@@ -3,11 +3,15 @@
 package us.sparknetwork.base;
 
 import lombok.Getter;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.base.server.ServerRole;
 import us.sparknetwork.base.server.ServerVisibility;
 import us.sparknetwork.utils.Config;
 import us.sparknetwork.utils.DateUtil;
+
+import java.util.logging.Level;
 
 public class ServerConfigurations {
 
@@ -32,6 +36,7 @@ public class ServerConfigurations {
 
     public static ServerRole SERVER_ROLE = ServerRole.OTHER;
     public static ServerVisibility SERVER_VISIBILIY = ServerVisibility.PUBLIC;
+    public static String SERVER_GAME_ID = "";
 
     public ServerConfigurations(JavaPlugin plugin) {
         if (instance != null) {
@@ -51,10 +56,17 @@ public class ServerConfigurations {
         SERVER_ROLE = ServerRole.valueOf(serverConfig.getString("server.role", SERVER_ROLE.toString()));
         SERVER_VISIBILIY = ServerVisibility.valueOf(serverConfig.getString("server.visibility", SERVER_VISIBILIY.toString()));
 
-        if(SERVER_ROLE == ServerRole.BUNGEE){
+        if (SERVER_ROLE == ServerRole.BUNGEE) {
             plugin.getLogger().warning("Well, i think that a bukkit server shouldn't have BUNGEE role, changing it to OTHER");
 
             SERVER_ROLE = ServerRole.OTHER;
+        }
+
+        SERVER_GAME_ID = serverConfig.getString("server.game-id", SERVER_GAME_ID);
+
+        if(StringUtils.isBlank(SERVER_GAME_ID)){
+            plugin.getLogger().log(Level.WARNING, "The game id of this server is not present, it will be the server-name");
+            SERVER_GAME_ID = Bukkit.getServerName();
         }
 
         RESTART_TIME = DateUtil.parseStringDuration(serverConfig.getString("restart.restart-time", "6h"));
@@ -66,6 +78,10 @@ public class ServerConfigurations {
         this.serverConfig.set("restart.restart-time", DateUtil.millisToStringDuration(RESTART_TIME));
         this.serverConfig.set("server.role", SERVER_ROLE.toString());
         this.serverConfig.set("server.visibility", SERVER_VISIBILIY.toString());
+        if (StringUtils.isNotBlank(SERVER_GAME_ID)) {
+            serverConfig.set("server.game-id", SERVER_GAME_ID);
+        }
+
         this.serverConfig.set("hook-protocollib", HOOK_PROTOCOL_LIB);
         this.serverConfig.set("language", LANGUAGE);
         this.serverConfig.set("chat.muted", MUTED_CHAT);

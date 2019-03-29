@@ -51,6 +51,8 @@ import us.sparknetwork.base.restart.RestartManager;
 import us.sparknetwork.base.restart.RestartPriority;
 import us.sparknetwork.base.server.LocalServerData;
 import us.sparknetwork.base.server.MongoServerManager;
+import us.sparknetwork.base.server.ServerRole;
+import us.sparknetwork.base.server.type.LocalGameServer;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.hooks.PlaceholderAPIHook;
 import us.sparknetwork.base.hooks.ProtocolLibHook;
@@ -153,6 +155,10 @@ public class BasePlugin extends JavaPlugin {
         }
 
         this.registerHandlers();
+
+        if(ServerConfigurations.SERVER_ROLE == ServerRole.GAME){
+            serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
+        }
 
         serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
 
