@@ -14,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.StaffPriority;
 import us.sparknetwork.base.event.UserNickChangeEvent;
+import us.sparknetwork.base.event.UserVanishEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -392,6 +393,7 @@ public class BaseUser implements User.Complete {
     }
 
     public void setVanished(boolean vanished) {
+        boolean oldState = this.vanished;
         this.vanished = vanished;
 
         OfflinePlayer offlinePlayer = Bukkit.getOfflinePlayer(getUUID());
@@ -414,6 +416,9 @@ public class BaseUser implements User.Complete {
             }
             viewer.showPlayer(player);
         }
+
+        UserVanishEvent event = new UserVanishEvent(this, oldState, vanished);
+        Bukkit.getPluginManager().callEvent(event);
     }
 
     @Override
