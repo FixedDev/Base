@@ -7,11 +7,11 @@ import us.sparknetwork.base.user.User;
 public class UserVanishEvent extends Event {
     private static HandlerList handlerList = new HandlerList();
 
-    private User user;
+    private User.State user;
     private boolean oldVanishState;
     private boolean newVanishState;
 
-    public UserVanishEvent(User user, boolean oldVanishState, boolean newVanishState) {
+    public UserVanishEvent(User.State user, boolean oldVanishState, boolean newVanishState) {
         this.user = user;
         this.oldVanishState = oldVanishState;
         this.newVanishState = newVanishState;
