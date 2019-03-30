@@ -1,9 +1,11 @@
 package us.sparknetwork.base.event;
 
+import lombok.Getter;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import us.sparknetwork.base.user.User;
 
+@Getter
 public class UserVanishEvent extends Event {
     private static HandlerList handlerList = new HandlerList();
 
