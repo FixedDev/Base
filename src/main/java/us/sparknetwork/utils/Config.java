@@ -8,13 +8,15 @@ import java.io.File;
 public class Config extends YamlConfiguration {
     private final String fileName;
     private final JavaPlugin plugin;
+    private final File folder;
 
     public Config(final JavaPlugin plugin, final String fileName) {
-        this(plugin, fileName, ".yml");
+        this(plugin, plugin.getDataFolder(), fileName, ".yml");
     }
 
-    public Config(final JavaPlugin plugin, final String fileName, final String fileExtension) {
+    public Config(final JavaPlugin plugin, final File folder, final String fileName, final String fileExtension) {
         this.plugin = plugin;
+        this.folder = folder;
         this.fileName = fileName + (fileName.endsWith(fileExtension) ? "" : fileExtension);
         this.createFile();
     }
@@ -28,7 +30,6 @@ public class Config extends YamlConfiguration {
     }
 
     private void createFile() {
-        final File folder = this.plugin.getDataFolder();
         try {
             final File file = new File(folder, this.fileName);
             if (!file.exists()) {
@@ -48,7 +49,6 @@ public class Config extends YamlConfiguration {
     }
 
     public void save() {
-        final File folder = this.plugin.getDataFolder();
         try {
             this.save(new File(folder, this.fileName));
         } catch (Exception ex) {
