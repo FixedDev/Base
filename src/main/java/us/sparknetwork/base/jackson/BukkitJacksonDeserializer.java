@@ -1,4 +1,4 @@
-package us.sparknetwork.base;
+package us.sparknetwork.base.jackson;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

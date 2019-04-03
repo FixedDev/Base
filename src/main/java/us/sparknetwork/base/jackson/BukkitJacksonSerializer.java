@@ -1,4 +1,4 @@
-package us.sparknetwork.base;
+package us.sparknetwork.base.jackson;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
