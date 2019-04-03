@@ -51,8 +51,14 @@ public class ModuleHandler extends AbstractService {
     @Override
     protected void doStart() {
         registeredModules.forEach(module -> {
-            module.onEnable();
-            logger.log(Level.INFO, "Enabled module {0}-{1}", new Object[]{module.name(), module.version()});
+            try {
+                module.onEnable();
+                logger.log(Level.INFO, "Enabled module {0}-{1}", new Object[]{module.name(), module.version()});
+            } catch (Exception ex) {
+                // I know that i shouldn't be doing this shit, but if we ignore this, all the other modules won't load
+                // And all the modules should "load" even if a module throws an exception
+                logger.log(Level.WARNING, "Failed to enable module " + module.name(), ex);
+            }
         });
     }
 
