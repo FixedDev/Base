@@ -17,7 +17,7 @@ public class ScoreboardEntryModule extends SimpleModule {
                 jsonGenerator.writeStringField("entryName", entry.getEntryName());
                 jsonGenerator.writeNumberField("updateTicks", entry.getUpdateTicks());
 
-                jsonGenerator.writeArrayFieldStart("entries");
+                jsonGenerator.writeArrayFieldStart("frames");
                 for (String frame : entry.getFrames()) {
                     jsonGenerator.writeString(frame);
                 }
