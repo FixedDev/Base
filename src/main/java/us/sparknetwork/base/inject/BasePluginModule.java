@@ -20,6 +20,7 @@ import us.sparknetwork.base.inject.annotations.PluginClassLoader;
 import us.sparknetwork.base.inject.annotations.PluginDataFolder;
 import us.sparknetwork.base.inject.annotations.PluginLogger;
 import us.sparknetwork.base.jackson.BukkitJacksonModule;
+import us.sparknetwork.base.jackson.ScoreboardEntryModule;
 import us.sparknetwork.base.server.LocalServerData;
 
 import java.io.File;
@@ -75,6 +76,7 @@ public class BasePluginModule extends AbstractModule {
 
             mapper.registerModule(new JavaTimeModule());
             mapper.registerModule(new BukkitJacksonModule());
+            mapper.registerModule(new ScoreboardEntryModule());
 
             return mapper;
         }).in(Scopes.SINGLETON);
