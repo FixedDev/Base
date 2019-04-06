@@ -19,6 +19,7 @@ import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.inject.annotations.PluginClassLoader;
 import us.sparknetwork.base.inject.annotations.PluginDataFolder;
 import us.sparknetwork.base.inject.annotations.PluginLogger;
+import us.sparknetwork.base.jackson.BukkitJacksonModule;
 import us.sparknetwork.base.server.LocalServerData;
 
 import java.io.File;
@@ -57,6 +58,7 @@ public class BasePluginModule extends AbstractModule {
                     .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
 
             mapper.registerModule(new JavaTimeModule());
+            mapper.registerModule(new BukkitJacksonModule());
 
             return mapper;
         }).in(Scopes.SINGLETON);
@@ -72,6 +74,7 @@ public class BasePluginModule extends AbstractModule {
                     .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
 
             mapper.registerModule(new JavaTimeModule());
+            mapper.registerModule(new BukkitJacksonModule());
 
             return mapper;
         }).in(Scopes.SINGLETON);
