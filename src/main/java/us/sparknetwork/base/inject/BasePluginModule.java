@@ -60,6 +60,7 @@ public class BasePluginModule extends AbstractModule {
 
             mapper.registerModule(new JavaTimeModule());
             mapper.registerModule(new BukkitJacksonModule());
+            mapper.registerModule(new ScoreboardEntryModule());
 
             return mapper;
         }).in(Scopes.SINGLETON);
