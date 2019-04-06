@@ -17,6 +17,12 @@ public abstract class BaseModule extends ProtectedModule implements ModuleInfo {
     @Provides
     @ModuleDataFolder
     private File provideDataFolder(JavaPlugin plugin){
+        File dataFolder = new File(plugin.getDataFolder(), name());
+
+        if(!dataFolder.exists()){
+            dataFolder.mkdir();
+        }
+
         return new File(plugin.getDataFolder(), name());
     }
 
