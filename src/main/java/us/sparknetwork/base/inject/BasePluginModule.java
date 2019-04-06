@@ -1,8 +1,12 @@
 package us.sparknetwork.base.inject;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.gson.Gson;
 import com.google.inject.*;
+import com.google.inject.name.Names;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import lombok.AllArgsConstructor;
@@ -41,6 +45,37 @@ public class BasePluginModule extends AbstractModule {
         bind(ClassLoader.class).annotatedWith(PluginClassLoader.class).toInstance(plugin.getClass().getClassLoader());
         bind(File.class).annotatedWith(PluginDataFolder.class).toInstance(plugin.getDataFolder());
         bind(Logger.class).annotatedWith(PluginLogger.class).toInstance(plugin.getLogger());
+
+        bind(ObjectMapper.class).annotatedWith(Names.named("YMLMapper")).toProvider(() -> {
+            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+            mapper.setVisibility(mapper.getSerializationConfig()
+                    .getDefaultVisibilityChecker()
+                    .withFieldVisibility(JsonAutoDetect.Visibility.NONE)
+                    .withGetterVisibility(JsonAutoDetect.Visibility.ANY)
+                    .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
+                    .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
+                    .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
+
+            mapper.registerModule(new JavaTimeModule());
+
+            return mapper;
+        }).in(Scopes.SINGLETON);
+
+        bind(ObjectMapper.class).toProvider(() -> {
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.setVisibility(mapper.getSerializationConfig()
+                    .getDefaultVisibilityChecker()
+                    .withFieldVisibility(JsonAutoDetect.Visibility.NONE)
+                    .withGetterVisibility(JsonAutoDetect.Visibility.ANY)
+                    .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
+                    .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
+                    .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
+
+            mapper.registerModule(new JavaTimeModule());
+
+            return mapper;
+        }).in(Scopes.SINGLETON);
+
 
         bind(I18n.class);
 
