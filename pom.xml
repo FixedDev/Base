@@ -108,16 +108,15 @@
 
         <dependency>
             <groupId>us.sparknetwork</groupId>
-            <artifactId>BCM-Bukkit</artifactId>
-            <version>1.4</version>
-            <scope>compile</scope>
+            <artifactId>BaseLib</artifactId>
+            <version>1.3.2</version>
+            <scope>provided</scope>
         </dependency>
 
-        <!-- Scoreboard API -->
         <dependency>
             <groupId>us.sparknetwork</groupId>
-            <artifactId>scoreboard</artifactId>
-            <version>1.0.1</version>
+            <artifactId>BCM-Bukkit</artifactId>
+            <version>1.4</version>
             <scope>compile</scope>
         </dependency>
 
