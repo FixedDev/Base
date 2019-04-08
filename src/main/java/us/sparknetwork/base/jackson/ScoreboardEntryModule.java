@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import me.ggamer55.scoreboard.entry.Entry;
+import me.fixeddev.scoreboard.entry.Entry;
 
 import java.io.IOException;
 
