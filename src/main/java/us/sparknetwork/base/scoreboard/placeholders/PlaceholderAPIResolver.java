@@ -3,7 +3,7 @@ package us.sparknetwork.base.scoreboard.placeholders;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import me.clip.placeholderapi.PlaceholderAPI;
-import me.ggamer55.scoreboard.placeholder.PlaceholderResolver;
+import me.fixeddev.scoreboard.placeholder.PlaceholderResolver;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Map;
