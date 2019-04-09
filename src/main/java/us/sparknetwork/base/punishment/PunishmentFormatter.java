@@ -27,39 +27,24 @@ public class PunishmentFormatter {
             return i18n.format(messagePath, punishment.getPunishedName(), i18n.translate(punishmentTypePath), punishment.getIssuerName(), punishment.getReason());
         }
 
-        if (punishment.isPermanent()) {
-            switch (punishment.getType()) {
-                case KICK:
-                    punishmentTypePath = "punishment.kicked";
-                    break;
-                case BAN:
-                    if (punishment.isIpPunishment()) {
-                        punishmentTypePath = "punishment.ipbanned";
-                        break;
-                    }
-                    punishmentTypePath = "punishment.banned";
-                    break;
-                case MUTE:
-                    punishmentTypePath = "punishment.muted";
-                    break;
-            }
-        } else {
+        if(!punishment.isPermanent()){
             messagePath = "punishment.temporal.message";
-            switch (punishment.getType()) {
-                case KICK:
-                    punishmentTypePath = "punishment.kicked";
+        }
+
+        switch (punishment.getType()) {
+            case KICK:
+                punishmentTypePath = "punishment.kicked";
+                break;
+            case BAN:
+                if (punishment.isIpPunishment()) {
+                    punishmentTypePath = "punishment.ipbanned";
                     break;
-                case BAN:
-                    if (punishment.isIpPunishment()) {
-                        punishmentTypePath = "punishment.ipbanned";
-                        break;
-                    }
-                    punishmentTypePath = "punishment.banned";
-                    break;
-                case MUTE:
-                    punishmentTypePath = "punishment.muted";
-                    break;
-            }
+                }
+                punishmentTypePath = "punishment.banned";
+                break;
+            case MUTE:
+                punishmentTypePath = "punishment.muted";
+                break;
         }
 
         if (punishment.isPermanent()) {
