@@ -18,7 +18,8 @@ import us.sparknetwork.base.BasePlugin;
 import us.sparknetwork.base.datamanager.MongoStorageProvider;
 import us.sparknetwork.base.event.PunishmentEvent;
 import us.sparknetwork.base.id.IdGenerator;
-import us.sparknetwork.base.user.User;
+import us.sparknetwork.base.messager.Channel;
+import us.sparknetwork.base.messager.Messenger;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
@@ -36,11 +37,20 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment, Puni
     @Inject
     private JavaPlugin plugin;
 
+    private Channel<Punishment> punishmentChannel;
+
     @Inject
-    BasePunishmentManager(ListeningExecutorService executorService, MongoDatabase database, IdGenerator generator) {
+    BasePunishmentManager(ListeningExecutorService executorService, MongoDatabase database, IdGenerator generator, Messenger messenger) {
         super(executorService, database, "punishments", Punishment.class);
         idGenerator = generator;
         this.executorService = executorService;
+
+        punishmentChannel = messenger.getChannel("punishments", Punishment.class);
+
+        punishmentChannel.registerListener((channel, serverSenderId, data) -> {
+            PunishmentEvent event = new PunishmentEvent(data);
+            Bukkit.getPluginManager().callEvent(event);
+        });
     }
 
     @Override
@@ -60,7 +70,7 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment, Puni
             }
         }
 
-        BasePunishment punishment = new BasePunishment(
+        Punishment punishment = new BasePunishment(
                 idGenerator.getNextId("punishments") + "",
                 uniqueId,
                 issuer.getName(),
@@ -81,6 +91,8 @@ public class BasePunishmentManager extends MongoStorageProvider<Punishment, Puni
         Bukkit.getScheduler().runTask(plugin, () -> {
             PunishmentEvent event = new PunishmentEvent(punishment);
             Bukkit.getPluginManager().callEvent(event);
+
+            punishmentChannel.sendMessage(punishment);
         });
 
         return punishment;
