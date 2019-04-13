@@ -34,6 +34,7 @@
     <orderEntry type="module" module-name="CommandManager" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:reflectasm:1.11.7" level="project" />
     <orderEntry type="module" module-name="BaseLib" scope="PROVIDED" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains:annotations:16.0.2" level="project" />
     <orderEntry type="module" module-name="BCM-Bukkit" />
     <orderEntry type="module" module-name="BCM-Universal" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.comphenix.protocol:ProtocolLib-API:4.3.0" level="project" />
@@ -80,7 +81,6 @@
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.9.0" level="project" />
     <orderEntry type="library" name="Maven: com.github.ben-manes.caffeine:caffeine:2.6.2" level="project" />
-    <orderEntry type="library" name="Maven: org.jetbrains:annotations:16.0.2" level="project" />
     <orderEntry type="library" name="Maven: net.kyori:text-api:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: net.kyori:text-serializer-legacy:2.0.0" level="project" />
     <orderEntry type="library" name="Maven: net.kyori:text-serializer-gson:2.0.0" level="project" />

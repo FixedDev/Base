@@ -204,12 +204,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>16.0.2</version>
-            <scope>compile</scope>
-        </dependency>
+
 
         <dependency>
             <groupId>net.kyori</groupId>
