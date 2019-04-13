@@ -13,9 +13,17 @@ public interface UserFinder {
 
     ListenableFuture<Boolean> isOnline(UUID playerUUID, Scope scope);
 
+    /**
+     * @deprecated because the user nickname is not constant while the player is online
+     */
+    @Deprecated
     ListenableFuture<Boolean> isOnline(String playerNick, Scope scope);
 
     ListenableFuture<Server> findUser(UUID playerUUID, Scope scope);
 
+    /**
+     * @deprecated because the user nickname is not constant while the player is online
+     */
+    @Deprecated
     ListenableFuture<Server> findUser(String playerNick, Scope scope);
 }
