@@ -47,7 +47,7 @@ public class BaseChatFormat implements ChatFormat {
     private List<String> suffixTooltip = new ArrayList<>();
 
     @NotNull
-    private String chatColor;
+    private String chatColor = "";
 
     @NotNull
     private String permission;
