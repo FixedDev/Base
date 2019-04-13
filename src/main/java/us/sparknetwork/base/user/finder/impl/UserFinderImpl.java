@@ -8,6 +8,7 @@ import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import us.sparknetwork.base.server.type.Server;
 import us.sparknetwork.base.server.LocalServerData;
 import us.sparknetwork.base.server.ServerManager;
@@ -44,8 +45,14 @@ public class UserFinderImpl implements UserFinder {
         Preconditions.checkNotNull(scope);
         Preconditions.checkNotNull(playerUUID);
 
-        if (scope == Scope.LOCAL && Bukkit.getOfflinePlayer(playerUUID).isOnline()) {
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerUUID);
+
+        if(player.isOnline()){
             return Futures.immediateFuture(localServerData);
+        }
+
+        if (scope == Scope.LOCAL && !player.isOnline()) {
+            return Futures.immediateFuture(null);
         }
 
         AsyncFunction<Set<Server>, Server> transformFunction = servers -> Futures.immediateFuture(servers.stream().filter(server -> server.getOnlinePlayerIds().contains(playerUUID)).findFirst().orElse(null));
@@ -58,9 +65,17 @@ public class UserFinderImpl implements UserFinder {
         Preconditions.checkNotNull(scope);
         Preconditions.checkArgument(StringUtils.isNotBlank(playerNick));
 
-        if (scope == Scope.LOCAL && Bukkit.getOfflinePlayer(playerNick).isOnline()) {
+        // You should not do lookup by name, the name actually is NOT constant in the server, even when the server is in offline mode
+        OfflinePlayer player = Bukkit.getOfflinePlayer(playerNick);
+
+        if(player.isOnline()){
             return Futures.immediateFuture(localServerData);
         }
+
+        if (scope == Scope.LOCAL && !player.isOnline()) {
+            return Futures.immediateFuture(null);
+        }
+
 
         AsyncFunction<Set<Server>, Server> transformFunction = servers -> Futures.immediateFuture(servers.stream().filter(server -> server.getOnlinePlayerNicks().contains(playerNick)).findFirst().orElse(null));
 
