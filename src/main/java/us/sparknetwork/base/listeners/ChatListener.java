@@ -55,7 +55,7 @@ public class ChatListener implements Listener {
     public void chatListener(AsyncPlayerChatEvent e) {
         Optional<User.Complete> optionalSettings = Optional.ofNullable(settingsHandler.findOneSync(e.getPlayer().getUniqueId().toString()));
 
-        if(e.isCancelled()){
+        if (e.isCancelled()) {
             return; // Just in case
         }
 
@@ -67,6 +67,8 @@ public class ChatListener implements Listener {
         }
 
         User.Complete userSettings = optionalSettings.get();
+
+        e.setFormat(String.format(e.getFormat(), userSettings.getLastName()));
 
         if (userSettings.isInStaffChat()) {
             handleStaffChat(e, userSettings);
@@ -180,28 +182,30 @@ public class ChatListener implements Listener {
     }
 
     private String getPrefix(Player player) {
-        String prefix = chat.getGroupPrefix((String) null, chat.getPrimaryGroup(player));
-        return ChatColor.translateAlternateColorCodes('&', prefix);
-        /*
         StringBuilder joiner = new StringBuilder();
-        String[] playerGroups = plugin.getChat().getPlayerGroups(player);
-        for (String group : playerGroups) {
-            String prefix = plugin.getChat().getGroupPrefix((String) null, group);
-            if (StringUtils.isNotBlank(prefix)) joiner.append(prefix);
+
+        for (String group : chat.getPlayerGroups(player)) {
+            String prefix = chat.getGroupPrefix((String) null, group);
+
+            if (prefix != null && !prefix.isEmpty()) {
+                joiner.append(prefix);
+            }
         }
-        return ChatColor.translateAlternateColorCodes('&', joiner.toString());*/
+
+        return ChatColor.translateAlternateColorCodes('&', joiner.toString());
     }
 
     private String getSuffix(Player player) {
-        String prefix = chat.getGroupSuffix((String) null, chat.getPrimaryGroup(player));
-        return ChatColor.translateAlternateColorCodes('&', prefix);
+        StringBuilder joiner = new StringBuilder();
 
-        /*StringBuilder joiner = new StringBuilder();
-        String[] playerGroups = plugin.getChat().getPlayerGroups(player);
-        for (String group : playerGroups) {
-            String suffix = plugin.getChat().getGroupSuffix((String) null, group);
-            if (StringUtils.isNotBlank(suffix)) joiner.append(suffix);
+        for (String group : chat.getPlayerGroups(player)) {
+            String suffix = chat.getGroupSuffix((String) null, group);
+
+            if (suffix != null && !suffix.isEmpty()) {
+                joiner.append(suffix);
+            }
         }
-        return ChatColor.translateAlternateColorCodes('&', joiner.toString());*/
+
+        return ChatColor.translateAlternateColorCodes('&', joiner.toString());
     }
 }
