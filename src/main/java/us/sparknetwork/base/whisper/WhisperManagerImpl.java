@@ -59,36 +59,17 @@ public class WhisperManagerImpl implements WhisperManager {
         String senderNick = from.hasNick() ? from.getNick() : from.getLastName();
         String targetNick = to.hasNick() ? to.getNick() : to.getLastName();
 
-        if (offlineTarget.isOnline()) {
-            if((to.getPrivateMessagesVisibility() == User.WhisperVisibility.FRIENDS && !to.isFriendOf(from))
-                    || to.getPrivateMessagesVisibility() == User.WhisperVisibility.NONE) {
-
-                sender.sendMessage(i18n.format("pm.not.visible", targetNick));
-                return Futures.immediateFuture(null);
-            }
-
-            if (to.isPlayerIgnored(sender.getUniqueId())) {
-                sender.sendMessage(i18n.format("tell.format.to", senderNick, targetNick, content));
-                return Futures.immediateFuture(null);
-            }
-
-            sender.sendMessage(i18n.format("tell.format.to", senderNick, targetNick, content));
-
-            sendSocialSpyMessage(message);
-            sendMessage(message);
-
-            whisperChannel.sendMessage(message);
-
-            return Futures.immediateFuture(null);
-        }
-
         return ListenableFutureUtils.transformFutureAsync(userFinder.isOnline(to.getUUID(), UserFinder.Scope.GLOBAL), (online) -> {
-            if (!online) {
+            if (online == null) {
+                online = false;
+            }
+
+            if (!online && !offlineTarget.isOnline()) { // I added the !offlineTarget.isOnline because in some cases the userFinder says that a user is offline even when it's online in the same server
                 sender.sendMessage(i18n.format("offline.player", content));
                 return Futures.immediateFuture(null);
             }
 
-            if((to.getPrivateMessagesVisibility() == User.WhisperVisibility.FRIENDS && !to.isFriendOf(from))
+            if ((to.getPrivateMessagesVisibility() == User.WhisperVisibility.FRIENDS && !to.isFriendOf(from))
                     || to.getPrivateMessagesVisibility() == User.WhisperVisibility.NONE) {
 
                 sender.sendMessage(i18n.format("pm.not.visible", targetNick));
@@ -101,9 +82,15 @@ public class WhisperManagerImpl implements WhisperManager {
             }
 
             sendSocialSpyMessage(message);
+
+            if (offlineTarget.isOnline()) {
+                sendMessage(message);
+            }
+
             whisperChannel.sendMessage(message);
 
             sender.sendMessage(i18n.format("tell.format.to", senderNick, targetNick, message.getMessage()));
+
             return Futures.immediateFuture(null);
 
         }, executorService);
@@ -134,16 +121,14 @@ public class WhisperManagerImpl implements WhisperManager {
 
         Set<String> userIds = Bukkit.getOnlinePlayers().stream()
                 .filter(player -> player.hasPermission("base.socialspy.see"))
-                .map((player) -> player.getUniqueId().toString())
+                .map(player -> player.getUniqueId().toString())
                 .collect(Collectors.toSet());
 
         Bukkit.getConsoleSender().sendMessage(i18n.format("socialspy.format", senderNick, receiverNick, message.getMessage()));
 
         userDataHandler.findSync(userIds, userIds.size()).stream()
                 .filter(User.WhisperSettings::isSocialSpyVisible)
-                .map((complete) -> Bukkit.getPlayer(complete.getUUID()))
-                .forEach((player) -> {
-                    player.sendMessage(i18n.format("socialspy.format", senderNick, receiverNick, message.getMessage()));
-                });
+                .map(complete -> Bukkit.getPlayer(complete.getUUID()))
+                .forEach(player -> player.sendMessage(i18n.format("socialspy.format", senderNick, receiverNick, message.getMessage())));
     }
 }
