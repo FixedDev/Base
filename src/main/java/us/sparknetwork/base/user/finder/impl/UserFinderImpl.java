@@ -68,6 +68,8 @@ public class UserFinderImpl implements UserFinder {
         // You should not do lookup by name, the name actually is NOT constant in the server, even when the server is in offline mode
         OfflinePlayer player = Bukkit.getOfflinePlayer(playerNick);
 
+
+
         if(player.isOnline()){
             return Futures.immediateFuture(localServerData);
         }
