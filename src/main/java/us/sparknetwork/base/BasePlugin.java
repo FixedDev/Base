@@ -62,12 +62,8 @@ import us.sparknetwork.base.listeners.JoinMessageListener;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.CommandHandler;
 import us.sparknetwork.utils.Config;
-import us.sparknetwork.utils.DependencyDownloader;
 import us.sparknetwork.utils.TemporaryCommandUtils;
 
-import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -352,7 +348,7 @@ public class BasePlugin extends JavaPlugin {
             commandHandler.registerCommandClass(commandClass);
         }
 
-        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger());
+        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(), null);
 
         newCommandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
         newCommandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
