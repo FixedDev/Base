@@ -47,7 +47,7 @@ public class WhisperManagerImpl implements WhisperManager {
         });
     }
 
-    public ListenableFuture sendMessageAsync(@NotNull Player sender, @NotNull User.Complete from, @NotNull User.Complete to, String content) {
+    public ListenableFuture<Void> sendMessageAsync(@NotNull Player sender, @NotNull User.Complete from, @NotNull User.Complete to, String content) {
         Objects.requireNonNull(sender);
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);

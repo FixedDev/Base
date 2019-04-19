@@ -6,5 +6,5 @@ import us.sparknetwork.base.user.User;
 
 
 public interface WhisperManager {
-    ListenableFuture sendMessageAsync(Player sender, User.Complete from, User.Complete to, String content);
+    ListenableFuture<Void> sendMessageAsync(Player sender, User.Complete from, User.Complete to, String content);
 }
