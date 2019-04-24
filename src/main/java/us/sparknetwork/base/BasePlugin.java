@@ -20,6 +20,7 @@ import fr.javatic.mongo.jacksonCodec.JacksonCodecProvider;
 import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 import lombok.Getter;
 
+import me.fixeddev.inject.ProtectedBinder;
 import me.ggamer55.bcm.bukkit.BukkitCommandHandler;
 import net.milkbowl.vault.chat.Chat;
 import org.apache.commons.lang.StringUtils;
@@ -103,6 +104,7 @@ public class BasePlugin extends JavaPlugin {
     private Chat chat = null;
 
     @Getter
+    @Inject
     private Injector injector;
 
     public static void logError(Logger logger, String action, String dataType, String dataId, Throwable error) {
@@ -141,30 +143,11 @@ public class BasePlugin extends JavaPlugin {
         if (!this.getDataFolder().exists()) {
             this.getDataFolder().mkdir();
         }
-
-        executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
     }
 
 
     @Override
     public void onEnable() {
-        if (!this.setupChat()) {
-            this.getLogger().severe("Failed to load Vault Chat API, disabling plugin.");
-            this.setEnabled(false);
-            return;
-        }
-
-        this.registerHandlers();
-
-        if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
-            serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
-        }
-
-        serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
-
-        injector = Guice.createInjector(Stage.PRODUCTION, new BasePluginModule(this, serverData, chat, redisson, mongoClient, database, executorService), new ModuleHandlerModule(ModuleHandler.getLoadedModules()));
-        injector.injectMembers(this);
-
         try {
             this.startServices();
         } catch (Exception e) {
@@ -185,6 +168,26 @@ public class BasePlugin extends JavaPlugin {
         }
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+    }
+
+    @Override
+    public void configure(ProtectedBinder binder) {
+        executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+
+        if (!this.setupChat()) {
+            this.getLogger().severe("Failed to load Vault Chat API, disabling plugin.");
+            this.setEnabled(false);
+            return;
+        }
+
+        this.registerHandlers();
+
+        if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
+            serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
+        }
+
+        serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
+        binder.install(new BasePluginModule(this, serverData, chat, redisson, mongoClient, database, executorService));
     }
 
     @Override
