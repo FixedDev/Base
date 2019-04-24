@@ -18,7 +18,7 @@ public class EasyKyoriComponent {
     private TextComponent.Builder builder;
 
     public EasyKyoriComponent() {
-        builder = TextComponent.builder();
+        builder = TextComponent.builder("");
     }
 
     private EasyKyoriComponent(@NotNull TextComponent.Builder builder) {
