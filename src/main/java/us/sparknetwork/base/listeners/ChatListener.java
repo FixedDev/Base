@@ -71,7 +71,7 @@ public class ChatListener implements Listener {
 
         User.Complete userSettings = optionalSettings.get();
 
-        e.setFormat(String.format(e.getFormat(), "%s", userSettings.getLastName()));
+        e.setFormat(String.format(e.getFormat(), "%1$s", userSettings.getLastName()));
 
         if (userSettings.isInStaffChat()) {
             handleStaffChat(e, userSettings);
