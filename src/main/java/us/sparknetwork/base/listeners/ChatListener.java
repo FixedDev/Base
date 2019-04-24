@@ -2,6 +2,7 @@ package us.sparknetwork.base.listeners;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import net.kyori.text.serializer.gson.GsonComponentSerializer;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,6 +23,7 @@ import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.StaffChatMessage;
 import us.sparknetwork.utils.DateUtil;
+import us.sparknetwork.utils.EasyKyoriComponent;
 import us.sparknetwork.utils.JsonMessage;
 
 import java.text.MessageFormat;
@@ -129,7 +131,7 @@ public class ChatListener implements Listener {
 
         Bukkit.getConsoleSender().sendMessage(String.format(e.getFormat(), e.getPlayer().getName(), e.getMessage()));
 
-        String chatFormat = playerChatFormat.constructJsonMessage().append(e.getMessage()).save().toString();
+        String chatFormat = GsonComponentSerializer.INSTANCE.serialize(new EasyKyoriComponent().append(playerChatFormat.constructJsonMessage()).append(e.getMessage()).build());
 
         chatFormat = chatFormat
                 .replace("{displayName}", e.getPlayer().getDisplayName())
