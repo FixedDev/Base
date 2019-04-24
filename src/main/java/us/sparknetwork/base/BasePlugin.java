@@ -21,6 +21,7 @@ import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 import lombok.Getter;
 
 import me.fixeddev.inject.ProtectedBinder;
+import me.ggamer55.bcm.basic.PermissionMessageProvider;
 import me.ggamer55.bcm.bukkit.BukkitCommandHandler;
 import net.milkbowl.vault.chat.Chat;
 import org.apache.commons.lang.StringUtils;
@@ -351,7 +352,7 @@ public class BasePlugin extends JavaPlugin {
             commandHandler.registerCommandClass(commandClass);
         }
 
-        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(), null);
+        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(), (PermissionMessageProvider) null);
 
         newCommandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
         newCommandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
