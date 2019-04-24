@@ -1,8 +1,10 @@
 package us.sparknetwork.base.chat;
 
+import net.kyori.text.TextComponent;
+
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
-import us.sparknetwork.utils.JsonMessage;
+import us.sparknetwork.utils.EasyKyoriComponent;
 
 import java.util.List;
 
@@ -53,71 +55,98 @@ public interface ChatFormat extends ConfigurationSerializable {
     @NotNull
     String getPermission();
 
-    default JsonMessage constructJsonMessage() {
-        JsonMessage.JsonStringBuilder builder = new JsonMessage().append(getPrefix());
+    default TextComponent constructJsonMessage() {
+        EasyKyoriComponent prefix = new EasyKyoriComponent();
+
+        prefix.append(getPrefix());
 
         if (!getPrefixTooltip().isEmpty()) {
-            builder.setHoverAsTooltip(getPrefixTooltip().toArray(new String[0]));
+            EasyKyoriComponent hoverComponent = new EasyKyoriComponent();
+
+            for (String line : getPrefixTooltip()) {
+                hoverComponent.appendWithNewLine(line);
+            }
+
+            prefix.setHoverShowText(hoverComponent.build());
         }
 
         switch (getPrefixClickAction()) {
             case OPEN_URL:
-                builder.setClickAsURL(getPrefixClickActionContent());
+                prefix.setClickOpenUrl(getPrefixClickActionContent());
                 break;
             case EXECUTE_COMMAND:
-                builder.setClickAsExecuteCmd(getPrefixClickActionContent());
+                prefix.setClickRunCommand(getPrefixClickActionContent());
                 break;
             case SUGGEST_COMMAND:
-                builder.setClickAsSuggestCmd(getPrefixClickActionContent());
+                prefix.setClickSuggestCommand(getPrefixClickActionContent());
                 break;
             default:
             case NONE:
                 break;
         }
 
-        builder = builder.save().append(getPlayerName());
+        EasyKyoriComponent playerName = new EasyKyoriComponent();
+
+        playerName.append(getPlayerName());
 
         if (!getPlayerNameTooltip().isEmpty()) {
-            builder.setHoverAsTooltip(getPlayerNameTooltip().toArray(new String[0]));
+            EasyKyoriComponent hoverComponent = new EasyKyoriComponent();
+
+            for (String line : getPlayerNameTooltip()) {
+                hoverComponent.appendWithNewLine(line);
+            }
+
+            playerName.setHoverShowText(hoverComponent.build());
         }
+
 
         switch (getPlayerNameClickAction()) {
             case OPEN_URL:
-                builder.setClickAsURL(getPlayerNameClickActionContent());
+                playerName.setClickOpenUrl(getPrefixClickActionContent());
                 break;
             case EXECUTE_COMMAND:
-                builder.setClickAsExecuteCmd(getPlayerNameClickActionContent());
+                playerName.setClickRunCommand(getPrefixClickActionContent());
                 break;
             case SUGGEST_COMMAND:
-                builder.setClickAsSuggestCmd(getPlayerNameClickActionContent());
+                playerName.setClickSuggestCommand(getPrefixClickActionContent());
                 break;
             default:
             case NONE:
                 break;
         }
 
-        builder = builder.save().append(getSuffix());
+        EasyKyoriComponent suffix = new EasyKyoriComponent();
+
+        suffix.append(getSuffix());
+
 
         if (!getSuffixTooltip().isEmpty()) {
-            builder.setHoverAsTooltip(getSuffixTooltip().toArray(new String[0]));
+            EasyKyoriComponent hoverComponent = new EasyKyoriComponent();
+
+            for (String line : getSuffixTooltip()) {
+                hoverComponent.appendWithNewLine(line);
+            }
+
+            suffix.setHoverShowText(hoverComponent.build());
         }
+
 
         switch (getSuffixClickAction()) {
             case OPEN_URL:
-                builder.setClickAsURL(getSuffixClickActionContent());
+                suffix.setClickOpenUrl(getPrefixClickActionContent());
                 break;
             case EXECUTE_COMMAND:
-                builder.setClickAsExecuteCmd(getSuffixClickActionContent());
+                suffix.setClickRunCommand(getPrefixClickActionContent());
                 break;
             case SUGGEST_COMMAND:
-                builder.setClickAsSuggestCmd(getSuffixClickActionContent());
+                suffix.setClickSuggestCommand(getPrefixClickActionContent());
                 break;
             default:
             case NONE:
                 break;
         }
-        
-        return builder.save();
+
+        return prefix.append(playerName).append(suffix).build();
     }
 
     boolean isUsePlaceholderApi();
