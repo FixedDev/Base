@@ -1,6 +1,7 @@
 package us.sparknetwork.base.listeners;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,7 +28,7 @@ public class JoinMessageListener implements Listener {
     private UserHandler userStateHandler;
 
     @Inject
-    private Chat chat;
+    private Provider<Chat> chat;
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
@@ -66,7 +67,7 @@ public class JoinMessageListener implements Listener {
 
         joinMessage = joinMessage.replace("{name}", event.getPlayer().getName())
                 .replace("{displayName}", event.getPlayer().getDisplayName())
-                .replace("{prefix}", chat.getGroupPrefix((String) null, chat.getPrimaryGroup(event.getPlayer())));
+                .replace("{prefix}", chat.get().getGroupPrefix((String) null, chat.get().getPrimaryGroup(event.getPlayer())));
 
         joinMessage = ChatColor.translateAlternateColorCodes('&', joinMessage);
 
@@ -74,8 +75,6 @@ public class JoinMessageListener implements Listener {
         Player[] onlinePlayersArray = new Player[onlinePlayers.size()];
 
         JsonMessage.sendRawJson(joinMessage, onlinePlayers.toArray(onlinePlayersArray));
-
-
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -116,7 +115,7 @@ public class JoinMessageListener implements Listener {
 
         leaveMessage = leaveMessage.replace("{name}", event.getPlayer().getName())
                 .replace("{displayName}", event.getPlayer().getDisplayName())
-                .replace("{prefix}", chat.getGroupPrefix((String) null, chat.getPrimaryGroup(event.getPlayer())));
+                .replace("{prefix}", chat.get().getGroupPrefix((String) null, chat.get().getPrimaryGroup(event.getPlayer())));
 
         leaveMessage = ChatColor.translateAlternateColorCodes('&', leaveMessage);
 

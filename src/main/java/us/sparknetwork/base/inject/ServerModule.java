@@ -19,19 +19,4 @@ public class ServerModule extends AbstractModule {
         bind(us.sparknetwork.base.server.type.Server.class).to(LocalServerData.class);
         bind(LocalServerData.class).toInstance(serverData);
     }
-
-    @Provides
-    public Server provideBukkitServer(JavaPlugin plugin){
-        return plugin.getServer();
-    }
-
-    @Provides
-    public BukkitScheduler provideCraftScheduler(Server server) {
-        return server.getScheduler();
-    }
-
-    @Provides
-    public PluginManager providePluginManager(Server server){
-        return server.getPluginManager();
-    }
 }

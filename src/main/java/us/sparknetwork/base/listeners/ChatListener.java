@@ -1,6 +1,7 @@
 package us.sparknetwork.base.listeners;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import net.milkbowl.vault.chat.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,7 +43,7 @@ public class ChatListener implements Listener {
     private I18n i18n;
 
     @Inject
-    private Chat chat;
+    private Provider<Chat> chat;
 
     @Inject
     public ChatListener(Messenger messager, StaffChatListener listener) {
@@ -184,8 +185,8 @@ public class ChatListener implements Listener {
     private String getPrefix(Player player) {
         StringBuilder joiner = new StringBuilder();
 
-        for (String group : chat.getPlayerGroups(player)) {
-            String prefix = chat.getGroupPrefix((String) null, group);
+        for (String group : chat.get().getPlayerGroups(player)) {
+            String prefix = chat.get().getGroupPrefix((String) null, group);
 
             if (prefix != null && !prefix.isEmpty()) {
                 joiner.append(prefix);
@@ -198,8 +199,8 @@ public class ChatListener implements Listener {
     private String getSuffix(Player player) {
         StringBuilder joiner = new StringBuilder();
 
-        for (String group : chat.getPlayerGroups(player)) {
-            String suffix = chat.getGroupSuffix((String) null, group);
+        for (String group : chat.get().getPlayerGroups(player)) {
+            String suffix = chat.get().getGroupSuffix((String) null, group);
 
             if (suffix != null && !suffix.isEmpty()) {
                 joiner.append(suffix);

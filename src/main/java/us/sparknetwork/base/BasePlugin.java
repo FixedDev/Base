@@ -8,10 +8,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
-import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
-import com.google.inject.Stage;
 import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -21,7 +19,6 @@ import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 import lombok.Getter;
 
 import me.fixeddev.inject.ProtectedBinder;
-import me.ggamer55.bcm.basic.PermissionMessageProvider;
 import me.ggamer55.bcm.bukkit.BukkitCommandHandler;
 import net.milkbowl.vault.chat.Chat;
 import org.apache.commons.lang.StringUtils;
@@ -48,7 +45,6 @@ import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
 import us.sparknetwork.base.listeners.JoinFullServer;
 import us.sparknetwork.base.listeners.PunishmentListener;
 import us.sparknetwork.base.module.ModuleHandler;
-import us.sparknetwork.base.module.ModuleHandlerModule;
 import us.sparknetwork.base.restart.RestartManager;
 import us.sparknetwork.base.restart.RestartPriority;
 import us.sparknetwork.base.server.LocalServerData;
@@ -101,8 +97,6 @@ public class BasePlugin extends JavaPlugin {
 
     @Inject
     private I18n i18n;
-
-    private Chat chat = null;
 
     @Getter
     @Inject
@@ -175,12 +169,6 @@ public class BasePlugin extends JavaPlugin {
     public void configure(ProtectedBinder binder) {
         executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
 
-        if (!this.setupChat()) {
-            this.getLogger().severe("Failed to load Vault Chat API, disabling plugin.");
-            this.setEnabled(false);
-            return;
-        }
-
         this.registerHandlers();
 
         if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
@@ -188,7 +176,7 @@ public class BasePlugin extends JavaPlugin {
         }
 
         serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
-        binder.install(new BasePluginModule(this, serverData, chat, redisson, mongoClient, database, executorService));
+        binder.install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
     }
 
     @Override
@@ -352,7 +340,7 @@ public class BasePlugin extends JavaPlugin {
             commandHandler.registerCommandClass(commandClass);
         }
 
-        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(), (PermissionMessageProvider) null);
+        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(),null);
 
         newCommandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
         newCommandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
@@ -379,18 +367,6 @@ public class BasePlugin extends JavaPlugin {
         this.getServer().getPluginManager().registerEvents(injector.getInstance(PunishmentListener.class), this);
     }
 
-
-    private boolean setupChat() {
-        if (getServer().getPluginManager().getPlugin("Vault") == null) {
-            return false;
-        }
-        RegisteredServiceProvider<Chat> rsp = getServer().getServicesManager().getRegistration(Chat.class);
-        if (rsp == null) {
-            return false;
-        }
-        chat = rsp.getProvider();
-        return chat != null;
-    }
 
 
 }

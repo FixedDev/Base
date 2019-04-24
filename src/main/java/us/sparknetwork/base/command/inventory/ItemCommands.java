@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import us.sparknetwork.base.I18n;
-import us.sparknetwork.base.itemdb.impl.ItemDb;
+import us.sparknetwork.base.itemdb.ItemDb;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;

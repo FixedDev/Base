@@ -11,6 +11,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import lombok.AllArgsConstructor;
 import net.milkbowl.vault.chat.Chat;
+import org.bukkit.Bukkit;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.api.RedissonClient;
 import us.sparknetwork.base.I18n;
@@ -23,6 +25,7 @@ import us.sparknetwork.base.jackson.BukkitJacksonModule;
 import us.sparknetwork.base.jackson.ScoreboardEntryModule;
 import us.sparknetwork.base.server.LocalServerData;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.util.logging.Logger;
 
@@ -31,8 +34,6 @@ public class BasePluginModule extends AbstractModule {
     private JavaPlugin plugin;
 
     private LocalServerData serverData;
-
-    private Chat chat;
 
     private RedissonClient redisson;
 
@@ -87,7 +88,12 @@ public class BasePluginModule extends AbstractModule {
 
         bind(ListeningExecutorService.class).toInstance(executorService);
 
-        bind(Chat.class).toInstance(chat);
+        bind(Chat.class).toProvider(new Provider<Chat>() {
+            @Override
+            public Chat get() {
+                return setupChat();
+            }
+        });
 
         bind(ChatFormatManager.class).to(BaseChatFormatManager.class);
 
@@ -97,4 +103,17 @@ public class BasePluginModule extends AbstractModule {
         install(new HandlersModule());
         install(new CommandHandlerModule());
     }
+
+    @Nullable
+    private Chat setupChat() {
+        if (Bukkit.getServer().getPluginManager().getPlugin("Vault") == null) {
+            return null;
+        }
+        RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
+        if (rsp == null) {
+            return null;
+        }
+        return rsp.getProvider();
+    }
+
 }

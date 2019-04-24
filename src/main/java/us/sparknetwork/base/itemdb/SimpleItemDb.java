@@ -8,10 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionType;
-import us.sparknetwork.base.itemdb.impl.ItemDb;
 import us.sparknetwork.utils.ManagedFile;
 
 import javax.inject.Inject;
@@ -42,7 +41,7 @@ public class SimpleItemDb implements ItemDb {
     private static Method getName;
 
     @Inject
-    public SimpleItemDb(JavaPlugin plugin) {
+    public SimpleItemDb(Plugin plugin) {
         this.items = new ConcurrentHashMap<>();
         this.names = TreeMultimap.create(Ordering.arbitrary(), (o1, o2) -> o1.length() - o2.length());
         this.primaryName = new HashMap<>();

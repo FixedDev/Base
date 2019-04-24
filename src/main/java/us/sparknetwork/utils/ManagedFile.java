@@ -1,7 +1,9 @@
 package us.sparknetwork.utils;
 
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import us.sparknetwork.base.BasePlugin;
+import us.sparknetwork.base.PlaceholderApiReplacer;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,15 +16,15 @@ import java.util.logging.Level;
 public class ManagedFile {
 
     private File file;
-    private JavaPlugin plugin;
+    private Plugin plugin;
 
-    public ManagedFile(String filename, JavaPlugin plugin) {
+    public ManagedFile(String filename, Plugin plugin) {
         this.plugin = plugin;
         this.file = new File(plugin.getDataFolder(), filename);
 
         if (!this.file.exists()) {
             try {
-                Files.copy(BasePlugin.class.getResourceAsStream(filename), file.toPath());
+                Files.copy(plugin.getResource(filename), file.toPath());
             } catch (IOException ex) {
                 plugin.getLogger().log(Level.SEVERE, "items.csv has not been loaded", ex);
             }

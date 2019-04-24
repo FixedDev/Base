@@ -14,7 +14,7 @@ import us.sparknetwork.base.user.friends.BaseFriendRequestHandler;
 import us.sparknetwork.base.user.friends.FriendRequestHandler;
 import us.sparknetwork.base.whisper.WhisperManager;
 import us.sparknetwork.base.whisper.WhisperManagerImpl;
-import us.sparknetwork.base.itemdb.impl.ItemDb;
+import us.sparknetwork.base.itemdb.ItemDb;
 import us.sparknetwork.base.itemdb.SimpleItemDb;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.impl.RedisMessenger;

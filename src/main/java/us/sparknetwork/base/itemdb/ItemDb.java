@@ -1,6 +1,6 @@
 
 
-package us.sparknetwork.base.itemdb.impl;
+package us.sparknetwork.base.itemdb;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
