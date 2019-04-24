@@ -63,7 +63,14 @@ public interface ChatFormat extends ConfigurationSerializable {
         if (!getPrefixTooltip().isEmpty()) {
             EasyKyoriComponent hoverComponent = new EasyKyoriComponent();
 
+            boolean first = true;
             for (String line : getPrefixTooltip()) {
+                if (first) {
+                    first = false;
+
+                    hoverComponent.append(line);
+                    continue;
+                }
                 hoverComponent.appendWithNewLine(line);
             }
 
@@ -92,7 +99,14 @@ public interface ChatFormat extends ConfigurationSerializable {
         if (!getPlayerNameTooltip().isEmpty()) {
             EasyKyoriComponent hoverComponent = new EasyKyoriComponent();
 
+            boolean first = true;
             for (String line : getPlayerNameTooltip()) {
+                if (first) {
+                    first = false;
+
+                    hoverComponent.append(line);
+                    continue;
+                }
                 hoverComponent.appendWithNewLine(line);
             }
 
@@ -123,7 +137,14 @@ public interface ChatFormat extends ConfigurationSerializable {
         if (!getSuffixTooltip().isEmpty()) {
             EasyKyoriComponent hoverComponent = new EasyKyoriComponent();
 
+            boolean first = true;
             for (String line : getSuffixTooltip()) {
+                if (first) {
+                    first = false;
+
+                    hoverComponent.append(line);
+                    continue;
+                }
                 hoverComponent.appendWithNewLine(line);
             }
 
