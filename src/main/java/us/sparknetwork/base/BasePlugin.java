@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.common.util.concurrent.MoreExecutors;
 import com.google.inject.Inject;
@@ -20,12 +19,9 @@ import lombok.Getter;
 
 import me.fixeddev.inject.ProtectedBinder;
 import me.ggamer55.bcm.bukkit.BukkitCommandHandler;
-import net.milkbowl.vault.chat.Chat;
-import org.apache.commons.lang.StringUtils;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -66,15 +62,10 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
-import java.util.logging.Logger;
 
 public class BasePlugin extends JavaPlugin {
 
     public static final UUID CONSOLE_UUID = UUID.fromString("fecac143-508a-4c25-845c-dab5b9b4a03f");
-
-    // Non injected fields
-    private LocalServerData serverData;
 
     private RedissonClient redisson;
 
@@ -102,51 +93,19 @@ public class BasePlugin extends JavaPlugin {
     @Inject
     private Injector injector;
 
-    public static void logError(Logger logger, String action, String dataType, String dataId, Throwable error) {
-        Preconditions.checkNotNull(logger);
-
-        Preconditions.checkNotNull(action);
-        Preconditions.checkArgument(!action.isEmpty());
-
-        Preconditions.checkNotNull(dataType);
-        Preconditions.checkArgument(!dataType.isEmpty());
-
-
-        String message = StringUtils.isBlank(dataId) ? "Failed to {0} the {1}" : "Failed to {0} the {1} of {2}";
-
-        logger.log(new LogRecord(Level.WARNING, message) {
-
-            @Override
-            public Object[] getParameters() {
-                if (dataId == null) {
-                    return new Object[]{action, dataType};
-                }
-                return new Object[]{action, dataType, dataId};
-            }
-
-            @Override
-            public Throwable getThrown() {
-                return error;
-            }
-        });
-
-
-    }
-
     @Override
     public void onLoad() {
-        if (!this.getDataFolder().exists()) {
-            this.getDataFolder().mkdir();
+        if (!this.getDataFolder().exists() && !this.getDataFolder().mkdir()) {
+            getLogger().log(Level.WARNING, "The data folder was not created even if it doesn't exist, maybe we don't have permissions?");
         }
     }
-
 
     @Override
     public void onEnable() {
         try {
             this.startServices();
         } catch (Exception e) {
-            logError(this.getLogger(), "start", "services", null, e);
+            getLogger().log(Level.SEVERE, "An exception occurred while the services were being enabled", e);
         }
 
         this.registerCommands();
@@ -171,12 +130,13 @@ public class BasePlugin extends JavaPlugin {
 
         this.registerHandlers();
 
+        LocalServerData serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
+
         if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
             serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
         }
 
-        serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
-        binder.install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
+        binder.publicBinder().install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
     }
 
     @Override
@@ -340,7 +300,7 @@ public class BasePlugin extends JavaPlugin {
             commandHandler.registerCommandClass(commandClass);
         }
 
-        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(),null);
+        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(), null);
 
         newCommandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
         newCommandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
@@ -366,7 +326,6 @@ public class BasePlugin extends JavaPlugin {
 
         this.getServer().getPluginManager().registerEvents(injector.getInstance(PunishmentListener.class), this);
     }
-
 
 
 }

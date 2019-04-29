@@ -227,7 +227,7 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete, I
                 Bukkit.getScheduler().runTask(this.plugin, () -> {
                     e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
                 });
-                BasePlugin.logError(this.plugin.getLogger(), "load", "data", e.getPlayer().getUniqueId().toString(), var7);
+                this.plugin.getLogger().log(Level.SEVERE, "An exception ocurred while loading the data of " + e.getPlayer().getUniqueId().toString(),var7);
             }
 
         });
