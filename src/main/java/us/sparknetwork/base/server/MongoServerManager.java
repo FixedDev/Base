@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import us.sparknetwork.base.datamanager.MongoStorageProvider;
@@ -113,5 +115,10 @@ public class MongoServerManager extends MongoStorageProvider<Server, Server> imp
 
             this.save(serverData);
         },1);
+    }
+
+    @Override
+    public void registerListeners(Plugin plugin, PluginManager pluginManager) {
+        pluginManager.registerEvents(this, plugin);
     }
 }
