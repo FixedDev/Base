@@ -1,7 +1,7 @@
 package us.sparknetwork.base.chat;
 
 import org.bukkit.entity.Player;
-import us.sparknetwork.base.Service;
+import me.fixeddev.service.Service;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package us.sparknetwork.base.server;
 
-import us.sparknetwork.base.Service;
+import me.fixeddev.service.Service;
 import us.sparknetwork.base.datamanager.StorageProvider;
 import us.sparknetwork.base.server.type.Server;
 

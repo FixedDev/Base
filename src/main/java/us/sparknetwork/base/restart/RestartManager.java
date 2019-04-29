@@ -1,10 +1,9 @@
 package us.sparknetwork.base.restart;
 
 import org.jetbrains.annotations.NotNull;
-import us.sparknetwork.base.Service;
+import me.fixeddev.service.Service;
 
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.temporal.TemporalAmount;
 
 public interface RestartManager extends Service {

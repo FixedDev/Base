@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.server.ServerManager;
 import us.sparknetwork.base.server.type.Server;
-import us.sparknetwork.utils.AbstractService;
+import me.fixeddev.service.AbstractService;
 import us.sparknetwork.utils.DateUtil;
 
 import java.time.Duration;
