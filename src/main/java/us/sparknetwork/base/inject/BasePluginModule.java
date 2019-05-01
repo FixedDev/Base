@@ -20,14 +20,12 @@ import us.sparknetwork.base.chat.BaseChatFormatManager;
 import us.sparknetwork.base.chat.ChatFormatManager;
 import us.sparknetwork.base.inject.annotations.PluginClassLoader;
 import us.sparknetwork.base.inject.annotations.PluginDataFolder;
-import us.sparknetwork.base.inject.annotations.PluginLogger;
 import us.sparknetwork.base.jackson.BukkitJacksonModule;
 import us.sparknetwork.base.jackson.ScoreboardEntryModule;
 import us.sparknetwork.base.server.LocalServerData;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.util.logging.Logger;
 
 @AllArgsConstructor
 public class BasePluginModule extends AbstractModule {
@@ -45,55 +43,27 @@ public class BasePluginModule extends AbstractModule {
     @Override
     protected void configure() {
         bind(JavaPlugin.class).toInstance(plugin);
-        bind(ClassLoader.class).annotatedWith(PluginClassLoader.class).toInstance(plugin.getClass().getClassLoader());
-        bind(File.class).annotatedWith(PluginDataFolder.class).toInstance(plugin.getDataFolder());
-        bind(Logger.class).annotatedWith(PluginLogger.class).toInstance(plugin.getLogger());
 
-        bind(ObjectMapper.class).annotatedWith(Names.named("YMLMapper")).toProvider(() -> {
-            ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-            mapper.setVisibility(mapper.getSerializationConfig()
-                    .getDefaultVisibilityChecker()
-                    .withFieldVisibility(JsonAutoDetect.Visibility.NONE)
-                    .withGetterVisibility(JsonAutoDetect.Visibility.ANY)
-                    .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
-                    .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
-                    .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
+        bind(ClassLoader.class)
+                .annotatedWith(PluginClassLoader.class)
+                .toInstance(plugin.getClass().getClassLoader());
 
-            mapper.registerModule(new JavaTimeModule());
-            mapper.registerModule(new BukkitJacksonModule());
-            mapper.registerModule(new ScoreboardEntryModule());
+        bind(File.class)
+                .annotatedWith(PluginDataFolder.class)
+                .toInstance(plugin.getDataFolder());
 
-            return mapper;
-        }).in(Scopes.SINGLETON);
+        bind(ObjectMapper.class)
+                .annotatedWith(Names.named("YMLMapper"))
+                .toProvider(this::createMapper).in(Scopes.SINGLETON);
 
-        bind(ObjectMapper.class).toProvider(() -> {
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.setVisibility(mapper.getSerializationConfig()
-                    .getDefaultVisibilityChecker()
-                    .withFieldVisibility(JsonAutoDetect.Visibility.NONE)
-                    .withGetterVisibility(JsonAutoDetect.Visibility.ANY)
-                    .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
-                    .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
-                    .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
-
-            mapper.registerModule(new JavaTimeModule());
-            mapper.registerModule(new BukkitJacksonModule());
-            mapper.registerModule(new ScoreboardEntryModule());
-
-            return mapper;
-        }).in(Scopes.SINGLETON);
-
+        bind(ObjectMapper.class)
+                .toProvider(this::createMapper).in(Scopes.SINGLETON);
 
         bind(I18n.class);
 
         bind(ListeningExecutorService.class).toInstance(executorService);
 
-        bind(Chat.class).toProvider(new Provider<Chat>() {
-            @Override
-            public Chat get() {
-                return setupChat();
-            }
-        });
+        bind(Chat.class).toProvider(this::setupChat);
 
         bind(ChatFormatManager.class).to(BaseChatFormatManager.class);
 
@@ -114,6 +84,23 @@ public class BasePluginModule extends AbstractModule {
             return null;
         }
         return rsp.getProvider();
+    }
+
+    private ObjectMapper createMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.setVisibility(mapper.getSerializationConfig()
+                .getDefaultVisibilityChecker()
+                .withFieldVisibility(JsonAutoDetect.Visibility.NONE)
+                .withGetterVisibility(JsonAutoDetect.Visibility.ANY)
+                .withIsGetterVisibility(JsonAutoDetect.Visibility.ANY)
+                .withSetterVisibility(JsonAutoDetect.Visibility.ANY)
+                .withCreatorVisibility(JsonAutoDetect.Visibility.PROTECTED_AND_PUBLIC));
+
+        mapper.registerModule(new JavaTimeModule());
+        mapper.registerModule(new BukkitJacksonModule());
+        mapper.registerModule(new ScoreboardEntryModule());
+
+        return mapper;
     }
 
 }
