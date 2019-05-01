@@ -18,7 +18,8 @@ import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 import lombok.Getter;
 
 import me.fixeddev.inject.ProtectedBinder;
-import me.ggamer55.bcm.bukkit.BukkitCommandHandler;
+import me.fixeddev.inject.ServiceManager;
+import me.ggamer55.bcm.parametric.ParametricCommandRegistry;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bukkit.Bukkit;
@@ -40,11 +41,9 @@ import us.sparknetwork.base.command.tell.ToggleCommand;
 import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
 import us.sparknetwork.base.listeners.JoinFullServer;
 import us.sparknetwork.base.listeners.PunishmentListener;
-import us.sparknetwork.base.module.ModuleHandler;
 import us.sparknetwork.base.restart.RestartManager;
 import us.sparknetwork.base.restart.RestartPriority;
 import us.sparknetwork.base.server.LocalServerData;
-import us.sparknetwork.base.server.MongoServerManager;
 import us.sparknetwork.base.server.ServerRole;
 import us.sparknetwork.base.server.type.LocalGameServer;
 import us.sparknetwork.base.user.UserHandler;
@@ -76,15 +75,13 @@ public class BasePlugin extends JavaPlugin {
 
     // Injected fields
     @Inject
-    private ModuleHandler moduleHandler;
-    @Inject
     private CommandHandler commandHandler;
 
     @Inject
-    private UserHandler userHandler;
+    private ParametricCommandRegistry commandRegistry;
 
     @Inject
-    private MongoServerManager serverManager;
+    private UserHandler userHandler;
 
     @Inject
     private I18n i18n;
@@ -92,6 +89,9 @@ public class BasePlugin extends JavaPlugin {
     @Getter
     @Inject
     private Injector injector;
+
+    @Inject
+    private ServiceManager serviceManager;
 
     @Override
     public void onLoad() {
@@ -102,11 +102,7 @@ public class BasePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        try {
-            this.startServices();
-        } catch (Exception e) {
-            getLogger().log(Level.SEVERE, "An exception occurred while the services were being enabled", e);
-        }
+        serviceManager.start();
 
         this.registerCommands();
         this.registerEvents();
@@ -135,13 +131,14 @@ public class BasePlugin extends JavaPlugin {
         if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
             serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
         }
+        binder.publicBinder().install(new CommandManagerModule());
 
         binder.publicBinder().install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
     }
 
     @Override
     public void onDisable() {
-        this.stopServices();
+        serviceManager.stop();
 
         if (injector != null) {
             injector = null;
@@ -246,8 +243,6 @@ public class BasePlugin extends JavaPlugin {
     }
 
     private void startServices() throws Exception {
-        moduleHandler.start();
-        serverManager.start();
 
         ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
         chatFormatManager.start();
@@ -262,8 +257,6 @@ public class BasePlugin extends JavaPlugin {
         if (injector == null) {
             return;
         }
-        moduleHandler.stop();
-        serverManager.stop();
 
         ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
         chatFormatManager.stop();
@@ -300,21 +293,17 @@ public class BasePlugin extends JavaPlugin {
             commandHandler.registerCommandClass(commandClass);
         }
 
-        BukkitCommandHandler newCommandHandler = new BukkitCommandHandler(this.getLogger(), null);
-
-        newCommandHandler.registerCommand(injector.getInstance(FriendsMainCommand.class));
-        newCommandHandler.registerCommandClass(injector.getInstance(SendCommand.class));
-        newCommandHandler.registerCommandClass(injector.getInstance(RestartCommands.class));
-        newCommandHandler.registerCommandClass(injector.getInstance(HelpopCommands.class));
-        newCommandHandler.registerCommandClass(injector.getInstance(PlayerCommands.class));
-        newCommandHandler.registerCommandClass(injector.getInstance(PunishmentCommands.class));
+        commandRegistry.registerCommand(injector.getInstance(FriendsMainCommand.class));
+        commandRegistry.registerCommandClass(injector.getInstance(SendCommand.class));
+        commandRegistry.registerCommandClass(injector.getInstance(RestartCommands.class));
+        commandRegistry.registerCommandClass(injector.getInstance(HelpopCommands.class));
+        commandRegistry.registerCommandClass(injector.getInstance(PlayerCommands.class));
+        commandRegistry.registerCommandClass(injector.getInstance(PunishmentCommands.class));
     }
 
 
     private void registerEvents() {
         this.getServer().getPluginManager().registerEvents(userHandler, this);
-
-        this.getServer().getPluginManager().registerEvents(serverManager, this);
 
         this.getServer().getPluginManager().registerEvents(injector.getInstance(ChatListener.class), this);
         this.getServer().getPluginManager().registerEvents(injector.getInstance(JoinMessageListener.class), this);
