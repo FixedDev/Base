@@ -42,8 +42,6 @@ public class BasePluginModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(JavaPlugin.class).toInstance(plugin);
-
         bind(ClassLoader.class)
                 .annotatedWith(PluginClassLoader.class)
                 .toInstance(plugin.getClass().getClassLoader());
