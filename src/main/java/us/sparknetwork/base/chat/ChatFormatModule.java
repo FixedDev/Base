@@ -11,5 +11,7 @@ public class ChatFormatModule extends ProtectedModule {
 
         ServiceBinder serviceBinder = new ServiceBinder(binder());
         serviceBinder.bindService(BaseChatFormatManager.class, Scopes.SINGLETON);
+
+        expose(ChatFormatManager.class);
     }
 }

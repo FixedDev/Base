@@ -11,5 +11,7 @@ public class RestartManagerModule extends ProtectedModule {
 
         ServiceBinder serviceBinder = new ServiceBinder(binder());
         serviceBinder.bindService(BaseRestartManager.class, Scopes.SINGLETON);
+
+        expose(RestartManager.class);
     }
 }
