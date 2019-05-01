@@ -28,6 +28,7 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.SingleServerConfig;
 import us.sparknetwork.base.chat.ChatFormatManager;
+import us.sparknetwork.base.chat.ChatFormatModule;
 import us.sparknetwork.base.command.chat.*;
 import us.sparknetwork.base.command.essentials.*;
 import us.sparknetwork.base.command.essentials.friends.FriendsMainCommand;
@@ -42,8 +43,10 @@ import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
 import us.sparknetwork.base.listeners.JoinFullServer;
 import us.sparknetwork.base.listeners.PunishmentListener;
 import us.sparknetwork.base.restart.RestartManager;
+import us.sparknetwork.base.restart.RestartManagerModule;
 import us.sparknetwork.base.restart.RestartPriority;
 import us.sparknetwork.base.server.LocalServerData;
+import us.sparknetwork.base.server.ServerManagerModule;
 import us.sparknetwork.base.server.ServerRole;
 import us.sparknetwork.base.server.type.LocalGameServer;
 import us.sparknetwork.base.user.UserHandler;
@@ -134,6 +137,10 @@ public class BasePlugin extends JavaPlugin {
         binder.publicBinder().install(new CommandManagerModule());
 
         binder.publicBinder().install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
+
+        binder.install(new ChatFormatModule());
+        binder.install(new RestartManagerModule());
+        binder.install(new ServerManagerModule());
     }
 
     @Override
