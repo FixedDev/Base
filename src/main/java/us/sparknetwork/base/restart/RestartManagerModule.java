@@ -1,8 +1,8 @@
 package us.sparknetwork.base.restart;
 
 import com.google.inject.Scopes;
+import me.fixeddev.inject.ProtectedModule;
 import me.fixeddev.inject.ServiceBinder;
-import us.sparknetwork.utils.inject.ProtectedModule;
 
 public class RestartManagerModule extends ProtectedModule {
     @Override
