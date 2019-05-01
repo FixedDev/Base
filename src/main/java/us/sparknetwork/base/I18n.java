@@ -5,11 +5,11 @@ import com.google.inject.Singleton;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.inject.annotations.PluginClassLoader;
 import us.sparknetwork.base.inject.annotations.PluginDataFolder;
-import us.sparknetwork.base.inject.annotations.PluginLogger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,7 +57,7 @@ public class I18n {
     private JavaPlugin plugin;
 
     @Inject
-    public I18n(@PluginDataFolder File dataFolder, @PluginLogger Logger logger, @PluginClassLoader ClassLoader classLoader) {
+    public I18n(@PluginDataFolder File dataFolder, PluginLogger logger, @PluginClassLoader ClassLoader classLoader) {
         this.dataFolder = dataFolder;
         this.logger = logger;
         this.classLoader = classLoader;
