@@ -134,9 +134,9 @@ public class BasePlugin extends JavaPlugin {
         if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
             serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
         }
-        binder.publicBinder().install(new CommandManagerModule());
+        binder.install(new CommandManagerModule());
 
-        binder.publicBinder().install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
+        binder.install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
 
         binder.install(new ChatFormatModule());
         binder.install(new RestartManagerModule());
