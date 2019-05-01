@@ -63,8 +63,6 @@ public class BasePluginModule extends AbstractModule {
 
         bind(Chat.class).toProvider(this::setupChat);
 
-        bind(ChatFormatManager.class).to(BaseChatFormatManager.class);
-
         install(new ServerModule(serverData));
 
         install(new DatabaseModule(redisson, mongoClient, database));
