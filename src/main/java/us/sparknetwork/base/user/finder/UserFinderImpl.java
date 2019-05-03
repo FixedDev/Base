@@ -1,4 +1,4 @@
-package us.sparknetwork.base.user.finder.impl;
+package us.sparknetwork.base.user.finder;
 
 import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.AsyncFunction;
