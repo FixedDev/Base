@@ -6,7 +6,7 @@ import us.sparknetwork.base.punishment.PunishmentManagerModule;
 import us.sparknetwork.base.user.BaseUserHandler;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.user.finder.UserFinder;
-import us.sparknetwork.base.user.finder.impl.UserFinderImpl;
+import us.sparknetwork.base.user.finder.UserFinderImpl;
 import us.sparknetwork.base.user.friends.BaseFriendRequestHandler;
 import us.sparknetwork.base.user.friends.FriendRequestHandler;
 import us.sparknetwork.base.whisper.WhisperManager;
