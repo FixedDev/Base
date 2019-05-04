@@ -30,14 +30,15 @@ public class EasyKyoriComponent {
         return appendWithNewLine(LegacyComponentSerializer.INSTANCE.deserialize(content));
     }
 
-    @NotNull
-    public EasyKyoriComponent append(@NotNull String content) {
-        return append(LegacyComponentSerializer.INSTANCE.deserialize(content));
-    }
 
     @NotNull
     public EasyKyoriComponent appendWithNewLine(@NotNull Component component){
-        return addNewLine().append(component);
+        return append(component).addNewLine();
+    }
+
+    @NotNull
+    public EasyKyoriComponent append(@NotNull String content) {
+        return append(LegacyComponentSerializer.INSTANCE.deserialize(content));
     }
 
     @NotNull
@@ -48,6 +49,12 @@ public class EasyKyoriComponent {
     }
 
     @NotNull
+    public EasyKyoriComponent append(@NotNull EasyKyoriComponent kyoriText){
+        return new EasyKyoriComponent(builder.append(kyoriText.builder.build()));
+    }
+
+
+    @NotNull
     public EasyKyoriComponent addNewLine(){
         builder = builder.append(Component.newline());
 
@@ -55,13 +62,13 @@ public class EasyKyoriComponent {
     }
 
     @NotNull
-    public EasyKyoriComponent append(@NotNull EasyKyoriComponent kyoriText){
-        return new EasyKyoriComponent(builder.append(kyoriText.builder.build()));
+    public EasyKyoriComponent setHoverShowText(@NotNull String content) {
+        return setHoverShowText(LegacyComponentSerializer.INSTANCE.deserialize(content));
     }
 
     @NotNull
-    public EasyKyoriComponent setHoverShowText(@NotNull String content) {
-        return setHoverShowText(LegacyComponentSerializer.INSTANCE.deserialize(content));
+    public EasyKyoriComponent setHoverShowText(@NotNull EasyKyoriComponent component) {
+        return setHoverShowText(component.build());
     }
 
     @NotNull
@@ -72,6 +79,11 @@ public class EasyKyoriComponent {
     @NotNull
     public EasyKyoriComponent setHoverShowItem(@NotNull ItemStack item) {
         return setHoverShowItem(GsonComponentSerializer.INSTANCE.deserialize(convertItemStackToJson(item)));
+    }
+
+    @NotNull
+    public EasyKyoriComponent setHoverShowItem(@NotNull EasyKyoriComponent component){
+        return setHoverShowItem(component.build());
     }
 
     @NotNull
