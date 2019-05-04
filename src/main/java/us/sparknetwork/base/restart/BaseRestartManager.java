@@ -77,12 +77,13 @@ public class BaseRestartManager extends AbstractService implements RestartManage
                 return;
             }
 
+            int playersOnline = localServer.getOnlinePlayerNicks().size();
             long secondsLeft = now.until(restartTime, ChronoUnit.SECONDS);
 
             if (secondsLeft <= 0) {
                 int restartMaximumPlayers = restartPriority.getMaximumPlayers();
 
-                if (localServer.getOnlinePlayerNicks().size() <= restartMaximumPlayers || restartMaximumPlayers == -1) {
+                if (playersOnline <= restartMaximumPlayers || restartMaximumPlayers == -1) {
                     Bukkit.broadcastMessage(i18n.format("restart.now"));
 
                     scheduler.runTaskLater(plugin, () -> Bukkit.getServer().shutdown(), 2);
@@ -94,23 +95,18 @@ public class BaseRestartManager extends AbstractService implements RestartManage
                 String prettyDuration = DateUtil.durationToPrettyDate(delayDuration, i18n);
 
                 plugin.getLogger().log(Level.INFO, "The server restart was delayed {0} since the restart maximum players are {1} and server online players are {2}.",
-                        new Object[]{prettyDuration, restartMaximumPlayers, localServer.getOnlinePlayerNicks().size()});
+                        new Object[]{prettyDuration, restartMaximumPlayers, playersOnline});
 
                 restartTime = now.plus(Duration.ofMinutes(1));
 
                 localServer.setNextRestartDate(restartTime);
                 serverManager.save(localServer);
 
-                Bukkit.broadcastMessage(i18n.format("restart.delayed", prettyDuration, restartPriority.getMaximumPlayers(), localServer.getOnlinePlayerNicks().size()));
+                Bukkit.broadcastMessage(i18n.format("restart.delayed", prettyDuration, restartPriority.getMaximumPlayers(), playersOnline));
                 return;
             }
 
-            if (secondsLeft <= 10) {
-                Bukkit.broadcastMessage(i18n.format("restart.in", DateUtil.getHumanReadableDate(secondsLeft * 1000, i18n)));
-                return;
-            }
-
-            if (announceRestartTime.contains(secondsLeft)) {
+            if (secondsLeft <= 10 || announceRestartTime.contains(secondsLeft)) {
                 Bukkit.broadcastMessage(i18n.format("restart.in", DateUtil.getHumanReadableDate(secondsLeft * 1000, i18n)));
             }
         }, 0, 20);
