@@ -8,6 +8,7 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 import us.sparknetwork.base.I18n;
+import us.sparknetwork.base.ServerConfigurations;
 import us.sparknetwork.base.server.ServerManager;
 import us.sparknetwork.base.server.type.Server;
 import me.fixeddev.service.AbstractService;
@@ -110,6 +111,8 @@ public class BaseRestartManager extends AbstractService implements RestartManage
                 Bukkit.broadcastMessage(i18n.format("restart.in", DateUtil.getHumanReadableDate(secondsLeft * 1000, i18n)));
             }
         }, 0, 20);
+
+        scheduleRestartIn(Duration.ofMillis(ServerConfigurations.RESTART_TIME), RestartPriority.NORMAL);
     }
 
     @Override
