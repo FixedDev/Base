@@ -249,29 +249,6 @@ public class BasePlugin extends JavaPlugin {
         new ServerConfigurations(this);
     }
 
-    private void startServices() throws Exception {
-
-        ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
-        chatFormatManager.start();
-
-        RestartManager restartManager = injector.getInstance(RestartManager.class);
-        restartManager.start();
-
-        restartManager.scheduleRestartIn(Duration.ofMillis(ServerConfigurations.RESTART_TIME), RestartPriority.NORMAL);
-    }
-
-    private void stopServices() {
-        if (injector == null) {
-            return;
-        }
-
-        ChatFormatManager chatFormatManager = injector.getInstance(ChatFormatManager.class);
-        chatFormatManager.stop();
-
-        RestartManager restartManager = injector.getInstance(RestartManager.class);
-        restartManager.stop();
-    }
-
     private void registerCommands() {
         List<CommandClass> commandClasses = new ArrayList<>();
 
