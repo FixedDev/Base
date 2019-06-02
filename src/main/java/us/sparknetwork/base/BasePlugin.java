@@ -58,6 +58,7 @@ import us.sparknetwork.utils.Config;
 import us.sparknetwork.utils.TemporaryCommandUtils;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
@@ -121,7 +122,8 @@ public class BasePlugin extends JavaPlugin {
 
     @Override
     public void configure(ProtectedBinder binder) {
-        executorService = MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10));
+        binder.bind(ListeningExecutorService.class).toInstance(MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10)));
+        binder.bind(ExecutorService.class).to(ListeningExecutorService.class);
 
         this.registerHandlers();
 
@@ -132,7 +134,7 @@ public class BasePlugin extends JavaPlugin {
         }
         binder.install(new CommandManagerModule());
 
-        binder.install(new BasePluginModule(this, serverData, redisson, mongoClient, database, executorService));
+        binder.install(new BasePluginModule(this, serverData, redisson, mongoClient, database));
 
         binder.install(new ChatFormatModule());
         binder.install(new RestartManagerModule());
