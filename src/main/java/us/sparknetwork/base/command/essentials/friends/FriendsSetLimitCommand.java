@@ -1,8 +1,7 @@
 package us.sparknetwork.base.command.essentials.friends;
 
-import me.ggamer55.bcm.AbstractAdvancedCommand;
-import me.ggamer55.bcm.CommandContext;
-import me.ggamer55.bcm.basic.exceptions.CommandException;
+import me.fixeddev.bcm.AbstractAdvancedCommand;
+import me.fixeddev.bcm.CommandContext;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;

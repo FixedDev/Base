@@ -1,9 +1,9 @@
 package us.sparknetwork.base.command.essentials;
 
 import com.google.inject.Inject;
-import me.ggamer55.bcm.parametric.CommandClass;
-import me.ggamer55.bcm.parametric.annotation.Command;
-import me.ggamer55.bcm.parametric.annotation.Optional;
+import me.fixeddev.bcm.parametric.CommandClass;
+import me.fixeddev.bcm.parametric.annotation.Command;
+import me.fixeddev.bcm.parametric.annotation.Optional;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;

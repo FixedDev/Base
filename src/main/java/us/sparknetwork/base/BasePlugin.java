@@ -19,7 +19,7 @@ import lombok.Getter;
 
 import me.fixeddev.inject.ProtectedBinder;
 import me.fixeddev.inject.ServiceManager;
-import me.ggamer55.bcm.parametric.ParametricCommandRegistry;
+import me.fixeddev.bcm.parametric.ParametricCommandRegistry;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bukkit.Bukkit;

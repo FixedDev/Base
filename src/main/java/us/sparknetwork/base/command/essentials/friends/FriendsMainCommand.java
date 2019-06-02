@@ -1,10 +1,10 @@
 package us.sparknetwork.base.command.essentials.friends;
 
 import com.google.inject.Inject;
-import me.ggamer55.bcm.AbstractAdvancedCommand;
-import me.ggamer55.bcm.CommandContext;
-import me.ggamer55.bcm.basic.ArgumentArray;
-import me.ggamer55.bcm.basic.Namespace;
+import me.fixeddev.bcm.AbstractAdvancedCommand;
+import me.fixeddev.bcm.CommandContext;
+import me.fixeddev.bcm.basic.ArgumentArray;
+import me.fixeddev.bcm.basic.Namespace;
 import org.bukkit.command.CommandSender;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.user.UserHandler;
