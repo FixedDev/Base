@@ -47,7 +47,7 @@ public class MongoServerManager extends MongoStorageProvider<Server, Server> imp
     }
 
     @Override
-    public void start() throws IllegalStateException {
+    public void start() {
         if (!started.compareAndSet(false, true)) {
             throw new IllegalStateException("The service is already started");
         }
