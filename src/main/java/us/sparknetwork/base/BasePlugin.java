@@ -250,7 +250,6 @@ public class BasePlugin extends JavaPlugin {
     private void registerCommands() {
         List<CommandClass> commandClasses = new ArrayList<>();
 
-        commandClasses.add(injector.getInstance(BroadcastCommand.class));
         commandClasses.add(injector.getInstance(ModerationCommands.class));
         commandClasses.add(injector.getInstance(ToggleChatCommand.class));
         commandClasses.add(injector.getInstance(StaffChatCommands.class));
@@ -281,6 +280,7 @@ public class BasePlugin extends JavaPlugin {
         commandRegistry.registerCommandClass(injector.getInstance(HelpopCommands.class));
         commandRegistry.registerCommandClass(injector.getInstance(PlayerCommands.class));
         commandRegistry.registerCommandClass(injector.getInstance(PunishmentCommands.class));
+        commandRegistry.registerCommandClass(injector.getInstance(BroadcastCommand.class));
     }
 
 
