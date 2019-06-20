@@ -176,19 +176,18 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete, I
             }
 
             userData.setLastJoin(System.currentTimeMillis());
-        } catch (Throwable var4) {
+
+            checkState(userData, e);
+
+            this.save(userData);
+        } catch (Exception ex) {
             e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
-            plugin.getLogger().log(Level.SEVERE, "There was an exception while handling user " + e.getPlayer().getUniqueId().toString() + " data", var4);
+            plugin.getLogger().log(Level.SEVERE, "There was an exception while handling user " + e.getPlayer().getUniqueId().toString() + " data", ex);
         }
     }
 
-    @EventHandler
-    public void onJoinStateCheck(PlayerJoinEvent e) {
-        Optional<User.Complete> user = Optional.ofNullable(findOneSync(e.getPlayer().getUniqueId().toString()));
-
+    private void checkState(State userData, PlayerJoinEvent e) {
         try {
-            User.State userData = user.orElseThrow(Exception::new);
-
             String falseString = LangConfigurations.convertBoolean(this.i18n, false);
 
             if (userData.isVanished()) {
@@ -212,18 +211,13 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete, I
             Collection player = Collections.singleton(e.getPlayer());
             Set<String> userIds = Bukkit.getOnlinePlayers().stream().map(OfflinePlayer::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
 
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                this.findSync(userIds, userIds.size()).stream().filter(State::isVanished).forEach((userState) -> {
-                    updateVanishState(Bukkit.getPlayer(userState.getUUID()), player, true);
-                });
+            this.findSync(userIds, userIds.size()).stream().filter(State::isVanished).forEach((userState) -> {
+                updateVanishState(Bukkit.getPlayer(userState.getUUID()), player, true);
+            });
 
-                this.save(userData);
-            });
-        } catch (Throwable var7) {
-            Bukkit.getScheduler().runTask(this.plugin, () -> {
-                e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
-            });
-            this.plugin.getLogger().log(Level.SEVERE, "An exception ocurred while loading the data of " + e.getPlayer().getUniqueId().toString(), var7);
+        } catch (Exception ex) {
+            e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
+            this.plugin.getLogger().log(Level.SEVERE, "An exception ocurred while loading the data of " + e.getPlayer().getUniqueId().toString(), ex);
         }
     }
 
