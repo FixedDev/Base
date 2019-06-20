@@ -97,7 +97,7 @@ public class BaseFriendRequestHandler extends CachedMongoStorageProvider<FriendR
     }
 
     @Override
-    public ListenableFuture<FriendRequestReply> denyFriendRequest(@NotNull Player denier, User.@NotNull Complete from, User.@NotNull Complete to) {
+    public ListenableFuture<FriendRequestReply> denyFriendRequest(@NotNull Player denier, @NotNull User.Complete from, @NotNull User.Complete to) {
         Objects.requireNonNull(denier);
         Objects.requireNonNull(from);
         Objects.requireNonNull(to);
