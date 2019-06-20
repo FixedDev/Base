@@ -15,6 +15,7 @@ import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.annotation.Command;
 import us.sparknetwork.cm.command.arguments.CommandContext;
+import us.sparknetwork.utils.ListenableFutureUtils;
 
 import java.text.MessageFormat;
 import java.util.Objects;
@@ -43,7 +44,7 @@ public class StaffChatCommands implements CommandClass {
 
     @Command(names = {"staffchat", "sc"}, usage = "Usage: /<command> [text]", permission = "base.command.staffchat")
     public boolean staffChatCommand(CommandSender commandSender, CommandContext context) {
-        if (context.getArguments().size() >= 1) {
+        if (!context.getArguments().isEmpty()) {
             String stringMessage = context.getJoinedArgs(0);
 
             if (commandSender.hasPermission("base.staffchat.color")) {
@@ -63,6 +64,22 @@ public class StaffChatCommands implements CommandClass {
             StaffChatMessage message = new StaffChatMessage(commandSender.getName(), stringMessage);
 
             messageChannel.sendMessage(message);
+
+            if (commandSender instanceof Player) {
+                Player sender = (Player) commandSender;
+
+                ListenableFutureUtils.addCallback(settingsHandler.findOne(sender.getUniqueId().toString()), settings -> {
+                    if(settings == null){
+                        return;
+                    }
+
+                    if(settings.isStaffChatVisible()){
+                        return;
+                    }
+
+                    sender.sendMessage(i18n.translate("staff.chat.invisible"));
+                });
+            }
 
             return true;
         }
