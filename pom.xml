@@ -104,9 +104,9 @@
         </dependency>
 
         <dependency>
-            <groupId>us.sparknetwork</groupId>
+            <groupId>me.fixeddev</groupId>
             <artifactId>BCM-Bukkit</artifactId>
-            <version>1.5</version>
+            <version>1.7</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
