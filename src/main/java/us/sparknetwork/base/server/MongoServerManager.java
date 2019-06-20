@@ -121,4 +121,9 @@ public class MongoServerManager extends MongoStorageProvider<Server, Server> imp
     public void registerListeners(Plugin plugin, PluginManager pluginManager) {
         pluginManager.registerEvents(this, plugin);
     }
+
+    @Override
+    public LocalServerData getLocalServer() {
+        return serverData;
+    }
 }
