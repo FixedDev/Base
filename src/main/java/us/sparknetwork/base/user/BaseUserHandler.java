@@ -123,114 +123,108 @@ public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete, I
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onJoin(PlayerJoinEvent e) {
-        ListenableFutureUtils.addCallback(ListenableFutureUtils.addOptionalToReturnValue(this.findOne(e.getPlayer().getUniqueId().toString())), (user) -> {
-            try {
-                User.Complete userData = user.orElseThrow(Exception::new);
+        Optional<User.Complete> user = Optional.ofNullable(findOneSync(e.getPlayer().getUniqueId().toString()));
 
-                userData.tryAddAdress(e.getPlayer().getAddress().getAddress().getHostAddress());
-                userData.tryAddName(e.getPlayer().getName());
+        try {
+            User.Complete userData = user.orElseThrow(Exception::new);
 
-                if (userData.getNick() != null) {
-                    if (!this.by_nickname.containsKey(userData.getNick()) && Bukkit.getPlayer(userData.getNick()) == null) {
+            userData.tryAddAdress(e.getPlayer().getAddress().getAddress().getHostAddress());
+            userData.tryAddName(e.getPlayer().getName());
 
-                        e.getPlayer().setDisplayName(userData.getNick());
-                      //  e.getPlayer().setPlayerListName(userData.getNick());
+            if (userData.getNick() != null) {
+                if (!this.by_nickname.containsKey(userData.getNick()) && Bukkit.getPlayer(userData.getNick()) == null) {
 
-                        this.by_nickname.put(userData.getNick(), userData.getUUID());
-                    } else {
+                    e.getPlayer().setDisplayName(userData.getNick());
+                    //  e.getPlayer().setPlayerListName(userData.getNick());
 
-                        userData.setNick(null);
-
-                        e.getPlayer().setDisplayName(userData.getLastName());
-                      //  e.getPlayer().setPlayerListName(userData.getLastName());
-                    }
-                }
-
-                List<String> availableLimits = new ArrayList<>();
-
-                e.getPlayer().getEffectivePermissions().forEach(permissionAttachmentInfo -> {
-                    String permission = permissionAttachmentInfo.getPermission();
-
-                    if (!permission.startsWith("base.friends.limit") || !permissionAttachmentInfo.getValue()) {
-                        return;
-                    }
-
-                    String limit = permission.replace("base.friends.limit", "");
-
-                    availableLimits.add(limit);
-                });
-
-                if (availableLimits.contains("unlimited")) {
-                    userData.setFriendsLimit(Integer.MAX_VALUE);
-                } else if (availableLimits.isEmpty()) {
-                    userData.setFriendsLimit(5);
+                    this.by_nickname.put(userData.getNick(), userData.getUUID());
                 } else {
-                    availableLimits.stream().map(s -> {
-                        try {
-                            return Integer.parseInt(s);
-                        } catch (NumberFormatException ex) {
-                            return 5;
-                        }
-                    }).sorted(Integer::compare).forEachOrdered(userData::setFriendsLimit);
+
+                    userData.setNick(null);
+
+                    e.getPlayer().setDisplayName(userData.getLastName());
+                    //  e.getPlayer().setPlayerListName(userData.getLastName());
                 }
-
-                userData.setLastJoin(System.currentTimeMillis());
-
-                this.save(userData);
-            } catch (Throwable var4) {
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
-                });
-                plugin.getLogger().log(Level.SEVERE, "There was an exception while handling user " + e.getPlayer().getUniqueId().toString() + " data", var4);
             }
 
-        });
+            List<String> availableLimits = new ArrayList<>();
+
+            e.getPlayer().getEffectivePermissions().forEach(permissionAttachmentInfo -> {
+                String permission = permissionAttachmentInfo.getPermission();
+
+                if (!permission.startsWith("base.friends.limit") || !permissionAttachmentInfo.getValue()) {
+                    return;
+                }
+
+                String limit = permission.replace("base.friends.limit", "");
+
+                availableLimits.add(limit);
+            });
+
+            if (availableLimits.contains("unlimited")) {
+                userData.setFriendsLimit(Integer.MAX_VALUE);
+            } else if (availableLimits.isEmpty()) {
+                userData.setFriendsLimit(5);
+            } else {
+                availableLimits.stream().map(s -> {
+                    try {
+                        return Integer.parseInt(s);
+                    } catch (NumberFormatException ex) {
+                        return 5;
+                    }
+                }).sorted(Integer::compare).forEachOrdered(userData::setFriendsLimit);
+            }
+
+            userData.setLastJoin(System.currentTimeMillis());
+        } catch (Throwable var4) {
+            e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
+            plugin.getLogger().log(Level.SEVERE, "There was an exception while handling user " + e.getPlayer().getUniqueId().toString() + " data", var4);
+        }
     }
 
     @EventHandler
     public void onJoinStateCheck(PlayerJoinEvent e) {
-        ListenableFutureUtils.addCallback(ListenableFutureUtils.addOptionalToReturnValue(this.findOne(e.getPlayer().getUniqueId().toString())), (user) -> {
-            try {
-                User.State userData = user.orElseThrow(Exception::new);
+        Optional<User.Complete> user = Optional.ofNullable(findOneSync(e.getPlayer().getUniqueId().toString()));
 
-                String falseString = LangConfigurations.convertBoolean(this.i18n, false);
+        try {
+            User.State userData = user.orElseThrow(Exception::new);
 
-                if (userData.isVanished()) {
-                    if (e.getPlayer().hasPermission("base.command.vanish")) {
-                        userData.setVanished(true);
-                    } else {
-                        userData.setVanished(false);
-                        e.getPlayer().sendMessage(MessageFormat.format(this.i18n.translate("vanished.player"), e.getPlayer().getDisplayName(), falseString));
-                    }
+            String falseString = LangConfigurations.convertBoolean(this.i18n, false);
+
+            if (userData.isVanished()) {
+                if (e.getPlayer().hasPermission("base.command.vanish")) {
+                    userData.setVanished(true);
+                } else {
+                    userData.setVanished(false);
+                    e.getPlayer().sendMessage(MessageFormat.format(this.i18n.translate("vanished.player"), e.getPlayer().getDisplayName(), falseString));
                 }
-
-                if (userData.isGodModeEnabled()) {
-                    if (!e.getPlayer().hasPermission("base.command.god")) {
-                        userData.setGodModeEnabled(false);
-                        e.getPlayer().sendMessage(MessageFormat.format(this.i18n.translate("god.mode"), e.getPlayer().getDisplayName(), falseString));
-                    } else {
-                        e.getPlayer().sendMessage(this.i18n.translate("player.in.god.mode"));
-                    }
-                }
-
-                Collection player = Collections.singleton(e.getPlayer());
-                Set<String> userIds = Bukkit.getOnlinePlayers().stream().map(OfflinePlayer::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
-
-                Bukkit.getScheduler().runTask(plugin, () -> {
-                    this.findSync(userIds, userIds.size()).stream().filter(State::isVanished).forEach((userState) -> {
-                        updateVanishState(Bukkit.getPlayer(userState.getUUID()), player, true);
-                    });
-
-                    this.save(userData);
-                });
-            } catch (Throwable var7) {
-                Bukkit.getScheduler().runTask(this.plugin, () -> {
-                    e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
-                });
-                this.plugin.getLogger().log(Level.SEVERE, "An exception ocurred while loading the data of " + e.getPlayer().getUniqueId().toString(),var7);
             }
 
-        });
+            if (userData.isGodModeEnabled()) {
+                if (!e.getPlayer().hasPermission("base.command.god")) {
+                    userData.setGodModeEnabled(false);
+                    e.getPlayer().sendMessage(MessageFormat.format(this.i18n.translate("god.mode"), e.getPlayer().getDisplayName(), falseString));
+                } else {
+                    e.getPlayer().sendMessage(this.i18n.translate("player.in.god.mode"));
+                }
+            }
+
+            Collection player = Collections.singleton(e.getPlayer());
+            Set<String> userIds = Bukkit.getOnlinePlayers().stream().map(OfflinePlayer::getUniqueId).map(UUID::toString).collect(Collectors.toSet());
+
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                this.findSync(userIds, userIds.size()).stream().filter(State::isVanished).forEach((userState) -> {
+                    updateVanishState(Bukkit.getPlayer(userState.getUUID()), player, true);
+                });
+
+                this.save(userData);
+            });
+        } catch (Throwable var7) {
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
+                e.getPlayer().kickPlayer(this.i18n.translate("load.fail.data"));
+            });
+            this.plugin.getLogger().log(Level.SEVERE, "An exception ocurred while loading the data of " + e.getPlayer().getUniqueId().toString(), var7);
+        }
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
