@@ -38,8 +38,6 @@ public class BasePluginModule extends AbstractModule {
     private MongoClient mongoClient;
     private MongoDatabase database;
 
-    private ListeningExecutorService executorService;
-
     @Override
     protected void configure() {
         bind(JavaPlugin.class).toInstance(plugin);
@@ -60,8 +58,6 @@ public class BasePluginModule extends AbstractModule {
                 .toProvider(this::createMapper).in(Scopes.SINGLETON);
 
         bind(I18n.class);
-
-        bind(ListeningExecutorService.class).toInstance(executorService);
 
         bind(Chat.class).toProvider(this::setupChat);
 
