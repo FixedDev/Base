@@ -1,18 +1,18 @@
 package us.sparknetwork.base.command.chat;
 
 import com.google.inject.Inject;
+import me.ggamer55.bcm.parametric.CommandClass;
+import me.ggamer55.bcm.parametric.annotation.Command;
+import me.ggamer55.bcm.parametric.annotation.JoinedString;
+import me.ggamer55.bcm.parametric.annotation.Parameter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import us.sparknetwork.base.I18n;
 import us.sparknetwork.base.listeners.message.BroadcastListener;
 import us.sparknetwork.base.messager.Channel;
 import us.sparknetwork.base.messager.Messenger;
 import us.sparknetwork.base.messager.messages.BroadcastMessage;
-import us.sparknetwork.cm.CommandClass;
-import us.sparknetwork.cm.annotation.Command;
-import us.sparknetwork.cm.command.arguments.CommandContext;
 
 import java.text.MessageFormat;
 
@@ -34,22 +34,18 @@ public class BroadcastCommand implements CommandClass {
             usage = "Usage: /<command> <message...> [-r] [-g]",
             permission = "base.command.broadcast",
             flags = {'r', 'g'})
-    public boolean broadcastCommand(CommandSender sender, CommandContext context) {
-        if (context.getJoinedArgs(0).trim().isEmpty()) {
-            return false;
+    public boolean broadcastCommand(CommandSender sender, @JoinedString String message, @Parameter(value = "r", isFlag = true) boolean raw, @Parameter(value = "g", isFlag = true) boolean global) {
+        if (global && sender.hasPermission("base.command.broadcast.global")) {
+            BroadcastMessage.BroadcastType type = raw ? BroadcastMessage.BroadcastType.RAW : BroadcastMessage.BroadcastType.NORMAL;
+
+            BroadcastMessage messageObject = new BroadcastMessage(type, message);
+
+            broadcastChannel.sendMessage(messageObject);
         }
-
-        if (context.hasFlag('g') && sender.hasPermission("base.command.broadcast.global")) {
-            BroadcastMessage.BroadcastType type = context.hasFlag('r') ? BroadcastMessage.BroadcastType.RAW : BroadcastMessage.BroadcastType.NORMAL;
-
-            BroadcastMessage message = new BroadcastMessage(type, context.getJoinedArgs(0));
-
-            broadcastChannel.sendMessage(message);
-        }
-        if (context.getNoValueFlags().contains('r')) {
-            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', context.getJoinedArgs(0)));
+        if (raw) {
+            Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', message));
         } else {
-            String broadcastMessage = ChatColor.translateAlternateColorCodes('&', MessageFormat.format(i18n.translate("broadcast.format"), context.getJoinedArgs(0)));
+            String broadcastMessage = ChatColor.translateAlternateColorCodes('&', MessageFormat.format(i18n.translate("broadcast.format"), message));
 
             Bukkit.broadcastMessage(broadcastMessage);
         }
