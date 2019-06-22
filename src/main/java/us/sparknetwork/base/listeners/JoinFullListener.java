@@ -7,7 +7,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import us.sparknetwork.base.I18n;
 
-public class JoinFullServer implements Listener {
+public class JoinFullListener implements Listener {
 
     @Inject
     private I18n i18n;
