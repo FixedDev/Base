@@ -20,7 +20,7 @@ public class SendCommand implements CommandClass {
     private I18n i18n;
 
     @Command(names = "send", usage = "/<command> <player> <server>", min = 2, max = 2, permission = "base.command.send")
-    public boolean sendCommand(@Parameter("sender") CommandSender sender, @Parameter("player") OfflinePlayer player, @Parameter(value = "server") String server) {
+    public boolean sendCommand(@Parameter("sender") CommandSender sender, @Parameter("player") OfflinePlayer player, @Parameter("server") String server) {
         if (!player.isOnline()) {
             sender.sendMessage(i18n.format("offline.player", player.getName()));
             return true;

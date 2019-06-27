@@ -35,13 +35,13 @@ public class StaffCommands implements CommandClass {
 
     @Command(names = {"god", "godmode"}, max = 1, permission = "base.command.god", usage = "Usage: /<command> [player]")
     public boolean godCommand(CommandSender sender, CommandContext args) {
-        if (args.getArguments().size() == 0 && !(sender instanceof Player)) {
+        if (args.getArguments().isEmpty() && !(sender instanceof Player)) {
             return false;
         }
 
         Player target;
 
-        if (args.getArguments().size() == 0) {
+        if (args.getArguments().isEmpty()) {
             target = (Player) sender;
         } else {
             if (!sender.hasPermission("base.command.god.others")) {

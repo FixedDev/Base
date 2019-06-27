@@ -70,7 +70,7 @@ public class ServerCommands implements CommandClass {
 
     @Command(names = {"listplayers", "serverplayers"}, usage = "Usage: /<command> [serverId]", max = 1, permission = "base.command.listplayers")
     public boolean listPlayersCommand(CommandSender sender, CommandContext context) {
-        if (context.getArguments().size() == 0 && sender.hasPermission("base.command.listplayers.global")) {
+        if (context.getArguments().isEmpty() && sender.hasPermission("base.command.listplayers.global")) {
             sender.sendMessage(i18n.translate("server.all.list"));
 
             ListenableFutureUtils.addCallback(serverManager.find(Integer.MAX_VALUE), servers -> {

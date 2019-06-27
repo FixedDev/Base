@@ -34,7 +34,7 @@ public class KickAllCommand implements CommandClass {
 
         String bypassPermission = DEFAULT_BYPASS_PERMISSION;
 
-        if(context.getArguments().size() >= 1){
+        if(!context.getArguments().isEmpty()){
             bypassPermission = context.getArgument(0);
         }
 

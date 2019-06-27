@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import me.fixeddev.bcm.parametric.CommandClass;
 
 import me.fixeddev.bcm.parametric.annotation.Command;
+import me.fixeddev.bcm.parametric.annotation.Flag;
 import me.fixeddev.bcm.parametric.annotation.JoinedString;
 import me.fixeddev.bcm.parametric.annotation.Parameter;
 import org.bukkit.Bukkit;
@@ -35,7 +36,10 @@ public class BroadcastCommand implements CommandClass {
             usage = "Usage: /<command> <message...> [-r] [-g]",
             permission = "base.command.broadcast",
             flags = {'r', 'g'})
-    public boolean broadcastCommand(CommandSender sender, @JoinedString String message, @Parameter(value = "r", isFlag = true) boolean raw, @Parameter(value = "g", isFlag = true) boolean global) {
+    public boolean broadcastCommand(CommandSender sender,
+                                    @JoinedString String message,
+                                    @Flag('r') boolean raw,
+                                    @Flag('g') boolean global) {
         if (global && sender.hasPermission("base.command.broadcast.global")) {
             BroadcastMessage.BroadcastType type = raw ? BroadcastMessage.BroadcastType.RAW : BroadcastMessage.BroadcastType.NORMAL;
 
