@@ -1,10 +1,10 @@
 package us.sparknetwork.base.redis;
 
+import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.redisson.Redisson;
-
-import java.util.concurrent.ExecutorService;
 
 @Singleton
 public class RedisExecutorImpl implements RedisExecutor {
@@ -12,15 +12,15 @@ public class RedisExecutorImpl implements RedisExecutor {
     @Inject
     private Redisson redisson;
     @Inject
-    private ExecutorService executorService;
+    private ListeningExecutorService executorService;
 
     @Override
-    public void submit(RedisAction action) {
-        executorService.submit(() -> action.executeAction(redisson));
+    public <V> ListenableFuture<V> submit(RedisAction<V> action) {
+        return executorService.submit(() -> action.executeAction(redisson));
     }
 
     @Override
-    public void submitSync(RedisAction action) {
-        action.executeAction(redisson);
+    public <V> V submitSync(RedisAction<V> action) {
+        return action.executeAction(redisson);
     }
 }

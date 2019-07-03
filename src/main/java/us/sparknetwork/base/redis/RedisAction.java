@@ -2,6 +2,6 @@ package us.sparknetwork.base.redis;
 
 import org.redisson.Redisson;
 
-public interface RedisAction {
-    void executeAction(Redisson redisson);
+public interface RedisAction<V> {
+    V executeAction(Redisson redisson);
 }

@@ -1,7 +1,9 @@
 package us.sparknetwork.base.redis;
 
-public interface RedisExecutor {
-    void submitSync(RedisAction action);
+import com.google.common.util.concurrent.ListenableFuture;
 
-    void submit(RedisAction action);
+public interface RedisExecutor {
+    <V> V submitSync(RedisAction<V> action);
+
+    <V> ListenableFuture<V> submit(RedisAction<V> action);
 }
