@@ -6,7 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.datamanager.CachedStorageProvider;
 
-public interface UserHandler extends CachedStorageProvider<User.Complete, Identity>, Listener {
+public interface UserHandler extends CachedStorageProvider<User.Complete, User.Partial>, Listener {
     @Nullable
     Player getPlayerByNick(@NotNull String nick);
 }

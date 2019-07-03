@@ -40,7 +40,7 @@ import us.sparknetwork.utils.ListenableFutureUtils;
 
 import static us.sparknetwork.utils.ListenableFutureUtils.*;
 
-public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete, Identity> implements UserHandler {
+public class BaseUserHandler extends CachedMongoStorageProvider<User.Complete, User.Partial> implements UserHandler {
     @Inject
     private JavaPlugin plugin;
     @Inject
