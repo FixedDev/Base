@@ -49,48 +49,18 @@ public class MongoStorageProvider<O extends Model, P extends PartialModel> imple
 
     @NotNull
     @Override
-    public ListenableFuture<Set<O>> find(@NotNull Set<String> ids, int limit) {
-        if (limit < 0) {
-            throw new IllegalArgumentException("The specified limit must be 0 or more");
-        }
-        if (limit == 0) {
-            return Futures.immediateFuture(Sets.newHashSet());
-        }
-        return executorService.submit(() -> {
-            Set<O> objects = new HashSet<>();
-
-            Iterator<String> idIterator = ids.iterator();
-
-            for (int i = 0; i <= limit && idIterator.hasNext(); i++) {
-                String id = idIterator.next();
-
-                O object = mongoCollection.find(createIdQuery(id)).first();
-
-                if (object != null) {
-                    objects.add(object);
-                }
-
-            }
-
-            return objects;
-        });
+    public ListenableFuture<Set<O>> find(@NotNull Set<String> ids) {
+        return executorService.submit(() -> findSync(ids));
     }
 
     @NotNull
     @Override
-    public Set<O> findSync(@NotNull Set<String> ids, int limit) {
-        if (limit < 0) {
-            throw new IllegalArgumentException("The specified limit must be 0 or more");
-        }
-        if (limit == 0) {
-            return Sets.newHashSet();
-        }
-
+    public Set<O> findSync(@NotNull Set<String> ids) {
         Set<O> objects = new HashSet<>();
 
         Iterator<String> idIterator = ids.iterator();
 
-        for (int i = 0; i <= limit && idIterator.hasNext(); i++) {
+        while (idIterator.hasNext()) {
             String id = idIterator.next();
 
             O object = mongoCollection.find(createIdQuery(id)).first();
@@ -121,7 +91,6 @@ public class MongoStorageProvider<O extends Model, P extends PartialModel> imple
 
             return objects;
         });
-        //return executorService.submit(() -> new HashSet<>(advancedDatastore.find(dataPrefix, modelClazz).asList(new FindOptions().limit(limit))));
     }
 
     @NotNull
@@ -142,12 +111,14 @@ public class MongoStorageProvider<O extends Model, P extends PartialModel> imple
     }
 
     @Override
-    public @NotNull ListenableFuture<O> findOneByQuery(Bson bsonQuery) {
+    public @NotNull
+    ListenableFuture<O> findOneByQuery(Bson bsonQuery) {
         return executorService.submit(() -> mongoCollection.find(bsonQuery).first());
     }
 
     @Override
-    public @Nullable O findOneByQuerySync(Bson bsonQuery) {
+    public @Nullable
+    O findOneByQuerySync(Bson bsonQuery) {
         return mongoCollection.find(bsonQuery).first();
     }
 
@@ -204,14 +175,11 @@ public class MongoStorageProvider<O extends Model, P extends PartialModel> imple
     @Override
     public ListenableFuture<Void> save(@NotNull Set<P> o) {
         return executorService.submit(() -> {
-            Set<O> toSaveInMongoDB = new HashSet<>();
-
-
-            toSaveInMongoDB.forEach(o1 -> {
+            o.forEach(obj -> {
                 ReplaceOptions options = new ReplaceOptions();
                 options.upsert(true);
 
-                this.mongoCollection.replaceOne(createIdQuery(o1.getId()), o1, options);
+                this.mongoCollection.replaceOne(createIdQuery(((Model) obj).getId()), (O) obj, new ReplaceOptions().upsert(true));
             });
 
             return null;
