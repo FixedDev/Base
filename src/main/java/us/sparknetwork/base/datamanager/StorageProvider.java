@@ -17,10 +17,22 @@ public interface StorageProvider<O extends Model, P extends PartialModel> {
     O findOneSync(@NotNull String id);
 
     @NotNull
-    ListenableFuture<Set<O>> find(@NotNull Set<String> ids, int limit);
+    @Deprecated
+    default ListenableFuture<Set<O>> find(@NotNull Set<String> ids, int limit){
+        return find(ids);
+    }
 
     @NotNull
-    Set<O> findSync(@NotNull Set<String> ids, int limit);
+    ListenableFuture<Set<O>> find(@NotNull Set<String> ids);
+
+    @NotNull
+    @Deprecated
+    default Set<O> findSync(@NotNull Set<String> ids, int limit){
+        return findSync(ids);
+    }
+
+    @NotNull
+    Set<O> findSync(@NotNull Set<String> ids);
 
     @NotNull
     ListenableFuture<Set<O>> find(int limit);
