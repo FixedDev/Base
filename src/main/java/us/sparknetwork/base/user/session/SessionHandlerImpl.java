@@ -8,6 +8,7 @@ import us.sparknetwork.base.datamanager.RedisStorageProvider;
 import us.sparknetwork.base.redis.RedisExecutor;
 import us.sparknetwork.utils.ListenableFutureUtils;
 
+import java.time.ZonedDateTime;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class SessionHandlerImpl extends RedisStorageProvider<Session, Session> i
     public ListenableFuture<Session> createSession(UUID id) {
         return ListenableFutureUtils.transformFuture(getSession(id), input -> {
             if (input == null) {
-                input = new SessionImpl(id, Bukkit.getServerName());
+                input = new SessionImpl(id, ZonedDateTime.now(), Bukkit.getServerName());
                 save(input);
             }
 
