@@ -20,7 +20,7 @@ public class UserNickChangeEvent extends Event {
         this.newNick = newNick;
     }
 
-    public User getUser() {
+    public User.Complete getUser() {
         return this.user;
     }
 
