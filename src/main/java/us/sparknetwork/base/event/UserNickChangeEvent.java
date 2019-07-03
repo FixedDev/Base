@@ -7,13 +7,14 @@ import us.sparknetwork.base.user.User;
 
 public class UserNickChangeEvent extends Event {
     private static HandlerList handlerList = new HandlerList();
-    private User user;
+
+    private User.Complete user;
     @Nullable
     private String oldNick;
     @Nullable
     private String newNick;
 
-    public UserNickChangeEvent(User user, @Nullable String oldNick, @Nullable String newNick) {
+    public UserNickChangeEvent(User.Complete user, @Nullable String oldNick, @Nullable String newNick) {
         this.user = user;
         this.oldNick = oldNick;
         this.newNick = newNick;
@@ -23,10 +24,12 @@ public class UserNickChangeEvent extends Event {
         return this.user;
     }
 
+    @Nullable
     public String getOldNick() {
         return this.oldNick;
     }
 
+    @Nullable
     public String getNewNick() {
         return this.newNick;
     }
