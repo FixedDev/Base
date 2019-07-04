@@ -53,6 +53,7 @@ import us.sparknetwork.base.hooks.ProtocolLibHook;
 import us.sparknetwork.base.inject.BasePluginModule;
 import us.sparknetwork.base.listeners.ChatListener;
 import us.sparknetwork.base.listeners.JoinMessageListener;
+import us.sparknetwork.base.user.session.SessionModule;
 import us.sparknetwork.cm.CommandClass;
 import us.sparknetwork.cm.CommandHandler;
 import us.sparknetwork.utils.Config;
@@ -141,6 +142,7 @@ public class BasePlugin extends JavaPlugin {
         binder.install(new RestartManagerModule());
         binder.install(new ServerManagerModule());
         binder.install(new RedisExecutorModule());
+        binder.install(new SessionModule());
     }
 
     @Override
