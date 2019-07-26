@@ -1,7 +1,7 @@
 package us.sparknetwork.base.redis;
 
-import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
 
 public interface RedisAction<V> {
-    V executeAction(Redisson redisson);
+    V executeAction(RedissonClient redisson);
 }

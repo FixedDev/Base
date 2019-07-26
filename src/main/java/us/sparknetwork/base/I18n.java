@@ -5,6 +5,7 @@ import com.google.inject.Singleton;
 import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginLogger;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -57,10 +58,10 @@ public class I18n {
     private JavaPlugin plugin;
 
     @Inject
-    public I18n(@PluginDataFolder File dataFolder, PluginLogger logger, @PluginClassLoader ClassLoader classLoader) {
-        this.dataFolder = dataFolder;
+    public I18n(Plugin plugin, PluginLogger logger) {
+        this.dataFolder = plugin.getDataFolder();
         this.logger = logger;
-        this.classLoader = classLoader;
+        this.classLoader = plugin.getClass().getClassLoader();
 
         // Just for "reload" support
         ResourceBundle.clearCache();

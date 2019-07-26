@@ -17,6 +17,7 @@ public class DatabaseModule extends AbstractModule {
     protected void configure() {
         bind(RedissonClient.class).toInstance(redissonClient);
 
+
         bind(MongoClient.class).toInstance(mongoClient);
         bind(MongoDatabase.class).toInstance(mongoDatabase);
     }

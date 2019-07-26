@@ -4,13 +4,13 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
 
 @Singleton
 public class RedisExecutorImpl implements RedisExecutor {
 
     @Inject
-    private Redisson redisson;
+    private RedissonClient redisson;
     @Inject
     private ListeningExecutorService executorService;
 

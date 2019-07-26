@@ -126,6 +126,9 @@ public class BasePlugin extends JavaPlugin {
         binder.bind(ListeningExecutorService.class).toInstance(MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10)));
         binder.bind(ExecutorService.class).to(ListeningExecutorService.class);
 
+        binder.expose(ListeningExecutorService.class);
+        binder.expose(ExecutorService.class);
+
         this.registerHandlers();
 
         LocalServerData serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
@@ -136,6 +139,11 @@ public class BasePlugin extends JavaPlugin {
         binder.install(new CommandManagerModule());
 
         binder.install(new BasePluginModule(this, serverData, redisson, mongoClient, database));
+
+        binder.expose(RedissonClient.class);
+        binder.expose(MongoClient.class);
+        binder.expose(MongoDatabase.class);
+        binder.expose(UserHandler.class);
 
         binder.install(new ChatFormatModule());
         binder.install(new RestartManagerModule());
