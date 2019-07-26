@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.util.concurrent.ListeningExecutorService;
-import com.google.common.util.concurrent.MoreExecutors;
+import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.mongodb.*;
@@ -17,7 +17,6 @@ import fr.javatic.mongo.jacksonCodec.JacksonCodecProvider;
 import fr.javatic.mongo.jacksonCodec.ObjectMapperFactory;
 import lombok.Getter;
 
-import me.fixeddev.inject.ProtectedBinder;
 import me.fixeddev.inject.ServiceManager;
 import me.fixeddev.bcm.parametric.ParametricCommandRegistry;
 import org.bson.codecs.configuration.CodecRegistries;
@@ -27,7 +26,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.SingleServerConfig;
-import us.sparknetwork.base.chat.ChatFormatModule;
 import us.sparknetwork.base.command.chat.*;
 import us.sparknetwork.base.command.essentials.*;
 import us.sparknetwork.base.command.essentials.friends.FriendsMainCommand;
@@ -41,16 +39,12 @@ import us.sparknetwork.base.command.tell.ToggleCommand;
 import us.sparknetwork.base.datamanager.redisson.RedissonJsonJacksonCodec;
 import us.sparknetwork.base.listeners.JoinFullListener;
 import us.sparknetwork.base.listeners.PunishmentListener;
-import us.sparknetwork.base.redis.RedisExecutorModule;
-import us.sparknetwork.base.restart.RestartManagerModule;
 import us.sparknetwork.base.server.LocalServerData;
-import us.sparknetwork.base.server.ServerManagerModule;
 import us.sparknetwork.base.server.ServerRole;
 import us.sparknetwork.base.server.type.LocalGameServer;
 import us.sparknetwork.base.user.UserHandler;
 import us.sparknetwork.base.hooks.PlaceholderAPIHook;
 import us.sparknetwork.base.hooks.ProtocolLibHook;
-import us.sparknetwork.base.inject.BasePluginModule;
 import us.sparknetwork.base.listeners.ChatListener;
 import us.sparknetwork.base.listeners.JoinMessageListener;
 import us.sparknetwork.cm.CommandClass;
@@ -59,8 +53,6 @@ import us.sparknetwork.utils.Config;
 import us.sparknetwork.utils.TemporaryCommandUtils;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 public class BasePlugin extends JavaPlugin {
@@ -88,7 +80,6 @@ public class BasePlugin extends JavaPlugin {
     private I18n i18n;
 
     @Getter
-    @Inject
     private Injector injector;
 
     @Inject
@@ -103,6 +94,17 @@ public class BasePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        this.registerHandlers();
+
+        LocalServerData serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
+
+        if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
+            serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
+        }
+
+        injector = Guice.createInjector(new BaseModule(this, serverData, redisson, mongoClient, database));
+        injector.injectMembers(this);
+
         serviceManager.start();
 
         this.registerCommands();
@@ -119,36 +121,7 @@ public class BasePlugin extends JavaPlugin {
         }
 
         this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-    }
 
-    @Override
-    public void configure(ProtectedBinder binder) {
-        binder.bind(ListeningExecutorService.class).toInstance(MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(10)));
-        binder.bind(ExecutorService.class).to(ListeningExecutorService.class);
-
-        binder.expose(ListeningExecutorService.class);
-        binder.expose(ExecutorService.class);
-
-        this.registerHandlers();
-
-        LocalServerData serverData = new LocalServerData(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), true);
-
-        if (ServerConfigurations.SERVER_ROLE == ServerRole.GAME) {
-            serverData = new LocalGameServer(Bukkit.getServerName(), Bukkit.getIp(), Bukkit.getPort(), ServerConfigurations.SERVER_GAME_ID);
-        }
-        binder.install(new CommandManagerModule());
-
-        binder.install(new BasePluginModule(this, serverData, redisson, mongoClient, database));
-
-        binder.expose(RedissonClient.class);
-        binder.expose(MongoClient.class);
-        binder.expose(MongoDatabase.class);
-        binder.expose(UserHandler.class);
-
-        binder.install(new ChatFormatModule());
-        binder.install(new RestartManagerModule());
-        binder.install(new ServerManagerModule());
-        binder.install(new RedisExecutorModule());
     }
 
     @Override
