@@ -111,7 +111,7 @@ public class BaseUser implements User.Complete {
                     @JsonProperty("inStaffChat") boolean inStaffChat,
                     @Nullable @JsonProperty("lastPrivateMessageReplier") UUID lastPrivateMessageReplier,
                     @NotNull @JsonProperty("ignoredPlayers") List<UUID> ignoredPlayers,
-                    @NotNull @JsonProperty("privateMessagesVisibility") WhisperVisibility visibility,
+                    @JsonProperty(value = "privateMessagesVisibility") WhisperVisibility visibility,
                     @JsonProperty("socialSpyVisible") boolean socialSpyVisible,
                     @JsonProperty("friends") @NotNull List<UUID> friends,
                     @JsonProperty("friendsLimit") int friendsLimit,
@@ -138,6 +138,11 @@ public class BaseUser implements User.Complete {
         this.vanished = vanished;
         this.freezed = freezed;
         this.godModeEnabled = godModeEnabled;
+
+        // I don't care if intellij says that it can't be null, jackson can actually make it null
+        if (friends == null) {
+            this.friends = new ArrayList<>();
+        }
     }
 
     public BaseUser(@NotNull UUID uuid) {
@@ -152,10 +157,6 @@ public class BaseUser implements User.Complete {
         this.friendsLimit = -1;
     }
 
-    @Override
-    public String getId() {
-        return uuid.toString();
-    }
 
     /*
      * Identity implementation
