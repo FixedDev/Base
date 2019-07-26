@@ -3,7 +3,6 @@ package us.sparknetwork.base.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import us.sparknetwork.base.datamanager.Model;
 import us.sparknetwork.base.datamanager.PartialModel;
 
@@ -11,39 +10,17 @@ import java.util.List;
 import java.util.UUID;
 
 @JsonDeserialize(as = BaseUser.class)
-public interface User extends Model {
+public interface User extends Model, Identity {
 
-    interface Partial extends PartialModel {}
-
-    interface Complete extends User, Identity, ConnectionData, AddressHistoryData, ChatData, ChatSettings, WhisperData, WhisperSettings, Friends, State {
+    @Override
+    default String getId() {
+        return getUUID().toString();
     }
 
-    interface Identity extends Partial {
-        @JsonIgnore
-        @NotNull
-        UUID getUUID();
-
-        @JsonIgnore
-        @NotNull
-        String getLastName();
-
-        @NotNull
-        List<String> getNameHistory();
-
-        void tryAddName(String var1);
-
-        @Nullable
-        String getNick();
-
-        default boolean hasNick() {
-            return this.getNick() != null;
-        }
-
-        void setNick(@Nullable String var1);
+    interface Complete extends User, ConnectionData, AddressHistoryData, ChatData, ChatSettings, WhisperData, WhisperSettings, Friends, State {
     }
 
-
-    interface ConnectionData extends Partial {
+    interface ConnectionData extends Identity {
         long getLastJoin();
 
         void setLastJoin(long lastJoin);
@@ -57,7 +34,7 @@ public interface User extends Model {
         boolean isOnline();
     }
 
-    interface AddressHistoryData extends Partial {
+    interface AddressHistoryData extends Identity {
         List<String> getAddressHistory();
 
         @JsonIgnore
@@ -66,13 +43,13 @@ public interface User extends Model {
         void tryAddAdress(String address);
     }
 
-    interface ChatData extends Partial {
+    interface ChatData extends Identity {
         long getLastSpeakTime();
 
         void setLastSpeakTime(long lastSpeakTime);
     }
 
-    interface ChatSettings extends Partial {
+    interface ChatSettings extends Identity {
         boolean isGlobalChatVisible();
 
         void setGlobalChatVisible(boolean globalChatVisible);
@@ -86,13 +63,13 @@ public interface User extends Model {
         void setInStaffChat(boolean inStaffChat);
     }
 
-    interface WhisperData extends Partial {
+    interface WhisperData extends Identity {
         UUID getLastPrivateMessageReplier();
 
         void setLastPrivateMessageReplier(UUID lastPrivateMessageReplier);
     }
 
-    interface WhisperSettings extends Partial {
+    interface WhisperSettings extends Identity {
         List<UUID> getIgnoredPlayers();
 
         boolean isPlayerIgnored(UUID playerUUID);
@@ -115,7 +92,7 @@ public interface User extends Model {
         NONE, FRIENDS, ALL
     }
 
-    interface Friends extends Partial {
+    interface Friends extends Identity {
         @NotNull
         List<UUID> getFriends();
 
@@ -134,7 +111,7 @@ public interface User extends Model {
         void setFriendsLimit(int limit);
     }
 
-    interface State extends Partial {
+    interface State extends Identity {
         boolean isVanished();
 
         void setVanished(boolean vanished);
