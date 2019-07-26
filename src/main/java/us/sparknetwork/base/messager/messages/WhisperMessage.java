@@ -1,27 +1,26 @@
 package us.sparknetwork.base.messager.messages;
 
-
-import us.sparknetwork.base.user.User;
+import us.sparknetwork.base.user.Identity;
 
 import java.beans.ConstructorProperties;
 
 public class WhisperMessage {
-    private User.Identity from;
-    private User.Identity to;
+    private Identity from;
+    private Identity to;
     private String message;
 
     @ConstructorProperties({"from", "to", "message"})
-    public WhisperMessage(User.Identity from, User.Identity to, String message) {
+    public WhisperMessage(Identity from, Identity to, String message) {
         this.from = from;
         this.to = to;
         this.message = message;
     }
 
-    public User.Identity getFrom() {
+    public Identity getFrom() {
         return this.from;
     }
 
-    public User.Identity getTo() {
+    public Identity getTo() {
         return this.to;
     }
 
